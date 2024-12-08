@@ -84,3 +84,92 @@ Untuk menjalankan aplikasi, Anda dapat menggunakan perintah berikut untuk menjal
 
 Aplikasi backend akan berjalan di http://127.0.0.1:8000, sedangkan frontend (React) akan berjalan di http://localhost:3000.
 >>>>>>> c2e9538 (initial commit)
+
+##langkah-langkah untuk push branch baru ke repository orang lain di GitHub atau GitLab:
+
+---
+
+### 1. Clone Repository (sudah dilakukan sebelumnya, lanjut step2)
+Jika belum memiliki repository lokal, clone repository orang lain terlebih dahulu.
+
+```bash
+git clone <url-repo-orang-lain>
+```
+
+Contoh:
+```bash
+git clone https://github.com/username/repository-name.git
+```
+
+---
+
+### 2. Buat Branch Baru di Lokal
+Setelah masuk ke direktori repository lokal, buat branch baru untuk bekerja.
+
+```bash
+git checkout -b <nama-branch-baru>
+```
+
+Contoh:
+```bash
+git checkout -b feature-tambah-login
+```
+
+---
+
+### 3. Lakukan Perubahan di Lokal
+Edit file, tambahkan fitur, atau lakukan perubahan yang diperlukan. Setelah selesai:
+
+- Tambahkan file ke staging:
+  ```bash
+  git add .
+  ```
+- Commit perubahan:
+  ```bash
+  git commit -m "Menambahkan fitur login"
+  ```
+
+---
+
+###4. Push Branch Baru ke Repository Remote
+Gunakan perintah berikut untuk push branch baru ke repository orang lain:
+
+```bash
+git push origin <nama-branch-baru>
+```
+
+Contoh:
+```bash
+git push origin feature-tambah-login
+```
+
+Jika branch belum ada di remote, Git akan membuat branch baru di remote.
+
+---
+
+###5. Buat Pull Request (PR)
+Setelah branch berhasil di-push, buka repository di GitHub/GitLab dan buat Pull Request:
+
+1. Masuk ke tab Pull Requests di halaman repository.
+2. Klik New Pull Request.
+3. Pilih branch Anda (misalnya, `feature-tambah-login`) sebagai source.
+4. Jelaskan perubahan yang dilakukan, lalu submit Pull Request.
+
+---
+
+###6. Tunggu Review
+Owner atau maintainer repository akan meninjau Pull Request Anda. Mereka bisa:
+- Menerima dan merge branch Anda.
+- Meminta perubahan atau revisi jika diperlukan.
+
+---
+
+###Catatan Penting
+  - Hak Akses: Anda memerlukan akses push ke repository orang lain. Jika tidak memiliki akses:
+  - Fork repository tersebut ke akun Anda sendiri.
+  - Clone repository fork tersebut.
+  - Push ke repository fork Anda.
+  - Lakukan Pull Request dari repository Anda ke repository asli.
+  - Nama Branch: Usahakan menggunakan nama branch yang deskriptif dan sesuai konvensi tim.
+
+
