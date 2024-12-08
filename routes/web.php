@@ -18,6 +18,10 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 
+Route::get('/presensi', function () {
+    return view('page.ppresensi');
+});
+
 // Route ke halaman cuti
 Route::get('/cuti', function () {
     return view('page.pcuti');
@@ -51,7 +55,7 @@ Route::get('/riwayat_karyawan', function () {
 // Route ke halaman menu_utama
 Route::get('/menu_utama', function () {
     return view('page.pmenu_utama');
-});
+})->name('menu_utama');
 
 // Proses login (contoh)
 Route::post('/login', function () {

@@ -1,5 +1,5 @@
 <x-navbar></x-navbar>
-<main class="flex-1 mx-auto w-full sm:px-6 py-8 lg:px-32">
+<main class="w-full mx-auto px-4 sm:px-6 lg:px-36 py-10">
     <div class="bg-white rounded-lg shadow-lg p-6 mb-20">
         <h2 class="text-lg font-medium mb-4 text-center">Status Presensi Hari Ini</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
@@ -32,7 +32,7 @@
         <!-- Carousel items -->
         <div id="carouselItems" class="flex mr-6 transition-transform duration-700 ease-[cubic-bezier(0.25, 1, 0.5, 1)]">
             <!-- Slide 1 -->
-        <a href="#" class="bg-white w-1/4 flex-shrink-0 p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center mx-1">
+        <a href="/presensi" class="bg-white w-1/4 flex-shrink-0 p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center mx-1">
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
             <i class="fas fa-sign-in-alt text-blue-600 text-xl"></i>
             </div>
