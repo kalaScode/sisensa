@@ -85,7 +85,7 @@ Untuk menjalankan aplikasi, Anda dapat menggunakan perintah berikut untuk menjal
 Aplikasi backend akan berjalan di http://127.0.0.1:8000, sedangkan frontend (React) akan berjalan di http://localhost:3000.
 >>>>>>> c2e9538 (initial commit)
 
-##langkah-langkah untuk push branch baru ke repository orang lain di GitHub atau GitLab:
+## Langkah-langkah untuk push branch baru ke repository orang lain di GitHub atau GitLab:
 
 ---
 
@@ -131,7 +131,7 @@ Edit file, tambahkan fitur, atau lakukan perubahan yang diperlukan. Setelah sele
 
 ---
 
-###4. Push Branch Baru ke Repository Remote
+### 4. Push Branch Baru ke Repository Remote
 Gunakan perintah berikut untuk push branch baru ke repository orang lain:
 
 ```bash
@@ -147,7 +147,7 @@ Jika branch belum ada di remote, Git akan membuat branch baru di remote.
 
 ---
 
-###5. Buat Pull Request (PR)
+### 5. Buat Pull Request (PR)
 Setelah branch berhasil di-push, buka repository di GitHub/GitLab dan buat Pull Request:
 
 1. Masuk ke tab Pull Requests di halaman repository.
@@ -157,14 +157,14 @@ Setelah branch berhasil di-push, buka repository di GitHub/GitLab dan buat Pull 
 
 ---
 
-###6. Tunggu Review
+### 6. Tunggu Review
 Owner atau maintainer repository akan meninjau Pull Request Anda. Mereka bisa:
 - Menerima dan merge branch Anda.
 - Meminta perubahan atau revisi jika diperlukan.
 
 ---
 
-###Catatan Penting
+### Catatan Penting
   - Hak Akses: Anda memerlukan akses push ke repository orang lain. Jika tidak memiliki akses:
   - Fork repository tersebut ke akun Anda sendiri.
   - Clone repository fork tersebut.
