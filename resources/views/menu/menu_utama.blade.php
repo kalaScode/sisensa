@@ -108,54 +108,78 @@
         const items = document.getElementById('carouselItems');
         const nextButton = document.getElementById('nextButton');
         const prevButton = document.getElementById('prevButton');
-      
+    
         const slideWidth = items.children[0].offsetWidth + 16; // Lebar + margin antar item
         let isTransitioning = false;
-      
+        let autoSlideInterval;
+    
         function moveNext() {
-          if (isTransitioning) return;
-          isTransitioning = true;
-
-          // Pindahkan elemen pertama ke akhir
-          const firstChild = items.firstElementChild;
-          items.insertBefore(firstChild,items.lastChild)
-          
-          // Geser ke kiri
-          items.style.transition = 'none';
-          items.style.transform = `translateX(${slideWidth}px)`;
-          setTimeout(() => {
-            // Reset posisi tanpa animasi
-            items.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
-            items.style.transform = 'translateX(0)';
+            if (isTransitioning) return;
+            isTransitioning = true;
+    
+            // Pindahkan elemen pertama ke akhir
+            const firstChild = items.firstElementChild;
+            items.appendChild(firstChild);
+    
+            // Geser ke kiri
+            items.style.transition = 'none';
+            items.style.transform = `translateX(${slideWidth}px)`;
             setTimeout(() => {
-              isTransitioning = false;
-            }, 700);
-          }, 0); // Sesuai durasi animasi
+                // Reset posisi tanpa animasi
+                items.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
+                items.style.transform = 'translateX(0)';
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 700);
+            }, 0); // Sesuai durasi animasi
         }
-      
+    
         function movePrev() {
-          if (isTransitioning) return;
-          isTransitioning = true;
-      
-          // Pindahkan elemen terakhir ke awal
-          const lastChild = items.lastElementChild;
-          items.insertBefore(lastChild, items.firstChild);
-      
-          // Geser ke kanan (posisi awal)
-          items.style.transition = 'none';
-          items.style.transform = `translateX(-${slideWidth}px)`;
-          setTimeout(() => {
-            items.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
-            items.style.transform = 'translateX(0)';
+            if (isTransitioning) return;
+            isTransitioning = true;
+    
+            // Pindahkan elemen terakhir ke awal
+            const lastChild = items.lastElementChild;
+            items.insertBefore(lastChild, items.firstChild);
+    
+            // Geser ke kanan (posisi awal)
+            items.style.transition = 'none';
+            items.style.transform = `translateX(-${slideWidth}px)`;
             setTimeout(() => {
-              isTransitioning = false;
-            }, 700);
-          }, 0);
+                items.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
+                items.style.transform = 'translateX(0)';
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 700);
+            }, 0);
         }
-      
+    
+        // Tambahkan event listener untuk tombol next dan prev
         nextButton.addEventListener('click', moveNext);
         prevButton.addEventListener('click', movePrev);
-      </script>      
+    
+        // Tambahkan fitur slide otomatis
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                moveNext();
+            }, 2000); // 2 detik
+        }
+    
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+    
+        // Mulai slide otomatis saat halaman dimuat
+        startAutoSlide();
+    
+        // Hentikan slide otomatis saat kursor hover
+        items.addEventListener('mouseover', stopAutoSlide);
+        
+        // Mulai lagi slide otomatis saat kursor keluar
+        items.addEventListener('mouseout', startAutoSlide);
+      </script>
+    
+        
            
 </main>
 <x-footer></x-footer>

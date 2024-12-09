@@ -12,7 +12,8 @@
     <link href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
     <script src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js" data-color="#000000" data-border-radius="small"></script>
-</head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+    
 </head>
 
 <body class="pt-12">
