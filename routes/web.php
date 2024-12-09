@@ -57,6 +57,16 @@ Route::get('/menu_utama', function () {
     return view('page.pmenu_utama');
 })->name('menu_utama');
 
+// Route ke halaman profil;
+Route::get('/profil', function () {
+    return view('page.pprofil');
+})->name('profil');
+
+// Route ke halaman edit-profil;
+Route::get('/edit-profil', function () {
+    return view('page.pedit-profil');
+})->name('edit-profil');
+
 // Proses login (contoh)
 Route::post('/login', function () {
     // Di sini bisa ditambahkan validasi login
