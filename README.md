@@ -1,20 +1,20 @@
 # sisensa
-Tugas RPL Kelompok 4
+Tugas RPL Kelompok 4 - 3SD1
 =======
 ## SISENSA
 
 SISENSA merupakan Sistem Absensi Karyawan terintegrasi yang dapat mengelola presensi karyawan untuk berbagai perusahaan dengan pengaturan otoritas yang jelas. Sistem ini dilengkapi dengan formulir presensi dengan menggunakan fitur Face Detection dan Geofencing untuk memastikan karyawan hanya dapat melakukan presensi pada saat kamera mendeteksi wajah dan lokasi presensi sesuai dengan yang sudah ditentukan dengan batasan tertentu, serta pada waktu yang sudah ditentukan (untuk presensi masuk dan pulang berdasarkan jam kerja yang ditentukan perusahaan).
 
-## Developers
+## Developers 
 
--   Nama Developer 1
--   Nama Developer 2
--   Nama Developer 3
--   Nama Developer 4
--   Nama Developer 5
--   Nama Developer 6
--   Nama Developer 7
--   Nama Developer 8
+-   Ainul Fatimah
+-   Amanda Amelia Salsabila Sinaga
+-   Atikah Nurfadia
+-   Muhammad Akmil Triadi
+-   Rizky Alif Ichwanto
+-   Wafi Aulia Tsabitah
+-   Wahyu Satrio Widodo
+-   Wilfa Afriyani 
 
 ## Tech Stack
 
