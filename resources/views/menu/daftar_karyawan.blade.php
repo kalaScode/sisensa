@@ -19,7 +19,7 @@
                         <th class="px-6 py-3 text-left text-sm font-semibold">Telepon</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold">Email</th>
                         @if($role=='admin')
-                        <th class="px-6 py-3 text-left text-sm font-semibold">Aksi</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold">Aksi</th>
                         @endif
                     </tr>
                 </thead>
@@ -31,7 +31,7 @@
                         <td class="px-6 py-4 text-sm text-gray-600">+62 812-3456-7890</td>
                         <td class="px-6 py-4 text-sm text-gray-600">budi.santoso@company.id</td>
                         @if ($role=='admin')
-                        <td class="px-6 py-4"><a href="/edit_daftar_karyawan" class="inline-block px-3 py-1.5 bg-custom text-white text-sm rounded-lg hover:bg-opacity-90 transition-colors"><i class="fas fa-user-circle mr-2"></i>Lihat Detail</a></td>
+                            <td class="px-6 py-4"><a href="/edit_daftar_karyawan" class="inline-block px-3 py-1.5 bg-custom text-white text-sm rounded-lg hover:bg-opacity-90 transition-colors"><i class="fas fa-user-circle mr-2"></i>Lihat Detail</a></td>
                         @endif
                     </tr>
                     <tr class="border-b hover:bg-gray-50">
