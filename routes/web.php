@@ -30,7 +30,7 @@ Route::get('/cuti', function () {
 // Route::get('/daftar_karyawan', function () {
 //     return view('page.pdaftar_karyawan');
 // });
-Route::get('/daftar_karyawan', [DaftarKaryawan::class, 'index']);
+Route::get('/daftar_karyawan',[DaftarKaryawan::class,'index']);
 
 // Route ke halaman edit_daftar_karyawan
 Route::get('/edit_daftar_karyawan', function () {
