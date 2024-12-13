@@ -1,6 +1,6 @@
-<x-navbar></x-navbar> 
-<div class="w-full mx-auto px-4 sm:px-6 lg:px-36 py-10">
-    <div class="w-full mx-auto px-4 sm:px-100 py-28 max-w-lg">
+<x-navbar></x-navbar>
+<div class="w-full mx-auto px-4 sm:px-6 lg:px-36">
+    <div class="w-full mx-auto px-4 sm:px-100 py-12 max-w-lg">
         <div class="bg-white rounded-lg border-2 border-gray-300 p-6 shadow-lg">
             <!-- Video Placeholder -->
             <div class="relative border-2 border-red-400 border-dashed rounded-lg h-80 flex items-center justify-center mb-4 overflow-hidden">
@@ -20,6 +20,9 @@
                 <div id="distanceText" class="text-sm text-gray-500">
                     Mengukur jarak...
                 </div>
+            </div>
+            <div id="addressText" class="text-sm text-gray-500 mb-4">
+                Mengambil lokasi Anda...
             </div>
 
             <!-- Peringatan -->
@@ -73,8 +76,8 @@ window.onload = async function() {
     let isFaceDetected = false;
     let isWithinRange = false;
 
-    const targetLat = -6.2234666;
-    const targetLon = 106.9476664;
+    const targetLat = -6.2311505; // Latitude tujuan
+    const targetLon = 106.8669003; // Longitude tujuan
 
     // Fungsi Haversine untuk hitung jarak
     function getDistance(lat1, lon1, lat2, lon2) {
@@ -91,10 +94,22 @@ window.onload = async function() {
         return R * c * 1000; // Dalam meter
     }
 
+    // Dapatkan lokasi Anda menggunakan API OpenStreetMap Nominatim
+    async function getAddress(lat, lon) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+            const data = await response.json();
+            return data.display_name || "lokasi Anda tidak ditemukan";
+        } catch (error) {
+            console.error("Gagal mendapatkan lokasi Anda:", error);
+            return "Lokasi Anda tidak ditemukan";
+        }
+    }
+
     // Periksa lokasi
-    function checkLocation() {
+    async function checkLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
+            navigator.geolocation.getCurrentPosition(async (position) => {
                 const userLat = position.coords.latitude;
                 const userLon = position.coords.longitude;
 
@@ -103,10 +118,19 @@ window.onload = async function() {
 
                 distanceText.innerText = `Jarak Anda: ${distance} meter`;
                 isWithinRange = distance <= 100;
+
+                const address = await getAddress(userLat, userLon);
+                document.getElementById("addressText").innerText = `${address}`;
+
                 updateUI();
             }, (error) => {
                 console.error("Gagal mendapatkan lokasi:", error);
                 distanceText.innerText = "Lokasi tidak ditemukan.";
+                document.getElementById("addressText").innerText = "Gagal mendapatkan lokasi Anda.";
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 5000
             });
         } else {
             alert("Geolokasi tidak didukung oleh browser ini.");
