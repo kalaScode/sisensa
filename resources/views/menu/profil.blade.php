@@ -1,6 +1,7 @@
 <div class="min-h-screen flex flex-col">
     <x-navbar></x-navbar>
     <main class="flex-1 max-w-5xl mx-auto px-4 py-6 sm:px-6 lg:px-16">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Profil</h1>
         <div class="bg-gray-100 rounded-lg shadow p-6 max-w-lg mx-auto">
             <div class="relative w-24 h-24 mx-auto mb-4">
                 <img src="/img/profil.jpg" 

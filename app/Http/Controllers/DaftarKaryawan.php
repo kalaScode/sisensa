@@ -9,7 +9,7 @@ class DaftarKaryawan extends Controller
     function index()
     {
         return view('page.pdaftar_karyawan', [
-            'role' => "user"
+            'role' => "admin"
         ]);
     }
 }
