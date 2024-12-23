@@ -1,65 +1,140 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <title>Sisensa</title>
+    <title>Login | Masuk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .parallax-bg {
+            background: linear-gradient(45deg, #0d1437 0%, #1a237e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite ease-in-out;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        .login-container {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+        }
+        .login-btn {
+            background: linear-gradient(45deg, #1a237e, #3949ab);
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.4);
+        }
+    </style>
 </head>
-<body>
-  <div class="min-h-full">
+<body class="min-h-screen font-['Jakarta Sans']">
     <x-navbarnone></x-navbarnone>
-    <main class="flex items-center justify-center mt-12">
-        <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl flex">
-            <!-- Informasi tentang SISENSA -->
-            <div class="w-1/2 pr-6">
-                <h1 class="text-3xl font-bold text-gray-900 mb-4">Apa Itu <span class="text-indigo-600">SISENSA?</span></h1>
-                <p class="text-gray-700 mb-4">Selamat datang di platform presensi digital yang modern dan efisien. Sistem kami memungkinkan Anda untuk:</p>
-                <ul class="list-disc list-inside text-gray-600 space-y-2">
-                    <li>Melakukan presensi dengan mudah dan cepat</li>
-                    <li>Memantau kehadiran secara real-time</li>
-                    <li>Mengakses laporan kehadiran yang terperinci</li>
-                    <li>Mengelola izin dan cuti dengan sistem yang terintegrasi</li>
-                </ul>
-            </div>
-    
-            <!-- Form Login -->
-            <div class="w-1/2">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Masuk ke Akun Anda</h2>
-                <form method="POST" action="{{ route('login.process') }}">
+        <div class="parallax-bg min-h-screen flex items-center justify-center p-4" id="starfield">
+            <div class="login-container max-w-md w-full p-8 rounded-lg shadow-2xl">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-semibold text-white mb-2">SISENSA</h1>
+                    <p class="text-blue-200">Silakan masuk ke akun Anda</p>
+                </div>
+                
+                <form method="POST" action="{{ route('login.process') }}" class="space-y-6">
                     @csrf
-                    <!-- Email -->
-                    <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" name="email" id="email" placeholder="Masukkan email Anda" required
-                               class="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <div>
+                        <label class="block text-blue-200 mb-2" for="email">Email</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-3 top-3 text-blue-300"></i>
+                            <input type="email" name="email" id="email" placeholder="Masukkan email Anda" required
+                                class="form-input w-full py-2 px-10 rounded-lg text-white placeholder-blue-300">
+                        </div>
                     </div>
-                    <!-- Password -->
-                    <div class="mb-4">
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input type="password" name="password" id="password" placeholder="Masukkan password Anda" required
-                               class="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    
+                    <div>
+                        <label class="block text-blue-200 mb-2" for="password">Kata Sandi</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-3 top-3 text-blue-300"></i>
+                            <input type="password" name="password" id="password" placeholder="Masukkan kata sandi" required
+                                class="form-input w-full py-2 px-10 rounded-lg text-white placeholder-blue-300">
+                        </div>
                     </div>
-                    <!-- Lupa Password -->
-                    <div class="text-right mb-4">
-                        <a href="#" class="text-sm text-indigo-600 hover:underline">Lupa Password?</a>
+                    
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center text-blue-200">
+                            <input type="checkbox" class="form-checkbox rounded border-blue-300 text-custom mr-2"> Ingat saya
+                        </label>
+                        <a href="#" class="text-blue-300 hover:text-white transition-colors">Lupa kata sandi?</a>
                     </div>
-                    <!-- Tombol Masuk -->
-                    <button type="submit" class="w-full py-2 px-4 bg-yellow-400 text-white font-bold rounded-lg hover:bg-yellow-500">
+                    
+                    <button type="submit" class="login-btn !rounded-button w-full py-3 text-white font-medium hover:bg-blue-700 transition-all">
                         Masuk
                     </button>
                 </form>
-                <!-- Daftar -->
-                <p class="mt-4 text-sm text-center text-gray-600">
-                    Belum punya akun? <a href="{{ route('register') }}" class="text-indigo-600 font-semibold hover:underline">Daftar disini</a>
+                
+                <p class="text-center mt-6 text-blue-200">
+                    Belum punya akun? <a href="{{ route('register') }}" class="text-blue-300 hover:text-white transition-colors">Daftar sekarang</a>
                 </p>
             </div>
         </div>
-    </main>
-   
-  </div>  
+    <x-footer></x-footer>
+
+    <script>
+        function createStars() {
+            const starfield = document.getElementById('starfield');
+            const numberOfStars = 100;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                
+                starfield.appendChild(star);
+            }
+        }
+        
+        createStars();
+        
+        document.addEventListener('mousemove', (e) => {
+            const stars = document.querySelectorAll('.star');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            stars.forEach(star => {
+                const rect = star.getBoundingClientRect();
+                const starX = (rect.left + rect.width / 2) / window.innerWidth;
+                const starY = (rect.top + rect.height / 2) / window.innerHeight;
+                
+                const deltaX = (mouseX - starX) * 20;
+                const deltaY = (mouseY - starY) * 20;
+                
+                star.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            });
+        });
+    </script>
 </body>
-<x-footer></x-footer>
 </html>

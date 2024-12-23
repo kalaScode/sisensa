@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DaftarKaryawan;
+use App\Http\Controllers\Beranda;
+use App\Http\Controllers\UserController;
 
 // Route ke halaman login
 Route::get('/', function () {
@@ -53,9 +55,11 @@ Route::get('/riwayat_karyawan', function () {
 });
 
 // Route ke halaman menu_utama
-Route::get('/menu_utama', function () {
-    return view('page.pmenu_utama');
-})->name('menu_utama');
+// Route::get('/menu_utama', function () {
+//     return view('page.pmenu_utama');
+// })->name('menu_utama');
+
+Route::get('/menu_utama',[Beranda::class,'index'])->name('menu_utama');;
 
 // Route ke halaman profil;
 Route::get('/profil', function () {
@@ -72,3 +76,8 @@ Route::post('/login', function () {
     // Di sini bisa ditambahkan validasi login
     return redirect()->route('home');
 })->name('login.process');
+
+// Route ke halaman persetujuan_akun;
+Route::get('/persetujuan-akun', function () {
+    return view('page.ppersetujuan-akun');
+})->name('persetujuan-akun');
