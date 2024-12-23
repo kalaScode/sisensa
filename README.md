@@ -38,7 +38,7 @@ Aplikasi ini dibangun dengan teknologi berikut:
 
 ### Clone Repository
 
-    git clone https://gitlab.com/username/repository-name.git
+    git clone https://github.com/kalaScode/sisensa.git
     cd repository-name
 
 ### Install Dependencies
