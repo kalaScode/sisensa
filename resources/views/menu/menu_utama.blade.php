@@ -1,94 +1,136 @@
 <x-navbar></x-navbar>
-<body class="bg-gray-50 min-h-screen font-['Plus_Jakarta_Sans']">
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<main class="max-w-7xl mx-auto sm:px-6 lg:px-36 py-6">
+    <nav class="flex" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <li class="inline-flex items-center text-sm font-medium text-gray-700">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                    </svg>
+                    Beranda
+            </li>
+        </ol>
+    </nav>
         <!-- Welcome Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 my-4">
             <div class="lg:col-span-2">
-                <div class="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8 text-white shadow-lg">
-                    <h1 class="text-3xl font-bold mb-2">Selamat Datang, Wafi Aulia!</h1>
+                <div class="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-6 text-white shadow-lg">
+                    <h1 class="text-2xl font-semibold mb-2">Selamat Datang, Wafi Aulia!</h1>
                     <p class="text-white/80">Semoga hari Anda menyenangkan</p>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow-lg backdrop-blur-sm">
-                <div class="flex items-center space-x-4">
-                    <img class="h-16 w-16 rounded-full object-cover" src="https://i1.rgstatic.net/ii/profile.image/11431281211065375-1702306328054_Q512/Wafi-Aulia-Tsabitah.jpg" alt="Profile">
+                     
+            <div class="bg-white rounded-2xl p-4 shadow-lg backdrop-blur-sm">
+                <div class="flex items-center space-x-3">
+                    <img class="h-14 w-14 rounded-full object-cover" src="#" alt="Profile Perusahaan">
                     <div>
-                        <h2 class="text-xl font-semibold">Wafi Aulia</h2>
-                        <p class="text-gray-600">Data Scientist</p>
-                        <p class="text-gray-500">Data & AI Division</p>
+                        <h2 class="text-lg font-semibold">Nama Perusahaan</h2>
+                        <p class="text-gray-600 text-sm">Bidang Perusahaan</p>
                     </div>
                 </div>
             </div>
         </div>
-
-          <!-- Attendance Status -->
-          <div class="mb-8">
-            <div class="bg-white rounded-2xl shadow-lg p-8">
-                <h3 class="text-lg font-semibold mb-4">Status Presensi Hari Ini</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-md transition-all">
-                        <div class="text-4xl font-bold text-[#1f2937] mb-2">08:00</div>
-                        <div class="text-gray-600">Check In</div>
+    
+        <!-- Attendance and Announcement Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Left side: Pengumuman (2/3) -->
+            <div class="lg:col-span-2 space-y-4 flex flex-col justify-between">
+                <div class="glide flex-grow">
+                    <div class="glide__track" data-glide-el="track">
+                        <ul class="glide__slides">
+                            <li class="glide__slide">
+                                <div class="bg-white rounded-2xl shadow-lg p-4 backdrop-blur-sm">
+                                    <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs mb-1">Pengumuman</span>
+                                    <h4 class="text-md font-semibold mb-1">Libur Hari Raya Idul Fitri</h4>
+                                    <p class="text-gray-600 text-xs">Libur Hari Raya Idul Fitri akan berlangsung dari tanggal 10-14 April 2024</p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-md transition-all">
-                        <div class="text-4xl font-bold text-green-500 mb-2">17:00</div>
-                        <div class="text-gray-600">Check Out</div>
+                    <div class="glide__bullets mt-4" data-glide-el="controls[nav]">
+                        <button class="glide__bullet" data-glide-dir="=0"></button>
+                        <button class="glide__bullet" data-glide-dir="=1"></button>
                     </div>
                 </div>
             </div>
-        </div>
-        
+    
+            <!-- Right side: Check In and Check Out (1/3) -->
+            <div class="lg:col-span-1 flex space-x-4 justify-between">
+                <!-- Masuk -->
+                <div class="bg-gray-50 rounded-xl p-3 hover:shadow-md transition-all w-1/2 h-24 flex flex-col justify-center items-center">
+                    <div class="text-xl font-semibold text-[#1f2937] mb-1">08:00</div>
+                    <div class="text-sm text-gray-600 text-center">Masuk</div>
+                </div>                
 
-        <div class="mb-8">
-        <div class="glide">
-            <div class="glide__track" data-glide-el="track">
-                <ul class="glide__slides">
-                    <li class="glide__slide">
-                        <div class="bg-white rounded-2xl shadow-lg p-6 backdrop-blur-sm">
-                            <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm mb-2">Pengumuman</span>
-                            <h4 class="text-lg font-semibold mb-2">Libur Hari Raya Idul Fitri</h4>
-                            <p class="text-gray-600">Libur Hari Raya Idul Fitri akan berlangsung dari tanggal 10-14 April 2024</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="glide__bullets mt-4" data-glide-el="controls[nav]">
-                <button class="glide__bullet" data-glide-dir="=0"></button>
-                <button class="glide__bullet" data-glide-dir="=1"></button>
+                <!-- Keluar -->
+                <div class="bg-gray-50 rounded-xl p-3 hover:shadow-md transition-all w-1/2 h-24 flex flex-col justify-center items-center">
+                    <div class="text-xl font-semibold text-green-500 mb-1">17:00</div>
+                    <div class="text-sm text-gray-600 text-center">Keluar</div>
+                </div>
             </div>
         </div>
-        </div>
-        <!-- Quick Access Section -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <a href="#" class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-all backdrop-blur-sm">
-                <i class="fas fa-clock text-3xl text-gray-800 mb-4"></i>
-                <h3 class="font-semibold">Presensi</h3>
-            </a>
-            <a href="./cuti" class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-all backdrop-blur-sm">
-                <i class="fas fa-calendar-alt text-3xl text-gray-800 mb-4"></i>
-                <h3 class="font-semibold">Pengajuan Cuti</h3>
-            </a>
-            <a href="./persetujuan" class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-all backdrop-blur-sm">
-                <i class="fas fa-history text-3xl text-gray-800 mb-4"></i>
-                <h3 class="font-semibold">Riwayat Kehadiran</h3>
-            </a>
-            <a href="./cuti" class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-all backdrop-blur-sm">
-                <i class="fas fa-calendar-check text-3xl text-gray-800 mb-4"></i>
-                <h3 class="font-semibold">Riwayat Cuti</h3>
-            </a>
-            <a href="#" class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-all backdrop-blur-sm">
-                <i class="fas fa-users text-3xl text-gray-800 mb-4"></i>
-                <h3 class="font-semibold">Daftar Karyawan</h3>
-            </a>
-            <a href="#" class="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-all backdrop-blur-sm">
-                <i class="fas fa-user-cog text-3xl text-gray-800 mb-4"></i>
-                <h3 class="font-semibold">Pengaturan</h3>
-            </a>
-        </div>
-    </main>
 
-    <!-- Scripts -->
-    <script src="{{ mix('js/app.js') }}"></script>
-</body>
+        </div>
+        <div id="gallery" class="p-2">
+            <!-- Grid wrapper -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-center">
+                <!-- Card 1 -->
+                <a href="/presensi" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sign-in-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Presensi</h3>
+                    <p class="text-sm text-gray-500">Catat kehadiran Anda</p>
+                </a>
+                <!-- Card 2 -->
+                <a href="/cuti" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-calendar-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Cuti</h3>
+                    <p class="text-sm text-gray-500">Ajukan cuti</p>
+                </a>
+                <!-- Card 3 -->
+                <a href="/riwayat_pribadi" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-history text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Riwayat Pribadi</h3>
+                    <p class="text-sm text-gray-500">Lihat riwayat kehadiranmu</p>
+                </a>
+                <!-- Card 4 -->
+                <a href="/daftar_karyawan" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Daftar Karyawan</h3>
+                    <p class="text-sm text-gray-500">Lihat daftar karyawan</p>
+                </a>
+                <!-- Card 5 -->
+                @if ($role=='atasan')
+                <a href="/persetujuan" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-7 h-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z"/>
+                            <path fill-rule="evenodd" d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                        </svg>                
+                    </div>
+                    <h3 class="font-medium mb-1">Persetujuan</h3>
+                    <p class="text-sm text-gray-500">Memberikan persetujuan</p>
+                </a>
+                @endif
+                <!-- Card 6 -->
+                @if (in_array($role, ['atasan', 'hrd']))
+                <a href="/riwayat_karyawan" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                        </svg>                
+                    </div>
+                    <h3 class="font-medium mb-1">Riwayat Karyawan</h3>
+                    <p class="text-sm text-gray-500">Riwayat Seluruh Karyawan</p>
+                </a>
+                @endif
+            </div>
+        </div>        
+</main>
 <x-footer></x-footer>

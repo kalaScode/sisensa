@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class DaftarKaryawan extends Controller
+class Beranda extends Controller
 {
     function index()
     {
-        return view('page.pdaftar_karyawan', [
+        return view('page.pmenu_utama', [
             'role' => "atasan"
         ]);
     }

@@ -1,6 +1,25 @@
 <x-navbar></x-navbar>
-<main class="w-full mx-auto px-4 sm:px-6 lg:px-36 py-10">
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6 backdrop-blur-lg bg-opacity-90">
+<main class="w-full mx-auto mb-6 px-4 sm:px-6 lg:px-36 py-10 ">
+    <nav class="flex" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <li class="inline-flex items-center">
+                <a href="/menu_utama" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                    </svg>
+                    Beranda
+                </a>
+            </li>
+            <li class="inline-flex items-center text-sm font-medium text-gray-700">
+                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                </svg>
+                Persetujuan
+             </li>
+        </ol>
+    </nav>
+    
+    <div class="bg-white rounded-lg shadow-lg p-6 my-6 backdrop-blur-lg bg-opacity-90">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -25,18 +44,18 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden backdrop-blur-lg bg-opacity-90">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+    <!-- Table -->
+    <div class="bg-white shadow rounded-lg overflow-x-auto overflow-x-auto ">
+        <table class="min-w-full bg-white border boreder-black">
+            <thead class="bg-[#122036] text-white">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Pengajuan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Cuti</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durasi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Nama</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Tanggal Pengajuan</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Jenis Cuti</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Durasi</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Periode</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -240,36 +259,17 @@
             </table>
         </div>
 
-        <!-- Information Showing 1 to 10 of 20 results -->
-            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
             <div class="text-sm text-gray-700">
-                Showing <span class="font-semibold text-gray-900">1 to 10</span> of <span class="font-semibold text-gray-900">20</span> results
+                Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">10</span> dari <span class="font-medium">15</span> data
             </div>
-            <div class="flex-1 flex justify-between sm:justify-end">
-                <!-- Pagination Controls -->
-                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <!-- Previous Page Button -->
-                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                        <span class="sr-only">Next</span>
-                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M9.707 4.707a1 1 0 00-1.414 0L4 8.414a1 1 0 000 1.414l4 4a1 1 0 001.414-1.414L7.414 10h9.586a1 1 0 100-2H7.414l2.293-2.293a1 1 0 000-1.414z" clip-rule="evenodd" />
-                        </svg>    
-                    </a>
-
-                    <!-- Pagination Numbers -->
-                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">1</a>
-                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">2</a>
-                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">3</a>
-
-                    <!-- Next Page Button -->
-                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    <span class="sr-only">Previous</span>
-                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10.293 15.293a1 1 0 011.414 0l4-4a1 1 0 010-1.414l-4-4a1 1 0 00-1.414 1.414L12.586 9H3a1 1 0 100 2h9.586l-2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                </nav>
-            </div>
+            <div class="flex space-x-2 items-center">
+                <button class="rounded-lg px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-custom">Sebelumnya</button>
+                <button class="rounded-lg px-4 py-2 border border-gray-300 bg-[#122036] text-white text-sm font-medium">1</button>
+                <button class="rounded-lg px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-custom">2</button>
+                <button class="rounded-lg px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-custom">Selanjutnya</button>
+            </div>                    
         </div>
 </main>
 <x-footer></x-footer>
