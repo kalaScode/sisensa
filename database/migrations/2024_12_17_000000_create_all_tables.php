@@ -81,8 +81,10 @@ class CreateAllTables extends Migration
         // Tabel user
         Schema::create('user', function (Blueprint $table) {
             $table->id('id_user');
+            $table->string('company_code', 255);
             $table->string('nama', 255);
             $table->string('email', 255)->unique();
+            $table->string('phone', 255);
             $table->string('password', 255);
             $table->timestamps();
         });

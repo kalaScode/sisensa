@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DaftarKaryawan;
 use App\Http\Controllers\Beranda;
@@ -14,6 +15,9 @@ Route::get('/', function () {
 Route::get('/register', function () {
     return view('register');
 })->name('register');
+
+// Route untuk mengirimkan form register
+Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
 
 // Route ke halaman home
 Route::get('/home', function () {
