@@ -15,11 +15,6 @@ Route::get('/register', function () {
     return view('register');
 })->name('register');
 
-// Route ke halaman home
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
-
 Route::get('/presensi', function () {
     return view('page.ppresensi');
 });
@@ -74,7 +69,7 @@ Route::get('/edit-profil', function () {
 // Proses login (contoh)
 Route::post('/login', function () {
     // Di sini bisa ditambahkan validasi login
-    return redirect()->route('home');
+    return redirect()->route('menu_utama');
 })->name('login.process');
 
 // Route ke halaman persetujuan_akun;
