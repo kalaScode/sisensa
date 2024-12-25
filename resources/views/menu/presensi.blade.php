@@ -91,54 +91,72 @@
         const targetLat = -6.2311505;
         const targetLon = 106.8669003;
     
-        function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c * 1000;
-        }
-    
-        async function getAddress(lat, lon) {
-            try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
-                const data = await response.json();
-                return data.display_name || "Lokasi Anda tidak ditemukan";
-            } catch (error) {
-                console.error("Gagal mendapatkan lokasi:", error);
-                return "Lokasi Anda tidak ditemukan";
-            }
-        }
-    
         async function checkLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const userLat = position.coords.latitude;
-                    const userLon = position.coords.longitude;
-    
-                    const address = await getAddress(userLat, userLon);
-                    document.getElementById("addressText").innerText = `${address}`;
-    
-                    const distanceContainer = document.getElementById("distanceContainer");
-    
-                    if (presenceType === "office") {
-                        const distance = getDistance(userLat, userLon, targetLat, targetLon).toFixed(2);
-                        document.getElementById("distanceText").innerText = `Jarak Anda: ${distance} meter`;
-                        isWithinRange = distance <= 100;
-                        distanceContainer.classList.remove("hidden");
-                    } else {
-                        isWithinRange = true; // Abaikan jarak untuk presensi luar kantor
-                        distanceContainer.classList.add("hidden");
-                    }
-                    updateUI();
-                });
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const userLat = position.coords.latitude;
+            const userLon = position.coords.longitude;
+
+            // Mendapatkan alamat menggunakan OpenStreetMap (Nominatim)
+            const address = await getAddress(userLat, userLon);
+            document.getElementById("addressText").innerText = `${address}`;
+
+            const distanceContainer = document.getElementById("distanceContainer");
+
+            if (presenceType === "office") {
+                const distance = getDistance(userLat, userLon, targetLat, targetLon).toFixed(2);
+                document.getElementById("distanceText").innerText = `Jarak Anda: ${distance} meter`;
+                isWithinRange = distance <= 100;
+                distanceContainer.classList.remove("hidden");
+            } else {
+                isWithinRange = true; // Abaikan jarak untuk presensi luar kantor
+                distanceContainer.classList.add("hidden");
             }
+            updateUI();
+        }, (error) => {
+            // Penanganan error jika pengguna menolak akses lokasi atau terjadi kesalahan lain
+            console.error('Gagal mendapatkan lokasi:', error);
+            document.getElementById("addressText").innerText = "Gagal mendapatkan lokasi Anda.";
+        }, {
+            enableHighAccuracy: true,  // Mengaktifkan akurasi lebih tinggi
+            timeout: 10000,            // Waktu tunggu maksimal 10 detik
+            maximumAge: 0              // Tidak menggunakan data lokasi sebelumnya
+        });
+    } else {
+        document.getElementById("addressText").innerText = "Geolokasi tidak didukung oleh browser ini.";
+    }
+}
+
+async function getAddress(lat, lon) {
+    try {
+        // Membuat permintaan ke API OpenStreetMap (Nominatim)
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+        const data = await response.json();
+        
+        // Memastikan API memberikan alamat yang valid
+        if (data && data.display_name) {
+            return data.display_name;
+        } else {
+            throw new Error("Alamat tidak ditemukan");
         }
+    } catch (error) {
+        console.error("Gagal mendapatkan alamat:", error);
+        return "Lokasi Anda tidak ditemukan";
+    }
+}
+
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius bumi dalam kilometer
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c * 1000; // Menghitung jarak dalam meter
+    return distance;
+}
+
     
         function updateUI() {
             const finishButton = document.getElementById("finishButton");
