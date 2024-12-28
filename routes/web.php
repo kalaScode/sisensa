@@ -12,11 +12,6 @@ Route::get('/', [Beranda::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('beranda');
 
-// Route ke halaman register
-// Route::get('/register', function () {
-//     return view('auth.register');
-// })->name('register');
-Route::get('/register')->middleware('guest');
 
 Route::get('/presensi', function () {
     return view('page.ppresensi');
@@ -70,13 +65,6 @@ Route::get('/edit-profil', [KaryawanController::class, 'getEditProfil'])
     ->name('edit-profil');
 
 Route::post('/upload-foto', [KaryawanController::class, 'uploadFoto'])->name('upload-foto');
-
-
-// Proses login (contoh)
-// Route::post('/login', function () {
-//     // Di sini bisa ditambahkan validasi login
-//     return redirect()->route('beranda');
-// })->name('login.process');
 
 // Route ke halaman persetujuan_akun;
 Route::get('/persetujuan-akun', function () {
