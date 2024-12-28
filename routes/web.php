@@ -12,8 +12,6 @@ Route::get('/', [Beranda::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('beranda');
 
-// Route ke halaman register
-
 
 Route::get('/presensi', function () {
     return view('page.ppresensi');
@@ -67,9 +65,6 @@ Route::get('/edit-profil', [KaryawanController::class, 'getEditProfil'])
     ->name('edit-profil');
 
 Route::post('/upload-foto', [KaryawanController::class, 'uploadFoto'])->name('upload-foto');
-
-
-// Proses login (contoh)
 
 // Route ke halaman persetujuan_akun;
 Route::get('/persetujuan-akun', function () {
