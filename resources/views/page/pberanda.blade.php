@@ -1,5 +1,5 @@
 @extends('main')
 
 @section('content')
-@include('menu.menu_utama')
+@include('menu.beranda')
 @endsection

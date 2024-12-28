@@ -8,8 +8,9 @@ class Beranda extends Controller
 {
     function index()
     {
-        return view('page.pmenu_utama', [
+        return view('page.pberanda', [
             'role' => "atasan"
         ]);
+        
     }
 }

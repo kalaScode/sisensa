@@ -1,11 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-body {
-    font-family: "Poppins", sans-serif;
+.parallax-bg {
+    background: linear-gradient(45deg, #0d1437 0%, #1a237e 100%);
+    position: relative;
+    overflow: hidden;
+}
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 1.5s infinite ease-in-out;
+}
+@keyframes twinkle {
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+.login-container {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.form-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+.form-input:focus {
+    border-color: #4fc3f7;
+    box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+}
+.login-btn {
+    background: linear-gradient(45deg, #1a237e, #3949ab);
+    transition: all 0.3s ease;
+}
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(26, 35, 126, 0.4);
 }
 
-main {
-    min-height: 95vh;
+#modal .bg-white {
+    max-height: 80vh; /* Maksimal tinggi dari area modal */
+    overflow-y: auto; /* Scroll vertikal pada konten */
+    padding-right: 10px; /* Agar tidak terpotong dengan scrollbar */
 }

@@ -14,7 +14,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 my-4">
             <div class="lg:col-span-2">
                 <div class="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-6 text-white shadow-lg">
-                    <h1 class="text-2xl font-semibold mb-2">Selamat Datang, Wafi Aulia!</h1>
+                    <h1 class="text-2xl font-semibold mb-2">Selamat Datang, {{ Auth::user()->name }}!</h1>
                     <p class="text-white/80">Semoga hari Anda menyenangkan</p>
                 </div>
             </div>
@@ -23,8 +23,7 @@
                 <div class="flex items-center space-x-3">
                     <img class="h-14 w-14 rounded-full object-cover" src="#" alt="Profile Perusahaan">
                     <div>
-                        <h2 class="text-lg font-semibold">Nama Perusahaan</h2>
-                        <p class="text-gray-600 text-sm">Bidang Perusahaan</p>
+                        <h2 class="text-lg font-semibold">{{ Auth::user()->perusahaan->nama_Perusahaan ?? 'Tidak ada perusahaan' }}</h2>
                     </div>
                 </div>
             </div>
@@ -98,7 +97,7 @@
                     <p class="text-sm text-gray-500">Lihat riwayat kehadiranmu</p>
                 </a>
                 <!-- Card 4 -->
-                <a href="/daftar_karyawan" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                <a href="/daftar-karyawan" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
                         <i class="fas fa-users text-white text-xl"></i>
                     </div>
