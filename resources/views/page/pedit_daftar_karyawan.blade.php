@@ -1,5 +1,5 @@
 @extends('main')
 
 @section('content')
-@include('menu.edit_daftar_karyawan')
+@include('menu.edit-daftar-karyawan')
 @endsection

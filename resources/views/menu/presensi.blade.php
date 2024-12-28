@@ -197,7 +197,7 @@ window.onload = async function() {
 
     // Tombol Batal
     document.getElementById("cancelButton").addEventListener("click", () => {
-        window.location.href = "{{ route('menu_utama') }}";
+        window.location.href = "{{ route('beranda') }}";
     });
 };
 </script>
