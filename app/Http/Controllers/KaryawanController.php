@@ -106,14 +106,14 @@ class KaryawanController extends Controller
 
     public function getProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_jabatan', 2)->first()->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)->first()->name;
 
         return view('page.pprofil', compact('pemberiPersetujuan'));
     }
 
     public function getEditProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_jabatan', 2)->first()->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)->first()->name;
 
         return view('page.pedit-profil', compact('pemberiPersetujuan'));
     }
