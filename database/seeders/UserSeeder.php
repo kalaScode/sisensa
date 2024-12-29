@@ -12,11 +12,14 @@ class UserSeeder extends Seeder
     {
         $users = [];
         for ($i = 1; $i <= 20; $i++) {
+            $id_Perusahaan = rand(1, 4); // Assumes 4 perusahaan
+            $id_Jabatan = $this->getDefaultJabatan($id_Perusahaan);
+
             $users[] = [
                 'user_id' => $i, // Incremental ID
-                'id_Perusahaan' => rand(1, 4), // Assumes 5 perusahaan
-                'id_Otoritas' => rand(1, 4), // Assumes 3 otoritas
-                'id_Jabatan' => rand(1, 8), // Assumes 4 jabatan
+                'id_Perusahaan' => $id_Perusahaan,
+                'id_Otoritas' => rand(1, 5), // Assumes 5 otoritas
+                'id_Jabatan' => $id_Jabatan, // Default based on perusahaan
                 'name' => 'User ' . $i,
                 'no_Telp' => '081234567' . str_pad($i, 3, '0', STR_PAD_LEFT),
                 'Alamat' => 'Alamat ke-' . $i,
@@ -34,5 +37,25 @@ class UserSeeder extends Seeder
 
         // Insert data ke tabel users
         DB::table('users')->insert($users);
+    }
+
+    private function getDefaultJabatan($id_Perusahaan)
+    {
+        // Logika default Jabatan berdasarkan id_Perusahaan
+        $defaultMapping = [
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            4 => 4,
+        ];
+
+        // Pastikan nilai default ada di tabel jabatan
+        $defaultJabatan = $defaultMapping[$id_Perusahaan] ?? 4;
+
+        // Cek apakah id_Jabatan ada di database
+        $exists = DB::table('jabatan')->where('id_Jabatan', $defaultJabatan)->exists();
+
+        // Jika tidak ada, gunakan fallback atau null
+        return $exists ? $defaultJabatan : null;
     }
 }

@@ -13,7 +13,7 @@
                     Beranda
                 </a>
             </li>
-            <li class="inline-flex items-center inline-flex items-center text-sm font-medium text-gray-700">
+            <li class="inline-flex items-center text-sm font-medium text-gray-700">
                 <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,7 +30,7 @@
                     <button class="px-6 py-4 text-sm font-medium text-custom border-b-2 border-[#122036]">
                         Daftar Karyawan
                     </button>
-                    @if ($role == 3)
+                    @if ($role == 4)
                         <!-- Perbaiki penggunaan operator pembanding -->
                         <a href="{{ route('persetujuan-akun') }}">
                             <button
@@ -105,7 +105,7 @@
                                             {{ $item->status_Kerja }}
                                         </span>
                                     </td>
-                                    @if ($role == 3)
+                                    @if ($role == 4)
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <!-- Tombol Info (untuk membuka modal) -->
                                             <button type="button" data-modal-target="edit-modal"
@@ -160,7 +160,7 @@
 <!-- Modal -->
 
 <div id="edit-modal" tabindex="-1" aria-hidden="true"
-    class="fixed top-0 left-0 z-50 hidden w-full h-full bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    class="fixed top-0 left-0 z-50 hidden w-full h-full bg-gray-600 bg-opacity-50 items-center justify-center">
     <div class="relative w-full max-w-2xl h-auto mx-auto bg-gray-900 mt-20 rounded-lg shadow-xl overflow-hidden">
         <div class="p-6 max-h-[80vh] overflow-y-auto">
             <!-- Modal Header -->
