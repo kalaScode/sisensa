@@ -17,7 +17,7 @@ class Karyawan extends Model
         'name',
         'email',
         'no_Telp',
-        'alamat',
+        'Alamat',
         'status_Kerja',
         'id_Perusahaan',
         'id_Jabatan',
@@ -39,5 +39,10 @@ class Karyawan extends Model
     public function Otorisasi()
     {
         return $this->belongsTo(Otoritas::class, 'id_Otoritas', 'id_Otoritas');
+    }
+
+    public function saldoCuti()
+    {
+        return $this->hasOne(SaldoCuti::class, 'user_id');
     }
 }

@@ -73,14 +73,13 @@ Route::get('/persetujuan-akun', function () {
 
 Route::prefix('daftar-karyawan')->group(function () {
     Route::get('/', [KaryawanController::class, 'index'])->name('daftar-karyawan');
-    Route::put('/edit/{user_id}', [KaryawanController::class, 'update'])->name('edit-karyawan');
+    // Route::put('/edit/{user_id}', [KaryawanController::class, 'update'])->name('edit-karyawan');
     Route::delete('/{user_id}', [KaryawanController::class, 'destroy'])->name('delete-karyawan');
 })->middleware('auth');
-// Rute untuk menampilkan daftar karyawan
 
-// Rute untuk memperbarui data karyawan
-
-// Rute untuk menghapus karyawan
+Route::put('/karyawan/edit/{id}', [KaryawanController::class, 'update'])
+    ->middleware('auth')
+    ->name('update-karyawan');
 
 Route::get('persetujuan-akun/', [KaryawanController::class, 'persetujuan'])->name('persetujuan-akun');
 

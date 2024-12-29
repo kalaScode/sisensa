@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('saldo_cuti', function (Blueprint $table) {
             $table->id('id_Saldocuti'); // Primary key
-            $table->foreignId('user_id')->constrained('users','user_id')->onDelete('cascade');
-            $table->year('Tahun'); // Year(4)
+            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
+            $table->string('Tahun')->default(now()->year);
             $table->integer('saldo_Awal')->default(12);
             $table->integer('saldo_Terpakai')->default(0);
             $table->integer('saldo_Sisa')->default(12);
@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('created_By')->nullable();
             $table->dateTime('updated_At')->nullable()->useCurrentOnUpdate();
             $table->integer('updated_By')->nullable();
-
         });
     }
 

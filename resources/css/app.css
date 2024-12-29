@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 .parallax-bg {
     background: linear-gradient(45deg, #0d1437 0%, #1a237e 100%);
     position: relative;
