@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('Tahun')->default(now()->year);
             $table->integer('saldo_Awal')->default(12);
             $table->integer('saldo_Terpakai')->default(0);
-            $table->integer('saldo_Sisa')->default(12);
+            $table->integer('saldo_Sisa')->storedAs('saldo_Awal - saldo_Terpakai'); // Kolom dihitung otomatis
             $table->dateTime('created_At')->useCurrent();
             $table->integer('created_By')->nullable();
             $table->dateTime('updated_At')->nullable()->useCurrentOnUpdate();
             $table->integer('updated_By')->nullable();
-        });
+        });        
     }
 
     /**

@@ -13,14 +13,21 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id('user_id');
-            $table->foreignid('id_Perusahaan')->constrained('perusahaan','id_Perusahaan')->onDelete('cascade');
-            $table->foreignId('id_Otoritas')->constrained('otorisasi','id_Otoritas')->onDelete('cascade')->default(4);
-            $table->foreignId('id_Jabatan')->constrained('jabatan','id_Jabatan')->onDelete('cascade')->default(9);
+            $table->foreignid('id_Perusahaan')->constrained('perusahaan', 'id_Perusahaan')->onDelete('cascade');
+            $table->foreignId('id_Otoritas')
+                ->default(5) // Set default value to 5
+                ->constrained('otorisasi', 'id_Otoritas')
+                ->onDelete('cascade');
+                $table->foreignId('id_Jabatan')
+                ->nullable()
+                ->constrained('jabatan', 'id_Jabatan')
+                ->onDelete('cascade')
+                ->default(1); // Fallback default dari seeder            
             $table->string('name');
             $table->string('no_Telp', 255);
-            $table->text('Alamat')->default('Lengkapi alamat Anda!');
+            $table->text('Alamat')->nullable();
             $table->enum('status_Kerja', ['Tetap', 'Kontrak'])->default('Tetap');
-            $table->boolean('status_Akun')->default(0); 
+            $table->boolean('status_Akun')->default(0);
             $table->string('Avatar', 255)->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

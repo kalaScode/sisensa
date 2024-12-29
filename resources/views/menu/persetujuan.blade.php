@@ -45,7 +45,7 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white shadow rounded-lg overflow-x-auto overflow-x-auto ">
+    <div class="bg-white shadow rounded-lg overflow-x-auto ">
         <table class="min-w-full bg-white border boreder-black">
             <thead class="bg-[#122036] text-white">
                     <tr>
