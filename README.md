@@ -70,6 +70,10 @@ Jalankan migrasi untuk membuat tabel di database:
 
     php artisan migrate
 
+Jalankan seeder untuk membuat tabel di database:
+
+    php artisan db:seed
+
 ### Menjalankan Aplikasi
 
 Untuk menjalankan aplikasi, Anda dapat menggunakan perintah berikut untuk menjalankan server Laravel dan server frontend:
