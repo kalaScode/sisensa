@@ -82,7 +82,7 @@ class JabatanSeeder extends Seeder
             [
                 'id_Jabatan' => 9,
                 'nama_Jabatan' => 'none',
-                'created_At' => none(),
+                'created_At' => now(),
                 'created_By' => 1,
                 'updated_At' => null,
                 'updated_By' => null
