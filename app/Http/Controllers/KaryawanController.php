@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Karyawan;
+use App\Models\User;
 use App\Models\Perusahaan;
 use App\Models\Jabatan;
+use App\Models\SaldoCuti;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +20,11 @@ class KaryawanController extends Controller
         $query = Karyawan::query();
 
         // Filter berdasarkan status akun = 1
-        $query->where('status_Akun', 1);
+        $query->where('status_Akun', 1)
+            ->where(function ($query) {
+                $query->where('id_Otoritas', '!=', 1)
+                    ->where('id_Perusahaan', Auth::user()->id_Perusahaan);
+            });
 
         // Pencarian
         if ($request->filled('search')) { // Gunakan filled untuk mengecek apakah parameter 'search' ada dan tidak kosong
@@ -44,12 +50,13 @@ class KaryawanController extends Controller
         $karyawan = $query->paginate(10);
         // Ambil data perusahaan
         $perusahaan = Perusahaan::all();
-
+        $role = Auth::User()->id_Otoritas;
         // Kirimkan nilai pencarian dan data perusahaan ke view
         return view('page.pdaftar_karyawan', [
             'karyawan' => $karyawan,
             'search' => $request->search,
             'perusahaan' => $perusahaan, // Kirim data perusahaan
+            'role' => $role,
         ]);
     }
 
@@ -57,8 +64,12 @@ class KaryawanController extends Controller
     {
         $query = Karyawan::query();
 
-        // Filter berdasarkan status akun = 1
-        $query->where('status_Akun', 0);
+        // Filter berdasarkan status akun = 0
+        $query->where('status_Akun', 0)
+            ->where(function ($query) {
+                $query->where('id_Otoritas', '!=', 1)
+                    ->where('id_Perusahaan', Auth::user()->id_Perusahaan);
+            });
 
         // Pencarian
         if ($request->filled('search')) { // Gunakan filled untuk mengecek apakah parameter 'search' ada dan tidak kosong
@@ -133,51 +144,87 @@ class KaryawanController extends Controller
         return redirect()->back()->with('success', 'Foto berhasil diupload');
     }
 
-
-    public function showForm($user_id)
-    {
-        $perusahaan = Perusahaan::all(); // Ambil semua perusahaan
-        $karyawan = Karyawan::findOrFail($user_id); // Ambil data karyawan yang spesifik
-
-        return view('page.pdaftar_karyawan', [
-            'karyawan' => $karyawan,
-            'perusahaan' => $perusahaan,
-        ]);
-    }
-
-
-    // Form edit karyawan
-    public function edit($user_id)
-    {
-        // Ambil data karyawan
-        $karyawan = Karyawan::findOrFail($user_id);
-
-        // Ambil data perusahaan
-        $perusahaan = Perusahaan::all();
-
-        return view('page.pdaftar_karyawan', compact('karyawan', 'perusahaan'));
-    }
-
-
-    // Update data karyawan
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'nama' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'perusahaan' => 'required|exists:perusahaan,id_Perusahaan',
-            'statuskerja' => 'required|string',
-            'statusakun' => 'required|string',
-            'email' => 'required|email',
-            'telepon' => 'required|string',
-            'alamat' => 'nullable|string',
-            'saldo' => 'nullable|numeric|min:0',
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'status_Kerja' => 'required|string|in:Tetap,Kontrak',
+            'status_Akun' => 'required|boolean',
+            'no_Telp' => [
+                'required',
+                'regex:/^08\d{8,14}$/', // Validasi nomor telepon
+            ],
+            'alamat' => 'nullable|string|max:255',
+            'jabatan' => 'nullable|string|max:255', // Validasi untuk jabatan
+            'saldo' => 'nullable|integer|min:0', // Validasi saldo cuti
+        ], [
+            'no_Telp.regex' => 'Nomor telepon harus dimulai dengan 08 dan terdiri dari 10 hingga 15 angka.',
         ]);
 
-        $karyawan = Karyawan::findOrFail($id);
-        $karyawan->update($validatedData);
-        return response()->json(['success' => true]);
+        // Cari karyawan berdasarkan ID
+        $karyawan = Karyawan::find($request->user_id);  // Anda bisa menyesuaikan pencarian dengan kebutuhan
+
+        // Cek apakah karyawan ditemukan
+        if ($karyawan) {
+            // Jika ada input jabatan, cari atau buat jabatan baru
+            if ($request->filled('jabatan')) {
+                // Cari jabatan berdasarkan nama Jabatan
+                $jabatan = Jabatan::firstOrCreate(['nama_Jabatan' => $request->jabatan]);
+
+                // Update kolom id_Jabatan di tabel user (relasi dengan jabatan)
+                $karyawan->id_Jabatan = $jabatan->id_Jabatan;
+            }
+
+            // Update data karyawan lainnya
+            $karyawan->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'status_Kerja' => $request->status_Kerja,
+                'status_Akun' => $request->status_Akun,
+                'no_Telp' => $request->no_Telp,
+                'Alamat' => $request->alamat,
+            ]);
+
+            // Redirect atau memberikan respon setelah update
+            return redirect()->route('daftar-karyawan')->with('success', 'Data karyawan berhasil diperbarui.');
+        }
+
+        // Jika karyawan tidak ditemukan
+        return redirect()->route('daftar-karyawan')->with('error', 'Karyawan tidak ditemukan.');
     }
+
+
+    // Menangani update data karyawan
+    public function update2(Request $request)
+    {
+        Log::info('User ID:', ['user_id' => $request->user_id]);
+
+        $karyawan = User::find($request->user_id);
+
+        if (!$karyawan) {
+            Log::warning('User not found:', ['user_id' => $request->user_id]);
+            return redirect()->route('daftar-karyawan')->with('error', 'Data karyawan tidak ditemukan.');
+        }
+
+        // Update data
+        $karyawan->update([
+            'name' => $request->nama,
+            'perusahaan' => $request->perusahaan,
+            'jabatan' => $request->jabatan,
+            'status_Kerja' => $request->statuskerja,
+            'status_Akun' => $request->statusakun,
+            'email' => $request->email,
+            'no_Telp' => $request->telepon,
+            'alamat' => $request->alamat,
+            'saldo_Cuti' => $request->saldo,
+        ]);
+
+        return redirect()->route('daftar-karyawan')->with('success', 'Data karyawan berhasil diperbarui.');
+    }
+
+
 
     // Hapus karyawan
     public function destroy($user_id)

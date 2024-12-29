@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'Alamat' => 'Alamat ke-' . $i,
                 'status_Kerja' => rand(0, 1) ? 'Tetap' : 'Kontrak',
                 'status_Akun' => rand(0, 1),
-                'Avatar' => 'avatar' . $i . '.png', // Placeholder avatar
+                'Avatar' => null, // Placeholder avatar
                 'email' => 'user' . $i . '@example.com',
                 'email_verified_at' => now(),
                 'password' => Hash::make('password123'),

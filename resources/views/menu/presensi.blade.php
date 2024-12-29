@@ -45,106 +45,60 @@
                         </div>
                     </div>
                 </div>
-                <nav class="flex" aria-label="Breadcrumb">
-                    <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                        <li class="inline-flex items-center">
-                            <a href="/beranda"
-                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
-                                <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                                </svg>
-                                Beranda
-                            </a>
-                        </li>
-                        <li class="inline-flex items-center text-sm font-medium text-gray-700">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                            Presensi
-                        </li>
-                    </ol>
-                </nav>
-                <div class="w-full mx-auto px-4 sm:px-6 lg:px-36" style="margin-top: -32px;">
-                    <div class="w-full mx-auto px-4 sm:px-100 py-12 max-w-lg">
-                        <div class="bg-white rounded-lg border-2 border-gray-300 p-6 shadow-lg">
-                            <!-- Toggle Presensi -->
-                            <div class="mb-6">
-                                <label for="presenceType" class="block text-sm font-medium text-gray-700 mb-2">Jenis
-                                    Presensi</label>
-                                <div class="relative">
-                                    <select id="presenceType"
-                                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
-                                        <option value="office">Dalam Kantor</option>
-                                        <option value="outside">Luar Kantor</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Video Placeholder -->
-                            <div
-                                class="relative border-2 border-red-400 border-dashed rounded-lg h-80 flex items-center justify-center mb-4 overflow-hidden">
-                                <video id="video" autoplay muted playsinline
-                                    class="w-full h-full object-cover rounded-lg"></video>
-                                <canvas id="canvas"
-                                    class="absolute top-0 left-0 w-full h-full object-cover rounded-lg"></canvas>
-                                <p id="cameraMessage" class="absolute text-gray-500">Kamera belum aktif...</p>
-                            </div>
+                <!-- Video Placeholder -->
+                <div
+                    class="relative border-2 border-red-400 border-dashed rounded-lg h-80 flex items-center justify-center mb-4 overflow-hidden">
+                    <video id="video" autoplay muted playsinline
+                        class="w-full h-full object-cover rounded-lg"></video>
+                    <canvas id="canvas" class="absolute top-0 left-0 w-full h-full object-cover rounded-lg"></canvas>
+                    <p id="cameraMessage" class="absolute text-gray-500">Kamera belum aktif...</p>
+                </div>
 
-                            <!-- Lokasi -->
-                            <div id="locationContainer" class="flex items-center justify-between mb-4">
-                                <div class="flex items-center text-sm text-gray-500">
-                                    <svg class="w-5 h-5 mr-1 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4 4-4 1.79-4 4 1.79 4 4 4zm0 4c-5.25 0-8 2.48-8 4v1h16v-1c0-1.52-2.75-4-8-4z" />
-                                    </svg>
-                                    <span>Lokasi Anda</span>
-                                </div>
-                                <div id="distanceContainer" class="text-sm text-gray-500 hidden">
-                                    <span id="distanceText">Mengukur jarak...</span>
-                                </div>
-                            </div>
-                            <div id="addressText" class="text-sm text-gray-500 mb-4">
-                                Mengambil lokasi Anda...
-                            </div>
-
-                            <!-- Peringatan -->
-                            <div class="bg-red-50 text-red-500 text-sm px-4 py-2 rounded-lg mb-4">
-                                <ul id="warningList" class="list-disc pl-4">
-                                    <li>Wajah harus terdeteksi</li>
-                                </ul>
-                            </div>
-
-                            <!-- Tombol -->
-                            <div class="flex justify-between">
-                                <button id="cancelButton"
-                                    class="bg-gray-200 text-gray-700 px-8 py-2 rounded-md hover:bg-gray-300 focus:outline-none">
-                                    Batal
-                                </button>
-                                <button id="toggleCamera"
-                                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
-                                    Aktifkan Kamera
-                                </button>
-                                <button id="finishButton"
-                                    class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
-                                    disabled>
-                                    Selesai
-                                </button>
-                            </div>
-                        </div>
+                <!-- Lokasi -->
+                <div id="locationContainer" class="flex items-center justify-between mb-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <svg class="w-5 h-5 mr-1 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4 4-4 1.79-4 4 1.79 4 4 4zm0 4c-5.25 0-8 2.48-8 4v1h16v-1c0-1.52-2.75-4-8-4z" />
+                        </svg>
+                        <span>Lokasi Anda</span>
+                    </div>
+                    <div id="distanceContainer" class="text-sm text-gray-500 hidden">
+                        <span id="distanceText">Mengukur jarak...</span>
                     </div>
                 </div>
+                <div id="addressText" class="text-sm text-gray-500 mb-4">
+                    Mengambil lokasi Anda...
+                </div>
+
+                <!-- Peringatan -->
+                <div class="bg-red-50 text-red-500 text-sm px-4 py-2 rounded-lg mb-4">
+                    <ul id="warningList" class="list-disc pl-4">
+                        <li>Wajah harus terdeteksi</li>
+                    </ul>
+                </div>
+
+                <!-- Tombol -->
+                <div class="flex justify-between">
+                    <button id="cancelButton"
+                        class="bg-gray-200 text-gray-700 px-8 py-2 rounded-md hover:bg-gray-300 focus:outline-none">
+                        Batal
+                    </button>
+                    <button id="toggleCamera"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
+                        Aktifkan Kamera
+                    </button>
+                    <button id="finishButton"
+                        class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
+                        disabled>
+                        Selesai
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <x-footer></x-footer>
 
@@ -328,4 +282,3 @@
         checkLocation();
     };
 </script>
->>>>>>>>> Temporary merge branch 2
