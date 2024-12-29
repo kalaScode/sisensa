@@ -78,6 +78,14 @@ class JabatanSeeder extends Seeder
                 'created_By' => 1,
                 'updated_At' => null,
                 'updated_By' => null
+            ],
+            [
+                'id_Jabatan' => 9,
+                'nama_Jabatan' => 'none',
+                'created_At' => none(),
+                'created_By' => 1,
+                'updated_At' => null,
+                'updated_By' => null
             ]
         ]);
     }
