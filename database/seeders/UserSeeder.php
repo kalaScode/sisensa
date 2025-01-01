@@ -8,8 +8,125 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+    /* public function run()
     {
+        $users = [
+            [
+                'user_id' => 1,
+                'id_Perusahaan' => 1,
+                'id_Otoritas' => 1,
+                'id_Jabatan' => 5,
+                'name' => 'Master Administrator',
+                'no_Telp' => '0812345678',
+                'Alamat' => 'Puri Imperium',
+                'status_Kerja' => 'Tetap',
+                'status_Akun' => 1,
+                'Avatar' => null,
+                'email' => 'admin@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('samakreasigroup123'),
+                'updated_By' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 2,
+                'id_Perusahaan' => 1,
+                'id_Otoritas' => 2,
+                'id_Jabatan' => 6,
+                'name' => 'Rizky Alif Ichwanto',
+                'no_Telp' => '081290040338',
+                'Alamat' => 'Bekasi Barat',
+                'status_Kerja' => 'Tetap',
+                'status_Akun' => 1,
+                'Avatar' => null,
+                'email' => 'rizky@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('alifrizky30'),
+                'updated_By' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 3,
+                'id_Perusahaan' => 1,
+                'id_Otoritas' => 3,
+                'id_Jabatan' => 10,
+                'name' => 'Wahyu Satrio Widodo',
+                'no_Telp' => '087834568764',
+                'Alamat' => 'Jakarta Timur',
+                'status_Kerja' => 'Tetap',
+                'status_Akun' => 1,
+                'Avatar' => null,
+                'email' => 'wahyusw@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('wahyusw813'),
+                'updated_By' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 4,
+                'id_Perusahaan' => 1,
+                'id_Otoritas' => 4,
+                'id_Jabatan' => 14,
+                'name' => 'Wilfa Afriani',
+                'no_Telp' => '081315426745',
+                'Alamat' => 'Dumai',
+                'status_Kerja' => 'Tetap',
+                'status_Akun' => 1,
+                'Avatar' => null,
+                'email' => 'wilfaaf@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('wilfaaf123'),
+                'updated_By' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'id_Perusahaan' => 1,
+                'id_Otoritas' => 5,
+                'id_Jabatan' => 19,
+                'name' => 'Wafi Aulia Tsabitah',
+                'no_Telp' => '082199864587',
+                'Alamat' => 'Bengkulu',
+                'status_Kerja' => 'Tetap',
+                'status_Akun' => 1,
+                'Avatar' => null,
+                'email' => 'wafilaulia@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('waficantik00'),
+                'updated_By' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 6,
+                'id_Perusahaan' => 1,
+                'id_Otoritas' => 5,
+                'id_Jabatan' => 22,
+                'name' => 'Amanda Amelia Salsabila Sinaga',
+                'no_Telp' => '0821921567299',
+                'Alamat' => 'Bekasi Timur',
+                'status_Kerja' => 'Kontrak',
+                'status_Akun' => 0,
+                'Avatar' => null,
+                'email' => 'amandasinaga@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('manda123'),
+                'updated_By' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ];
+
+        // Insert data ke tabel users
+        DB::table('users')->insert($users);
+    }*/
+
+    #Alternatif Seeder otomatis
+    public function run(){
         $users = [];
         for ($i = 1; $i <= 20; $i++) {
             $id_Perusahaan = rand(1, 4); // Assumes 4 perusahaan
