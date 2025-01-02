@@ -1,3 +1,4 @@
+<!-- presensi.blade.php -->
 <x-navbar></x-navbar>
 <main class="w-full mx-auto mb-6 px-4 sm:px-6 lg:px-36 py-10" style="margin-top: -10px;">
     <nav class="flex" aria-label="Breadcrumb">
@@ -34,7 +35,7 @@
                         <select id="presenceType"
                             class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
                             <option value="office">Dalam Kantor</option>
-                            <option value="outside">Luar Kantor</option>
+                            <option value="outside">Dinas</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -102,6 +103,9 @@
 </main>
 <x-footer></x-footer>
 
+<!-- Add CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <script src="{{ asset('js/face-api.min.js') }}"></script>
 <script>
     window.onload = async function() {
@@ -119,11 +123,15 @@
         let video = document.getElementById("video");
         let canvas = document.getElementById("canvas");
         let cameraMessage = document.getElementById("cameraMessage");
-        let presenceType = "office"; // Default: Dalam Kantor
+        let presenceType = "office";
         let isCameraOn = false;
         let detectionInterval;
         let isFaceDetected = false;
         let isWithinRange = false;
+        let currentLat = null;
+        let currentLon = null;
+        let currentAddress = null;
+        let photoDataUrl = null;  // Menyimpan data URL foto
 
         const targetLat = -6.2311505;
         const targetLon = 106.8669003;
@@ -133,9 +141,12 @@
                 navigator.geolocation.getCurrentPosition(async (position) => {
                     const userLat = position.coords.latitude;
                     const userLon = position.coords.longitude;
+                    
+                    currentLat = userLat;
+                    currentLon = userLon;
 
-                    // Mendapatkan alamat menggunakan OpenStreetMap (Nominatim)
                     const address = await getAddress(userLat, userLon);
+                    currentAddress = address;
                     document.getElementById("addressText").innerText = `${address}`;
 
                     const distanceContainer = document.getElementById("distanceContainer");
@@ -148,19 +159,18 @@
                         isWithinRange = distance <= 100;
                         distanceContainer.classList.remove("hidden");
                     } else {
-                        isWithinRange = true; // Abaikan jarak untuk presensi luar kantor
+                        isWithinRange = true;
                         distanceContainer.classList.add("hidden");
                     }
                     updateUI();
                 }, (error) => {
-                    // Penanganan error jika pengguna menolak akses lokasi atau terjadi kesalahan lain
                     console.error('Gagal mendapatkan lokasi:', error);
                     document.getElementById("addressText").innerText =
                         "Gagal mendapatkan lokasi Anda.";
                 }, {
-                    enableHighAccuracy: true, // Mengaktifkan akurasi lebih tinggi
-                    timeout: 10000, // Waktu tunggu maksimal 10 detik
-                    maximumAge: 0 // Tidak menggunakan data lokasi sebelumnya
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
                 });
             } else {
                 document.getElementById("addressText").innerText =
@@ -170,12 +180,10 @@
 
         async function getAddress(lat, lon) {
             try {
-                // Membuat permintaan ke API OpenStreetMap (Nominatim)
                 const response = await fetch(
                     `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
                 const data = await response.json();
 
-                // Memastikan API memberikan alamat yang valid
                 if (data && data.display_name) {
                     return data.display_name;
                 } else {
@@ -188,31 +196,60 @@
         }
 
         function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius bumi dalam kilometer
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distance = R * c * 1000; // Menghitung jarak dalam meter
+            const distance = R * c * 1000;
             return distance;
         }
 
+        async function savePresensi() {
+            try {
+                const response = await fetch('/presensi/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        jenis_Presensi: document.getElementById("presenceType").value === 'office' ? 'Biasa' : 'Dinas',
+                        Tanggal: new Date().toISOString().split('T')[0],
+                        Waktu: new Date().toISOString(),
+                        Latitude: currentLat,
+                        Longitude: currentLon,
+                        Alamat: currentAddress,
+                        Foto: photoDataUrl  // Mengirim foto sebagai base64
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Presensi berhasil disimpan');
+                    window.location.href = "{{ route('beranda') }}";
+                } else {
+                    alert(result.message || 'Gagal menyimpan presensi');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan presensi');
+            }
+        }
 
         function updateUI() {
             const finishButton = document.getElementById("finishButton");
             const messages = [];
 
-            // Syarat presensi
             if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
             if (presenceType === "office" && !isWithinRange) messages.push(
                 "Jarak harus dalam radius 100 meter");
 
-            // Aktifkan tombol hanya jika syarat terpenuhi
             finishButton.disabled = !(isFaceDetected && (presenceType === "outside" || isWithinRange));
 
-            // Update daftar peringatan
             const warningList = document.getElementById("warningList");
             warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
         }
@@ -252,6 +289,18 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             faceapi.draw.drawDetections(canvas, resizedDetections);
         }
+        async function capturePhoto() {
+            const dataUrl = canvas.toDataURL("image/png");  // Mengambil gambar dalam format base64
+            photoDataUrl = dataUrl;  // Simpan data foto
+        }
+
+        document.getElementById("finishButton").addEventListener("click", () => {
+            if (!finishButton.disabled) {
+                capturePhoto();
+                savePresensi();
+                window.location.href = "{{ route('beranda') }}";
+            }
+        });
 
         document.getElementById("toggleCamera").addEventListener("click", () => {
             if (!isCameraOn) {
@@ -261,13 +310,6 @@
                 location.reload();
             }
         });
-
-        document.getElementById("finishButton").addEventListener("click", () => {
-            if (!finishButton.disabled) {
-                window.location.href = "{{ route('beranda') }}";
-            }
-        });
-
         document.getElementById("cancelButton").addEventListener("click", () => {
             window.location.href = "{{ route('beranda') }}";
         });
@@ -278,7 +320,6 @@
             updateUI();
         });
 
-        // Jalankan georeference saat halaman dimuat
         checkLocation();
     };
 </script>

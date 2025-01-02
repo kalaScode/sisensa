@@ -6,6 +6,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Beranda;
 use App\Http\Middleware\CheckRole;
 use PHPUnit\Framework\Attributes\Group;
+use App\Http\Controllers\PresensiController;
 
 // Route ke halaman login
 Route::get('/', [Beranda::class, 'index'])
@@ -16,6 +17,9 @@ Route::get('/', [Beranda::class, 'index'])
 Route::get('/presensi', function () {
     return view('page.ppresensi');
 });
+
+Route::post('/presensi/store', [PresensiController::class, 'store'])->name('presensi.store');
+
 
 // Route ke halaman cuti
 Route::get('/cuti', function () {
