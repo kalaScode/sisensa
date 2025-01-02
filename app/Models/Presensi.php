@@ -18,6 +18,7 @@ class Presensi extends Model
         'Longitude',
         'Alamat',
         'Bagian',
+        'Keterangan',
         'Foto', // Tambahkan kolom Foto
         'created_by',
         'updated_by'
