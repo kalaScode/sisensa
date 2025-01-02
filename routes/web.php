@@ -17,7 +17,7 @@ Route::get('/', [Beranda::class, 'index'])
 Route::get('/presensi', function () {
     return view('page.ppresensi');
 });
-
+Route::get('/presensi/check', [PresensiController::class, 'check']);
 Route::post('/presensi/store', [PresensiController::class, 'store'])->name('presensi.store');
 
 
