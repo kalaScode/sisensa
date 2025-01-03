@@ -1,4 +1,36 @@
 <x-navbar></x-navbar>
+<<<<<<< Updated upstream
+=======
+<div id="successAlert" class="hidden fixed inset-0 items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+        <div class="flex items-center mb-4">
+            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <h2 class="text-xl font-bold text-gray-800">Presensi Berhasil</h2>
+        </div>
+        <p class="text-gray-600 text-sm mb-4">Presensi Anda telah berhasil disimpan.</p>
+        <div class="flex justify-end">
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+                onclick="window.location.href = '{{ route('beranda') }}';">
+                Kembali ke Beranda
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-4">
+    <div class="flex items-center">
+        <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+            <h3 class="font-medium text-gray-900">Gagal Menyimpan Presensi</h3>
+            <p id="errorMessage" class="text-sm text-gray-600 mt-1"></p>
+        </div>
+    </div>
+</div>
+>>>>>>> Stashed changes
 <main class="w-full mx-auto mb-6 px-4 sm:px-6 lg:px-36 py-10" style="margin-top: -10px;">
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -24,6 +56,20 @@
         </ol>
     </nav>
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-36" style="margin-top: -32px;">
+<<<<<<< Updated upstream
+=======
+        
+        <div id="alertContainer" class="hidden fixed inset-0 items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4" id="alertTitle">Presensi Tidak Diperlukan</h2>
+                <p class="text-gray-600 text-sm mb-4" id="alertMessage">Anda sudah melakukan presensi akhir hari ini.</p>
+                <div class="flex justify-end">
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+                        onclick="window.location.href = '{{ route('beranda') }}';">Kembali ke Beranda</button>
+                </div>
+            </div>
+        </div>
+>>>>>>> Stashed changes
         <div class="w-full mx-auto px-4 sm:px-100 py-12 max-w-lg">
             <div class="bg-white rounded-lg border-2 border-gray-300 p-6 shadow-lg">
                 <!-- Toggle Presensi -->
@@ -93,7 +139,7 @@
                     <button id="finishButton"
                         class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
                         disabled>
-                        Selesai
+                        Presensi
                     </button>
                 </div>
             </div>
