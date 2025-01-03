@@ -140,7 +140,7 @@
                     <button id="finishButton"
                         class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
                         disabled>
-                        Selesai
+                        Presensi
                     </button>
                 </div>
             </div>
