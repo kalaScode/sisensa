@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /* public function run()
+    public function run()
     {
         $users = [
             [
@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
                 'id_Perusahaan' => 1,
                 'id_Otoritas' => 4,
                 'id_Jabatan' => 14,
-                'name' => 'Wilfa Afriani',
+                'name' => 'Wilfa Afriyani',
                 'no_Telp' => '081315426745',
                 'Alamat' => 'Dumai',
                 'status_Kerja' => 'Tetap',
@@ -123,10 +123,10 @@ class UserSeeder extends Seeder
 
         // Insert data ke tabel users
         DB::table('users')->insert($users);
-    }*/
+    }
 
     #Alternatif Seeder otomatis
-    public function run(){
+    /* public function run(){
         $users = [];
         for ($i = 1; $i <= 20; $i++) {
             $id_Perusahaan = rand(1, 4); // Assumes 4 perusahaan
@@ -154,7 +154,7 @@ class UserSeeder extends Seeder
 
         // Insert data ke tabel users
         DB::table('users')->insert($users);
-    }
+    }*/
 
     private function getDefaultJabatan($id_Perusahaan)
     {
