@@ -66,7 +66,7 @@
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Status
                                 </th>
-                                @if ($role == 3)
+                                @if ($role == 4)
                                     <!-- Perbaiki penggunaan operator pembanding -->
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Aksi
                                     </th>
