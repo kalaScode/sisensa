@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Karyawan extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'users';
 
@@ -44,5 +45,10 @@ class Karyawan extends Model
     public function saldoCuti()
     {
         return $this->hasOne(SaldoCuti::class, 'user_id');
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
     }
 }

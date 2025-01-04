@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('*', function ($view) {
+            if (Auth::check()) {
+                // Mengambil 5 notifikasi terbaru untuk user yang sedang login
+                $notifications = Auth::user()->notifications()->latest()->take(5)->get();
+                $view->with('notifications', $notifications);
+            }
+        });
     }
 }

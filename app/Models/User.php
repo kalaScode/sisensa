@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Notification;
+use App\Notifications\PengumumanGeneral;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -51,6 +53,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'id_Jabatan', 'id_Jabatan');
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
     }
 
     /**

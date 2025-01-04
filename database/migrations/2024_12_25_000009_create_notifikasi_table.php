@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notifikasi', function (Blueprint $table) {
             $table->increments('id_Notifikasi');
-            $table->foreignId('user_id')->constrained('users','user_id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
             $table->enum('jenis_Notifikasi', ['Persetujuan', 'Umum']);
             $table->string('judul_Notifikasi');
             $table->text('isi_Notifikasi');
