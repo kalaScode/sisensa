@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('jabatan', function (Blueprint $table) {
             $table->id('id_Jabatan');
+            $table->foreignid('id_Perusahaan')->constrained('perusahaan','id_Perusahaan')->onDelete('cascade');
             $table->string('nama_Jabatan');
             $table->dateTime('created_At')->useCurrent();
             $table->integer('created_By')->nullable();

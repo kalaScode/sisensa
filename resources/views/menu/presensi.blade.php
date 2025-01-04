@@ -1,4 +1,34 @@
+<!-- presensi.blade.php -->
 <x-navbar></x-navbar>
+<div id="successAlert" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+        <div class="flex items-center mb-4">
+            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <h2 class="text-xl font-bold text-gray-800">Presensi Berhasil</h2>
+        </div>
+        <p class="text-gray-600 text-sm mb-4">Presensi Anda telah berhasil disimpan.</p>
+        <div class="flex justify-end">
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+                onclick="window.location.href = '{{ route('beranda') }}';">
+                Kembali ke Beranda
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-4">
+    <div class="flex items-center">
+        <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+            <h3 class="font-medium text-gray-900">Gagal Menyimpan Presensi</h3>
+            <p id="errorMessage" class="text-sm text-gray-600 mt-1"></p>
+        </div>
+    </div>
+</div>
 <main class="w-full mx-auto mb-6 px-4 sm:px-6 lg:px-36 py-10" style="margin-top: -10px;">
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -24,6 +54,17 @@
         </ol>
     </nav>
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-36" style="margin-top: -32px;">
+        
+        <div id="alertContainer" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4" id="alertTitle">Presensi Tidak Diperlukan</h2>
+                <p class="text-gray-600 text-sm mb-4" id="alertMessage">Anda sudah melakukan presensi akhir hari ini.</p>
+                <div class="flex justify-end">
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+                        onclick="window.location.href = '{{ route('beranda') }}';">Kembali ke Beranda</button>
+                </div>
+            </div>
+        </div>
         <div class="w-full mx-auto px-4 sm:px-100 py-12 max-w-lg">
             <div class="bg-white rounded-lg border-2 border-gray-300 p-6 shadow-lg">
                 <!-- Toggle Presensi -->
@@ -34,7 +75,7 @@
                         <select id="presenceType"
                             class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
                             <option value="office">Dalam Kantor</option>
-                            <option value="outside">Luar Kantor</option>
+                            <option value="outside">Dinas</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -80,6 +121,12 @@
                     </ul>
                 </div>
 
+                <!-- Keterangan -->
+                <div class="mb-6">
+                    <label for="keterangan" class="block text-sm font-medium text-gray-700 mb-2">Keterangan (Opsional)</label>
+                    <textarea id="keterangan" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Masukkan keterangan jika ada..."></textarea>
+                </div>
+
                 <!-- Tombol -->
                 <div class="flex justify-between">
                     <button id="cancelButton"
@@ -93,7 +140,7 @@
                     <button id="finishButton"
                         class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
                         disabled>
-                        Selesai
+                        Presensi
                     </button>
                 </div>
             </div>
@@ -102,9 +149,50 @@
 </main>
 <x-footer></x-footer>
 
+<!-- Add CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <script src="{{ asset('js/face-api.min.js') }}"></script>
 <script>
+    function showAlert(title, message) {
+        const alertContainer = document.getElementById("alertContainer");
+        const alertTitle = document.getElementById("alertTitle");
+        const alertMessage = document.getElementById("alertMessage");
+
+        alertTitle.textContent = title;
+        alertMessage.textContent = message;
+
+        alertContainer.classList.remove("hidden");
+    }
+    function showSuccessAlert() {
+    const successAlert = document.getElementById("successAlert");
+    successAlert.classList.remove("hidden");
+}
+
+function showErrorAlert(message) {
+    const errorAlert = document.getElementById("errorAlert");
+    const errorMessage = document.getElementById("errorMessage");
+    errorMessage.textContent = message;
+    errorAlert.classList.remove("hidden");
+    
+    // Auto-hide error alert after 5 seconds
+    setTimeout(() => {
+        errorAlert.classList.add("hidden");
+    }, 5000);
+}
+
     window.onload = async function() {
+        const response = await fetch('/presensi/check');
+        const result = await response.json();
+
+        if (result.alreadyFinalized) {
+            showAlert(
+                "Presensi Tidak Diperlukan",
+                "Anda sudah melakukan presensi akhir hari ini. Klik tombol di bawah untuk kembali ke Beranda."
+            );
+            return; // Jangan lakukan inisialisasi lebih lanjut
+        }
+
         if (typeof faceapi === "undefined") {
             console.error('FaceAPI.js gagal dimuat!');
             return;
@@ -113,17 +201,20 @@
         await Promise.all([
             faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-            faceapi.nets.faceExpressionNet.loadFromUri('/models')
         ]);
 
         let video = document.getElementById("video");
         let canvas = document.getElementById("canvas");
         let cameraMessage = document.getElementById("cameraMessage");
-        let presenceType = "office"; // Default: Dalam Kantor
+        let presenceType = "office";
         let isCameraOn = false;
         let detectionInterval;
         let isFaceDetected = false;
         let isWithinRange = false;
+        let currentLat = null;
+        let currentLon = null;
+        let currentAddress = null;
+        let photoDataUrl = null;  // Menyimpan data URL foto
 
         const targetLat = -6.2311505;
         const targetLon = 106.8669003;
@@ -133,9 +224,12 @@
                 navigator.geolocation.getCurrentPosition(async (position) => {
                     const userLat = position.coords.latitude;
                     const userLon = position.coords.longitude;
+                    
+                    currentLat = userLat;
+                    currentLon = userLon;
 
-                    // Mendapatkan alamat menggunakan OpenStreetMap (Nominatim)
                     const address = await getAddress(userLat, userLon);
+                    currentAddress = address;
                     document.getElementById("addressText").innerText = `${address}`;
 
                     const distanceContainer = document.getElementById("distanceContainer");
@@ -148,19 +242,18 @@
                         isWithinRange = distance <= 100;
                         distanceContainer.classList.remove("hidden");
                     } else {
-                        isWithinRange = true; // Abaikan jarak untuk presensi luar kantor
+                        isWithinRange = true;
                         distanceContainer.classList.add("hidden");
                     }
                     updateUI();
                 }, (error) => {
-                    // Penanganan error jika pengguna menolak akses lokasi atau terjadi kesalahan lain
                     console.error('Gagal mendapatkan lokasi:', error);
                     document.getElementById("addressText").innerText =
                         "Gagal mendapatkan lokasi Anda.";
                 }, {
-                    enableHighAccuracy: true, // Mengaktifkan akurasi lebih tinggi
-                    timeout: 10000, // Waktu tunggu maksimal 10 detik
-                    maximumAge: 0 // Tidak menggunakan data lokasi sebelumnya
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
                 });
             } else {
                 document.getElementById("addressText").innerText =
@@ -170,12 +263,10 @@
 
         async function getAddress(lat, lon) {
             try {
-                // Membuat permintaan ke API OpenStreetMap (Nominatim)
                 const response = await fetch(
                     `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
                 const data = await response.json();
 
-                // Memastikan API memberikan alamat yang valid
                 if (data && data.display_name) {
                     return data.display_name;
                 } else {
@@ -188,31 +279,60 @@
         }
 
         function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius bumi dalam kilometer
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distance = R * c * 1000; // Menghitung jarak dalam meter
+            const distance = R * c * 1000;
             return distance;
         }
 
+        async function savePresensi() {
+    try {
+        const response = await fetch('/presensi/store', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                jenis_Presensi: document.getElementById("presenceType").value === 'office' ? 'Biasa' : 'Dinas',
+                Tanggal: new Date().toISOString().split('T')[0],
+                Waktu: new Date().toISOString(),
+                Latitude: currentLat,
+                Longitude: currentLon,
+                Alamat: currentAddress,
+                Foto: photoDataUrl,
+                Keterangan: document.getElementById("keterangan").value
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showSuccessAlert();
+        } else {
+            showErrorAlert(result.message || 'Gagal menyimpan presensi');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showErrorAlert('Terjadi kesalahan saat menyimpan presensi');
+    }
+}
 
         function updateUI() {
             const finishButton = document.getElementById("finishButton");
             const messages = [];
 
-            // Syarat presensi
             if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
             if (presenceType === "office" && !isWithinRange) messages.push(
                 "Jarak harus dalam radius 100 meter");
 
-            // Aktifkan tombol hanya jika syarat terpenuhi
             finishButton.disabled = !(isFaceDetected && (presenceType === "outside" || isWithinRange));
 
-            // Update daftar peringatan
             const warningList = document.getElementById("warningList");
             warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
         }
@@ -252,6 +372,38 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             faceapi.draw.drawDetections(canvas, resizedDetections);
         }
+        async function capturePhoto() {
+            // Buat elemen canvas sementara
+            const tempCanvas = document.createElement("canvas");
+            const video = document.getElementById("video");
+            const faceCanvas = document.getElementById("canvas");
+
+            // Sesuaikan ukuran canvas sementara dengan ukuran video
+            tempCanvas.width = video.videoWidth;
+            tempCanvas.height = video.videoHeight;
+
+            // Gambar video ke canvas sementara
+            const ctx = tempCanvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+
+            // Gabungkan gambar dari canvas deteksi wajah (jika ada)
+            if (faceCanvas) {
+                ctx.drawImage(faceCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+            }
+
+            // Konversi canvas menjadi base64 (image/png)
+            const dataUrl = tempCanvas.toDataURL("image/png");
+            photoDataUrl = dataUrl; // Simpan data foto untuk dikirimkan
+        }
+
+
+        document.getElementById("finishButton").addEventListener("click", () => {
+            if (!finishButton.disabled) {
+                capturePhoto();
+                savePresensi();
+                //window.location.href = "{{ route('beranda') }}";
+            }
+        });
 
         document.getElementById("toggleCamera").addEventListener("click", () => {
             if (!isCameraOn) {
@@ -261,13 +413,6 @@
                 location.reload();
             }
         });
-
-        document.getElementById("finishButton").addEventListener("click", () => {
-            if (!finishButton.disabled) {
-                window.location.href = "{{ route('beranda') }}";
-            }
-        });
-
         document.getElementById("cancelButton").addEventListener("click", () => {
             window.location.href = "{{ route('beranda') }}";
         });
@@ -278,7 +423,6 @@
             updateUI();
         });
 
-        // Jalankan georeference saat halaman dimuat
         checkLocation();
     };
 </script>

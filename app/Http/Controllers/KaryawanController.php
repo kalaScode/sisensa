@@ -108,30 +108,28 @@ class KaryawanController extends Controller
 
     public function getProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)
-            ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
-            ->first()
-            ->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan) // Filter berdasarkan perusahaan saat ini
+            ->value('name'); // Hanya ambil kolom 'name'
 
         return view('page.pprofil', compact('pemberiPersetujuan'));
     }
 
     public function getEditProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)
-            ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
-            ->first()
-            ->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan) // Filter berdasarkan perusahaan saat ini
+            ->value('name'); // Hanya ambil kolom 'name'
 
         return view('page.pedit-profil', compact('pemberiPersetujuan'));
     }
 
-    // public function updateFotoProfil(Request $request)
-    // {
-    //     // Validasi file yang diupload
-    //     $request->validate([
-    //         'Avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //     ]);
+    public function uploadFoto(Request $request)
+    {
+        // Validasi file yang diupload
+        $request->validate([
+            'Avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
     //     // Ambil file yang diupload
     //     $file = $request->file('Avatar');
@@ -307,16 +305,4 @@ class KaryawanController extends Controller
 
         return redirect()->back()->with('success', 'Alamat berhasil diperbarui!');
     }
-
-    // public function showNotifications()
-    // {
-    //     $notifications = Auth::user()->notifications; // Mengambil semua notifikasi yang terkait dengan user
-    //     return view('page.pnotifikasi', compact('notifications')); // Kirim ke view notifikasi.blade.php
-    // }
-
-    // public function markAllRead()
-    // {
-    //     Auth::user()->unreadNotifications->markAsRead(); // Tandai semua notifikasi sebagai sudah dibaca
-    //     return redirect()->back()->with('success', 'Semua notifikasi telah dibaca.');
-    // }
 }

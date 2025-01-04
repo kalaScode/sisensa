@@ -129,7 +129,7 @@
                 <p class="text-sm text-gray-500">Lihat daftar karyawan</p>
             </a>
             <!-- Card 5 -->
-            @if ($role == '2')
+            @if ($role == '3')
                 <a href="/persetujuan"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
@@ -146,7 +146,7 @@
                 </a>
             @endif
             <!-- Card 6 -->
-            @if (in_array($role, ['2', '3']))
+            @if (in_array($role, ['3', '4']))
                 <a href="/riwayat_karyawan"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">

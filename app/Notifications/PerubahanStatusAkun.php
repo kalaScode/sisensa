@@ -29,7 +29,6 @@ class PerubahanStatusAkun extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'type' => 'non general',
             'message' => "Status akun Anda telah diubah menjadi {$this->status}.",
             'description' => "Harap lengkapi data diri anda pada menu profil",
         ];

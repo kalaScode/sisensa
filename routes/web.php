@@ -7,6 +7,16 @@ use App\Http\Controllers\Beranda;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Middleware\CheckRole;
 use PHPUnit\Framework\Attributes\Group;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
+
 
 // Route ke halaman login
 Route::get('/', [Beranda::class, 'index'])
@@ -17,6 +27,9 @@ Route::get('/', [Beranda::class, 'index'])
 Route::get('/presensi', function () {
     return view('page.ppresensi');
 });
+Route::get('/presensi/check', [PresensiController::class, 'check']);
+Route::post('/presensi/store', [PresensiController::class, 'store'])->name('presensi.store');
+
 
 // Route ke halaman cuti
 Route::get('/cuti', function () {

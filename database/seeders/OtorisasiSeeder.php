@@ -35,6 +35,24 @@ class OtorisasiSeeder extends Seeder
             ],
             [
                 'id_Otoritas' => 2,
+                'nama_Otoritas' => 'Admin',
+                'Presensi' => 'Ya',
+                'Cuti' => 'Ya',
+                'daftar_Karyawan' => 'Ya',
+                'edit_daftarKaryawan' => 'Ya',
+                'Persetujuan' => 'Ya',
+                'persetujuan_Akun' => 'Ya',
+                'riwayat_presensiPribadi' => 'Ya',
+                'riwayat_presensiKaryawan' => 'Ya',
+                'riwayat_cutiPribadi' => 'Ya',
+                'riwayat_cutiKaryawan' => 'Ya',
+                'created_At' => '2024-12-25 22:07:58',
+                'created_By' => 1,
+                'updated_At' => null,
+                'updated_By' => null
+            ],
+            [
+                'id_Otoritas' => 3,
                 'nama_Otoritas' => 'Direktur',
                 'Presensi' => 'Ya',
                 'Cuti' => 'Ya',
@@ -52,7 +70,7 @@ class OtorisasiSeeder extends Seeder
                 'updated_By' => null
             ],
             [
-                'id_Otoritas' => 3,
+                'id_Otoritas' => 4,
                 'nama_Otoritas' => 'HRD',
                 'Presensi' => 'Ya',
                 'Cuti' => 'Ya',
@@ -70,7 +88,7 @@ class OtorisasiSeeder extends Seeder
                 'updated_By' => null
             ],
             [
-                'id_Otoritas' => 4,
+                'id_Otoritas' => 5,
                 'nama_Otoritas' => 'Karyawan',
                 'Presensi' => 'Ya',
                 'Cuti' => 'Ya',
