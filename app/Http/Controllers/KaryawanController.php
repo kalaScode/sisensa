@@ -106,17 +106,22 @@ class KaryawanController extends Controller
 
     public function getProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)->first()->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan) // Filter berdasarkan perusahaan saat ini
+            ->value('name'); // Hanya ambil kolom 'name'
 
         return view('page.pprofil', compact('pemberiPersetujuan'));
     }
 
     public function getEditProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)->first()->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan) // Filter berdasarkan perusahaan saat ini
+            ->value('name'); // Hanya ambil kolom 'name'
 
         return view('page.pedit-profil', compact('pemberiPersetujuan'));
     }
+
 
     public function uploadFoto(Request $request)
     {
