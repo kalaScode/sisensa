@@ -32,7 +32,7 @@
                     Daftar
                 </button>
             </div>
-            @if (in_array($role, ['2', '3']))
+            @if (in_array($role, ['3', '4']))
                 <div class="flex  items-center">
                     <a href="/buat-pengumuman">
                         <button
