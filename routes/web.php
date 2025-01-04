@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Beranda;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Middleware\CheckRole;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -55,6 +56,10 @@ Route::get('/beranda', [Beranda::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('beranda');
 
+Route::get('/notify', [Beranda::class, 'notify'])
+    ->middleware(['auth', 'verified'])
+    ->name('notify');
+
 Route::get('/profil', [KaryawanController::class, 'getProfil'])
     ->middleware('auth')
     ->name('profil');
@@ -69,7 +74,9 @@ Route::post('/upload-foto', [KaryawanController::class, 'uploadFoto'])->name('up
 // Route ke halaman persetujuan_akun;
 Route::get('/persetujuan-akun', function () {
     return view('page.ppersetujuan-akun');
-})->name('persetujuan-akun');
+})
+    ->middleware('auth')
+    ->name('persetujuan-akun');
 
 Route::prefix('daftar-karyawan')->group(function () {
     Route::get('/', [KaryawanController::class, 'index'])->name('daftar-karyawan');
@@ -81,12 +88,47 @@ Route::put('/karyawan/edit/{id}', [KaryawanController::class, 'update'])
     ->middleware('auth')
     ->name('update-karyawan');
 
-Route::get('persetujuan-akun/', [KaryawanController::class, 'persetujuan'])->name('persetujuan-akun');
+Route::get('persetujuan-akun/', [KaryawanController::class, 'persetujuan'])
+    ->middleware('auth')
+    ->name('persetujuan-akun');
 
-Route::post('/ubah-status-akun/{user_id}', [KaryawanController::class, 'ubahStatusAkun'])->name('ubah-status-akun');
+Route::post('/ubah-status-akun/{user_id}', [KaryawanController::class, 'ubahStatusAkun'])
+    ->middleware('auth')
+    ->name('ubah-status-akun');
 
-Route::post('/batalkan-akun/{user_id}', [KaryawanController::class, 'batalkanAkun'])->name('batalkan-akun');
+Route::post('/batalkan-akun/{user_id}', [KaryawanController::class, 'batalkanAkun'])
+    ->middleware('auth')
+    ->name('batalkan-akun');
 
+Route::post('/karyawan/update-telepon', [KaryawanController::class, 'updateTelepon'])
+    ->middleware('auth')
+    ->name('update-telepon');
+
+Route::post('/karyawan/update-alamat', [KaryawanController::class, 'updateAlamat'])
+    ->middleware('auth')
+    ->name('update-alamat');
+
+// Route untuk halaman edit profil
+Route::get('/edit-profil', [KaryawanController::class, 'editProfile'])
+    ->middleware('auth')
+    ->name('edit-profil');
+
+// Route untuk update foto profil
+Route::post('/update-avatar', [KaryawanController::class, 'updateAvatar'])
+    ->middleware('auth')
+    ->name('update-avatar');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifikasi', [NotifikasiController::class, 'showNotifications'])->name('notifikasi');
+    Route::get('/notifications/latest', [NotifikasiController::class, 'getLatestNotifications'])->name('notifications.latest');
+    Route::post('/notifikasi/mark-all-read', [NotifikasiController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::patch('/notifications/{id}/mark-as-read', [NotifikasiController::class, 'markAsRead']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/buat-pengumuman', [NotifikasiController::class, 'create'])->name('pengumuman.create');
+    Route::post('/buat-pengumuman', [NotifikasiController::class, 'store'])->name('pengumuman.store');
+});
 
 
 require __DIR__ . '/auth.php';

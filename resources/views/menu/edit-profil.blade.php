@@ -37,7 +37,7 @@
         </nav>
         <div class="bg-[#122036] rounded-lg shadow p-6 max-w-lg mx-auto">
             <div class="relative w-24 h-24 mx-auto mb-4">
-                <img src="{{ Storage::url(Auth::User()->Avatar) }}" alt="Foto Profil"
+                <img src="{{ Storage::url(Auth::user()->Avatar) }}" alt="Foto Profil"
                     class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                 <button
                     class="absolute top-1 right-1 w-6 h-6 bg-[#F6CD61] rounded-full flex items-center justify-center shadow"
@@ -111,33 +111,28 @@
     <div class="relative w-full max-w-md mx-auto bg-white rounded-lg shadow-lg">
         <div class="p-4">
             <h3 class="text-lg font-semibold text-gray-700">Upload Foto Profil</h3>
-            <form action="{{ route('upload-foto') }}" method="POST" enctype="multipart/form-data"
-                class="mt-4 space-y-4">
+            <form action="{{ route('update-avatar') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="flex items-center justify-center w-full">
-                    <label for="dropzone-file"
-                        class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                            </svg>
-                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span>
-                                or drag and drop</p>
-                            <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                        </div>
-                        <input id="dropzone-file" type="file" name="Avatar" class="hidden" />
-                    </label>
+                <div class="mb-4">
+                    <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
+                    <input type="file" id="avatar" name="avatar" accept="image/*"
+                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                    @error('avatar')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-                        data-modal-hide="foto-modal">Batal</button>
+
+                <div class="flex justify-end space-x-2 mt-4">
                     <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Simpan</button>
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Unggah</button>
                 </div>
             </form>
+
+            @if (session('success'))
+                <div class="bg-green-500 text-white p-4 rounded-md mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -148,22 +143,16 @@
     <div class="relative w-full max-w-md mx-auto bg-white rounded-lg shadow-lg">
         <div class="p-4">
             <h3 class="text-lg font-semibold text-gray-700">Edit Nomor Telepon</h3>
-            <form class="mt-4 space-y-4">
-                <div>
-                    <label for="kode-negara" class="block text-sm font-medium text-gray-700">Kode Negara</label>
-                    <select id="kode-negara" name="kode-negara"
-                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
-                        <option value="+62" selected>+62 (Indonesia)</option>
-                        <option value="+1">+1 (USA)</option>
-                        <option value="+44">+44 (UK)</option>
-                        <option value="+91">+91 (India)</option>
-                    </select>
-                </div>
+            <form action="{{ route('update-telepon') }}" method="POST" class="mt-4 space-y-4">
+                @csrf
                 <div>
                     <label for="telepon" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
                     <input type="text" id="telepon" name="telepon"
                         class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        data-mask="telepon" placeholder="812-3456-7890" required>
+                        placeholder="081234567890" required>
+                    @error('telepon')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
@@ -182,12 +171,16 @@
     <div class="relative w-full max-w-md mx-auto bg-white rounded-lg shadow-lg">
         <div class="p-4">
             <h3 class="text-lg font-semibold text-gray-700">Edit Alamat</h3>
-            <form class="mt-4 space-y-4">
+            <form action="{{ route('update-alamat') }}" method="POST" class="mt-4 space-y-4">
+                @csrf
                 <div>
                     <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
                     <input type="text" id="alamat" name="alamat"
                         class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        value="Jl. Sudirman No. 123, Jakarta Pusat, DKI Jakarta 10220" required>
+                        value="{{ old('alamat', Auth::user()->Alamat) }}" required>
+                    @error('alamat')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
@@ -223,6 +216,18 @@
                     modal.classList.remove('flex');
                 }
             });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const teleponInput = document.getElementById('telepon');
+        teleponInput.addEventListener('input', function() {
+            const regex = /^08\d{0,13}$/;
+            if (!regex.test(this.value)) {
+                this.setCustomValidity('Nomor telepon harus diawali 08 dan maksimal 15 karakter.');
+            } else {
+                this.setCustomValidity('');
+            }
         });
     });
 </script>

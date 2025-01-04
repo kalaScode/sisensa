@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Karyawan;
-use App\Models\User;
 use App\Models\Perusahaan;
 use App\Models\Jabatan;
+use App\Models\User;
 use App\Models\SaldoCuti;
+use App\Notifications\PerubahanStatusAkun;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -106,43 +108,49 @@ class KaryawanController extends Controller
 
     public function getProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)->first()->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
+            ->first()
+            ->name;
 
         return view('page.pprofil', compact('pemberiPersetujuan'));
     }
 
     public function getEditProfil()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)->first()->name;
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
+            ->first()
+            ->name;
 
         return view('page.pedit-profil', compact('pemberiPersetujuan'));
     }
 
-    public function uploadFoto(Request $request)
-    {
-        // Validasi file yang diupload
-        $request->validate([
-            'Avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+    // public function updateFotoProfil(Request $request)
+    // {
+    //     // Validasi file yang diupload
+    //     $request->validate([
+    //         'Avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //     ]);
 
-        // Ambil file yang diupload
-        $file = $request->file('Avatar');
+    //     // Ambil file yang diupload
+    //     $file = $request->file('Avatar');
 
-        // Tentukan path penyimpanan dan gunakan disk 'public'
-        $path = $file->store('avatar', 'public');
+    //     // Tentukan path penyimpanan dan gunakan disk 'public'
+    //     $path = $file->store('avatar', 'public');
 
-        // Debug: periksa path file yang dihasilkan
-        dd($path); // Pastikan path valid
+    //     // // Debug: periksa path file yang dihasilkan
+    //     // dd($path); // Pastikan path valid
 
-        // Update path di database untuk pengguna
-        $user = Auth::user();
-        $user->Avatar = $path; // $path adalah lokasi file yang disimpan di storage
-        $user->save();
+    //     // Update path di database untuk pengguna
+    //     $user = Auth::user();
+    //     $user->Avatar = $path; // $path adalah lokasi file yang disimpan di storage
+    //     $user->save();
 
 
-        // Kembalikan respon jika berhasil
-        return redirect()->back()->with('success', 'Foto berhasil diupload');
-    }
+    //     // Kembalikan respon jika berhasil
+    //     return redirect()->back()->with('success', 'Foto berhasil diupload');
+    // }
 
     public function update(Request $request, $id)
     {
@@ -195,37 +203,6 @@ class KaryawanController extends Controller
         return redirect()->route('daftar-karyawan')->with('error', 'Karyawan tidak ditemukan.');
     }
 
-
-    // Menangani update data karyawan
-    public function update2(Request $request)
-    {
-        Log::info('User ID:', ['user_id' => $request->user_id]);
-
-        $karyawan = User::find($request->user_id);
-
-        if (!$karyawan) {
-            Log::warning('User not found:', ['user_id' => $request->user_id]);
-            return redirect()->route('daftar-karyawan')->with('error', 'Data karyawan tidak ditemukan.');
-        }
-
-        // Update data
-        $karyawan->update([
-            'name' => $request->nama,
-            'perusahaan' => $request->perusahaan,
-            'jabatan' => $request->jabatan,
-            'status_Kerja' => $request->statuskerja,
-            'status_Akun' => $request->statusakun,
-            'email' => $request->email,
-            'no_Telp' => $request->telepon,
-            'alamat' => $request->alamat,
-            'saldo_Cuti' => $request->saldo,
-        ]);
-
-        return redirect()->route('daftar-karyawan')->with('success', 'Data karyawan berhasil diperbarui.');
-    }
-
-
-
     // Hapus karyawan
     public function destroy($user_id)
     {
@@ -240,17 +217,23 @@ class KaryawanController extends Controller
     }
 
     //ubah status akun menjadi aktif
-    public function ubahStatusAkun($id)
+    public function ubahStatusAkun($user_id)
     {
         // Cari karyawan berdasarkan ID
-        $karyawan = Karyawan::findOrFail($id);
+        $karyawan = User::findOrFail($user_id);
 
         // Ubah status akun menjadi 1
         $karyawan->status_Akun = 1;
         $karyawan->save();
 
+        // Kirim notifikasi ke karyawan
+        $user = User::find($karyawan->user_id); // Sesuaikan jika ada relasi dengan tabel user
+        if ($user) {
+            $user->notify(new PerubahanStatusAkun('aktif')); // Status "aktif" dikirim dalam notifikasi
+        }
+
         // Redirect kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'Status akun berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Status akun berhasil diperbarui dan notifikasi dikirim.');
     }
 
     //Batalkan pengajuan akun
@@ -262,4 +245,78 @@ class KaryawanController extends Controller
 
         return redirect()->back()->with('success', 'Pengajuan akun berhasil dibatalkan.');
     }
+
+    public function editProfile()
+    {
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)
+            ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
+            ->first()
+            ->name;
+
+        return view('page.pedit-profil', compact('pemberiPersetujuan'));
+    }
+
+    // Method untuk update foto profil
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file gambar
+        ]);
+
+        // Hapus foto lama jika ada
+        if (Auth::user()->Avatar) {
+            Storage::delete('public/avatars/' . Auth::user()->Avatar);
+        }
+
+        // Simpan foto baru
+        $avatar = $request->file('avatar')->store('avatars', 'public');
+
+        // Update kolom Avatar di tabel user
+        Auth::user()->update([
+            'Avatar' => basename($avatar),
+        ]);
+
+        return redirect()->route('edit-profil')->with('success', 'Foto profil berhasil diubah.');
+    }
+
+
+    public function updateTelepon(Request $request)
+    {
+        $request->validate([
+            'telepon' => ['required', 'regex:/^08\d{8,13}$/', 'max:15'],
+        ]);
+
+        $user = Auth::user();
+        $user->no_Telp = $request->telepon;
+        // dd($user); // Pastikan path valid
+        $user->save();
+
+        return redirect()->back()->with('success', 'Nomor telepon berhasil diperbarui!');
+    }
+
+    public function updateAlamat(Request $request)
+    {
+        $request->validate([
+            'alamat' => ['required', 'string', 'max:255'],
+        ]);
+
+        $user = Auth::user();
+        $user->Alamat = htmlspecialchars($request->alamat, ENT_QUOTES, 'UTF-8'); // Mencegah serangan XSS
+        // dd($user);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Alamat berhasil diperbarui!');
+    }
+
+    // public function showNotifications()
+    // {
+    //     $notifications = Auth::user()->notifications; // Mengambil semua notifikasi yang terkait dengan user
+    //     return view('page.pnotifikasi', compact('notifications')); // Kirim ke view notifikasi.blade.php
+    // }
+
+    // public function markAllRead()
+    // {
+    //     Auth::user()->unreadNotifications->markAsRead(); // Tandai semua notifikasi sebagai sudah dibaca
+    //     return redirect()->back()->with('success', 'Semua notifikasi telah dibaca.');
+    // }
 }
