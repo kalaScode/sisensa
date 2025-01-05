@@ -128,7 +128,7 @@
                     </div>
                 </div>
             </div>
-
+        
             <!-- Modal untuk detail notifikasi -->
             @if (isset($notification->data['message']) && isset($notification->data['description']))
                 <div id="modal-{{ $notification->id }}"
