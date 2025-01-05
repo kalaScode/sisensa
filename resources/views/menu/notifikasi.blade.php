@@ -32,7 +32,7 @@
                     Daftar
                 </button>
             </div>
-            @if (in_array($role, ['2', '3']))
+            @if (in_array($role, ['3', '4']))
                 <div class="flex  items-center">
                     <a href="/buat-pengumuman">
                         <button
@@ -91,7 +91,7 @@
         </div>
     </div>
     <div class="space-y-4">
-        @foreach ($notifications as $notification)
+        @forelse ($notifications as $notification)
             <div
                 class="notification-card p-3 sm:p-4 rounded-lg bg-white border border-gray-200 {{ $notification->read_at ? 'sudah-dibaca' : 'belum-dibaca' }}">
                 <div class="flex gap-4">
@@ -130,17 +130,23 @@
             </div>
 
             <!-- Modal untuk detail notifikasi -->
-            <div id="modal-{{ $notification->id }}"
-                class="modal fixed inset-0 bg-gray-500 bg-opacity-75 hidden flex items-center justify-center">
-                <div class="modal-content bg-white p-6 rounded-lg max-w-4xl mx-auto">
-                    <h3 class="text-xl font-medium text-gray-900">{{ $notification->data['message'] }}</h3>
-                    <p class="mt-4 text-sm text-gray-500">{{ $notification->data['description'] }}</p>
-                    <div class="mt-4 text-right">
-                        <button class="close-modal text-blue-600 hover:text-blue-800">Tutup</button>
+            @if (isset($notification->data['message']) && isset($notification->data['description']))
+                <div id="modal-{{ $notification->id }}"
+                    class="modal fixed inset-0 bg-gray-500 bg-opacity-75 hidden flex items-center justify-center">
+                    <div class="modal-content bg-white p-6 rounded-lg max-w-4xl mx-auto">
+                        <h3 class="text-xl font-medium text-gray-900">{{ $notification->data['message'] }}</h3>
+                        <p class="mt-4 text-sm text-gray-500">{{ $notification->data['description'] }}</p>
+                        <div class="mt-4 text-right">
+                            <button class="close-modal text-blue-600 hover:text-blue-800">Tutup</button>
+                        </div>
                     </div>
                 </div>
+            @endif
+        @empty
+            <div class="text-center p-4 bg-white border border-gray-200 rounded-lg">
+                <p class="text-sm text-gray-500">Tidak ada notifikasi</p>
             </div>
-        @endforeach
+        @endforelse
     </div>
 </main>
 
