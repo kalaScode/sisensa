@@ -148,7 +148,8 @@ class KaryawanController extends Controller
 
     //     // Kembalikan respon jika berhasil
     //     return redirect()->back()->with('success', 'Foto berhasil diupload');
-    // }
+    // 
+    }
 
     public function update(Request $request, $id)
     {
@@ -246,7 +247,7 @@ class KaryawanController extends Controller
 
     public function editProfile()
     {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 2)
+        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)
             ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
             ->first()
             ->name;
@@ -254,30 +255,28 @@ class KaryawanController extends Controller
         return view('page.pedit-profil', compact('pemberiPersetujuan'));
     }
 
-    // Method untuk update foto profil
+    // Update kolom Avatar di tabel user
     public function updateAvatar(Request $request)
     {
         $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file gambar
+            'avatar' => ['required', 'file', 'image', 'max:2048'], // Validasi file gambar
         ]);
 
-        // Hapus foto lama jika ada
-        if (Auth::user()->Avatar) {
-            Storage::delete('public/avatars/' . Auth::user()->Avatar);
-        }
-
-        // Simpan foto baru
         $avatar = $request->file('avatar')->store('avatars', 'public');
 
-        // Update kolom Avatar di tabel user
-        Auth::user()->update([
+        $user = Auth::user();
+        if (!$user || !($user instanceof User)) {
+            return redirect()->back()->with('error', 'User tidak valid.');
+        }
+
+        $user->update([
             'Avatar' => basename($avatar),
         ]);
 
-        return redirect()->route('edit-profil')->with('success', 'Foto profil berhasil diubah.');
+        return redirect()->back()->with('success', 'Avatar berhasil diperbarui!');
     }
 
-
+    // Update nomor telepon
     public function updateTelepon(Request $request)
     {
         $request->validate([
@@ -285,13 +284,17 @@ class KaryawanController extends Controller
         ]);
 
         $user = Auth::user();
+        if (!$user || !($user instanceof User)) {
+            return redirect()->back()->with('error', 'User tidak valid.');
+        }
+
         $user->no_Telp = $request->telepon;
-        // dd($user); // Pastikan path valid
         $user->save();
 
         return redirect()->back()->with('success', 'Nomor telepon berhasil diperbarui!');
     }
 
+    // Update alamat
     public function updateAlamat(Request $request)
     {
         $request->validate([
@@ -299,8 +302,11 @@ class KaryawanController extends Controller
         ]);
 
         $user = Auth::user();
+        if (!$user || !($user instanceof User)) {
+            return redirect()->back()->with('error', 'User tidak valid.');
+        }
+
         $user->Alamat = htmlspecialchars($request->alamat, ENT_QUOTES, 'UTF-8'); // Mencegah serangan XSS
-        // dd($user);
         $user->save();
 
         return redirect()->back()->with('success', 'Alamat berhasil diperbarui!');
