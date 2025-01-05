@@ -31,7 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'status_Kerja',
         'status_Akun',
-
+        'id_Jabatan',
+        'Avatar',
+        'Alamat',
     ];
 
     public function user()
@@ -49,7 +51,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Otoritas::class, 'id_Otoritas', 'id_Otoritas');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($user) {
+            if (!$user->id_Jabatan && $user->id_Perusahaan) {
+                $user->id_Jabatan = Jabatan::where('id_Perusahaan', $user->id_Perusahaan)
+                    ->value('id_Jabatan') ?? null; // Default NULL jika tidak ditemukan
+            }
+        });
+    }
+    
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'id_Jabatan', 'id_Jabatan');

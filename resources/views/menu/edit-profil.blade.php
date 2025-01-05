@@ -37,8 +37,8 @@
         </nav>
         <div class="bg-[#122036] rounded-lg shadow p-6 max-w-lg mx-auto">
             <div class="relative w-24 h-24 mx-auto mb-4">
-                <img src="{{ Storage::url(Auth::user()->Avatar) }}" alt="Foto Profil"
-                    class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
+                <img src="{{ Auth::user()->Avatar ? asset('storage/' . Auth::user()->Avatar) : '/img/profil.jpg' }}"
+                    alt="Foto Profil" class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                 <button
                     class="absolute top-1 right-1 w-6 h-6 bg-[#F6CD61] rounded-full flex items-center justify-center shadow"
                     data-modal-target="foto-modal" data-modal-toggle="foto-modal">
