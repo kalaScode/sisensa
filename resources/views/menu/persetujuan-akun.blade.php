@@ -90,7 +90,9 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="h-10 w-10 flex-shrink-0">
-                                                <img class="h-10 w-10 rounded-full" src="#" alt="Foto Profil" />
+                                                <img src="{{ Auth::user()->Avatar ? asset('storage/' . Auth::user()->Avatar) : '/img/profil.jpg' }}"
+                                                    alt="Foto Profil"
+                                                    class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">{{ $k->name }}
