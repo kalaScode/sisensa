@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\RegistrasiPengguna;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,8 +47,17 @@ class RegisteredUserController extends Controller
             'status_Akun' => 0,
         ]);
 
+        $hrd = User::where('id_Perusahaan', $user->id_Perusahaan)
+            ->where('id_Otoritas', 4) // Anda bisa sesuaikan role dengan field yang sesuai
+            ->first();
+
+        if ($hrd) {
+            // Mengirimkan notifikasi ke HRD
+            $hrd->notify(new RegistrasiPengguna($user));
+        }
+
         event(new Registered($user));
 
-        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silahkan Tunggu Konfirmasi Administrator.');
+        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silahkan Tunggu Konfirmasi HRD.');
     }
 }

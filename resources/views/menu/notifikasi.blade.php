@@ -108,7 +108,7 @@
                         <div class="flex items-start justify-between">
                             <div>
                                 <h3 class="font-medium text-gray-900">
-                                    {{ Str::limit($notification->data['message'], 50, '...') }}
+                                    {{ Str::limit($notification->data['message'], 70, '...') }}
                                 </h3>
                                 <p class="mt-1 text-sm text-gray-500">
                                     {{ Str::limit($notification->data['description'], 100, '...') }}
@@ -128,7 +128,7 @@
                     </div>
                 </div>
             </div>
-        
+
             <!-- Modal untuk detail notifikasi -->
             @if (isset($notification->data['message']) && isset($notification->data['description']))
                 <div id="modal-{{ $notification->id }}"

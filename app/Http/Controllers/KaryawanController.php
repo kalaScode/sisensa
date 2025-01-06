@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Log;
 class KaryawanController extends Controller
 {
     // Tampilkan daftar karyawan
-    public function index(Request $request)
+    public function getDaftarKaryawan(Request $request)
     {
         $query = Karyawan::query();
 
@@ -62,7 +62,7 @@ class KaryawanController extends Controller
         ]);
     }
 
-    public function persetujuan(Request $request)
+    public function getPersetujuanAkun(Request $request)
     {
         $query = Karyawan::query();
 
@@ -124,34 +124,7 @@ class KaryawanController extends Controller
         return view('page.pedit-profil', compact('pemberiPersetujuan'));
     }
 
-    public function uploadFoto(Request $request)
-    {
-        // Validasi file yang diupload
-        $request->validate([
-            'Avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-    //     // Ambil file yang diupload
-    //     $file = $request->file('Avatar');
-
-    //     // Tentukan path penyimpanan dan gunakan disk 'public'
-    //     $path = $file->store('avatar', 'public');
-
-    //     // // Debug: periksa path file yang dihasilkan
-    //     // dd($path); // Pastikan path valid
-
-    //     // Update path di database untuk pengguna
-    //     $user = Auth::user();
-    //     $user->Avatar = $path; // $path adalah lokasi file yang disimpan di storage
-    //     $user->save();
-
-
-    //     // Kembalikan respon jika berhasil
-    //     return redirect()->back()->with('success', 'Foto berhasil diupload');
-    // 
-    }
-
-    public function update(Request $request, $id)
+    public function updateDataKaryawan(Request $request, $id)
     {
         // Validasi input
         $validated = $request->validate([
@@ -194,13 +167,14 @@ class KaryawanController extends Controller
                 'Alamat' => $request->alamat,
             ]);
 
-            // Redirect atau memberikan respon setelah update
+            // Redirect dengan status sukses
             return redirect()->route('daftar-karyawan')->with('success', 'Data karyawan berhasil diperbarui.');
         }
 
         // Jika karyawan tidak ditemukan
         return redirect()->route('daftar-karyawan')->with('error', 'Karyawan tidak ditemukan.');
     }
+
 
     // Hapus karyawan
     public function destroy($user_id)
@@ -215,6 +189,7 @@ class KaryawanController extends Controller
         }
     }
 
+
     //ubah status akun menjadi aktif
     public function ubahStatusAkun($user_id)
     {
@@ -228,7 +203,7 @@ class KaryawanController extends Controller
         // Kirim notifikasi ke karyawan
         $user = User::find($karyawan->user_id); // Sesuaikan jika ada relasi dengan tabel user
         if ($user) {
-            $user->notify(new PerubahanStatusAkun('aktif')); // Status "aktif" dikirim dalam notifikasi
+            $user->notify(new PerubahanStatusAkun('aktif'));; // Status "aktif" dikirim dalam notifikasi
         }
 
         // Redirect kembali dengan pesan sukses
@@ -238,22 +213,23 @@ class KaryawanController extends Controller
     //Batalkan pengajuan akun
     public function batalkanAkun($user_id)
     {
+        // Cari karyawan berdasarkan user_id
         $karyawan = Karyawan::findOrFail($user_id);
-        $karyawan->status_Akun = 2; // Contoh status untuk "Dibatalkan"
+
+        // Ubah status akun menjadi dibatalkan
+        $karyawan->status_Akun = 2; // Misalnya 2 berarti akun dibatalkan
         $karyawan->save();
 
-        return redirect()->back()->with('success', 'Pengajuan akun berhasil dibatalkan.');
+        // Kirim notifikasi ke karyawan jika ada relasi dengan User
+        $user = User::find($karyawan->user_id); // Sesuaikan dengan relasi yang benar
+        if ($user) {
+            $user->notify(new PerubahanStatusAkun('dibatalkan')); // Status "dibatalkan" dikirim dalam notifikasi
+        }
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Pengajuan akun berhasil dibatalkan dan notifikasi dikirim.');
     }
 
-    public function editProfile()
-    {
-        $pemberiPersetujuan = Karyawan::where('id_Otoritas', 3)
-            ->where('id_Perusahaan', Auth::user()->id_Perusahaan)
-            ->first()
-            ->name;
-
-        return view('page.pedit-profil', compact('pemberiPersetujuan'));
-    }
 
     // Update kolom Avatar di tabel user
     public function updateAvatar(Request $request)
@@ -279,20 +255,27 @@ class KaryawanController extends Controller
     // Update nomor telepon
     public function updateTelepon(Request $request)
     {
+        // Validasi nomor telepon menggunakan regex
         $request->validate([
             'telepon' => ['required', 'regex:/^08\d{8,13}$/', 'max:15'],
         ]);
 
+        // Ambil user yang sedang login
         $user = Auth::user();
+
+        // Validasi jika user tidak ditemukan
         if (!$user || !($user instanceof User)) {
             return redirect()->back()->with('error', 'User tidak valid.');
         }
 
+        // Update nomor telepon
         $user->no_Telp = $request->telepon;
         $user->save();
 
+        // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Nomor telepon berhasil diperbarui!');
     }
+
 
     // Update alamat
     public function updateAlamat(Request $request)

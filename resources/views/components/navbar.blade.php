@@ -19,9 +19,12 @@
                             <path
                                 d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z" />
                         </svg>
-                        <div
-                            class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-4">
-                        </div>
+                        @if ($unreadNotifications > 0)
+                            <div id="notification-dot"
+                                class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-4">
+                            </div>
+                        @endif
+
                     </button>
                     <!-- Notification Dropdown -->
                     <div id="dropdownNotification"
@@ -34,29 +37,49 @@
                         <div class="divide-y divide-gray-100 dark:divide-gray-700">
                             @foreach ($notifications as $notification)
                                 <a href="/notifikasi"
-                                    class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 w-full max-w-lg">
-                                    {{-- <div class="flex-shrink-0">
-                                        <img class="rounded-full w-11 h-11"
-                                            src="{{ $notification->data['sender_image'] ?? 'default.jpg' }}"
-                                            alt="User image">
-                                    </div> --}}
-                                    <div class="w-full ps-3">
+                                    class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 w-full max-w-lg {{ $notification->read_at ? 'bg-gray-200 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700' }}">
+                                    <!-- Foto User -->
+                                    <div class="flex-shrink-0">
+                                        <img class="rounded-full w-11 h-11 object-cover border-2 border-gray-300 dark:border-gray-600"
+                                            src="{{ $notification->notifiable->avatar ?? '/img/profil.jpg' }}"
+                                            alt="{{ $notification->notifiable->name ?? 'User Photo' }}">
+                                    </div>
+                                    <div class="w-full ps-3 relative">
                                         <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                                            {{ $notification->data['message'] ?? 'No message' }}
+                                            {{ $notification->notifiable->name ?? 'Unknown User' }} -
+                                            {{ $notification->notifiable->jabatan->nama_Jabatan ?? 'Unknown Position' }}
                                         </div>
-                                        <!-- Deskripsi dengan batasan 100 kata -->
                                         <div class="text-gray-400 text-xs dark:text-gray-500">
-                                            {{ Str::words($notification->data['description'] ?? 'No description available', 5, '...') }}
+                                            {{ $notification->data['message'] ?? 'No message' }}
                                         </div>
                                         <div class="text-xs text-blue-600 dark:text-blue-500">
                                             {{ $notification->created_at->diffForHumans() }}
                                         </div>
+
+                                        <!-- Ikon Centang di pojok kanan atas -->
+                                        @if ($notification->read_at)
+                                            <span class="absolute top-0 right-2 text-blue-600 dark:text-blue-400">
+                                                <i class="fa-solid fa-check-double"></i> <!-- Ikon centang -->
+                                            </span>
+                                        @else
+                                            <!-- Tombol Tandai Sudah Dibaca -->
+                                            <form
+                                                action="{{ route('notification.markAsRead', $notification->id), 'mark-as-read' }}"
+                                                method="POST" class="mt-2">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="absolute top-0 right-2 text-yellow-600 hover:text-yellow-800">
+                                                    <i class="fa-solid fa-check-double"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </a>
                             @endforeach
-
-
                         </div>
+
+
+
                         <a href="/notifikasi"
                             class="flex items-center justify-center py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
                             <svg class="w-6 h-6 mr-2 text-gray-800 dark:text-white" aria-hidden="true"
@@ -94,13 +117,15 @@
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">Profil</a>
                             </li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form id="logout-form" method="POST" action="{{ route('logout') }}"
+                                    style="display: none;">
                                     @csrf
-                                    <button type="submit"
-                                        class="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
-                                        Keluar
-                                    </button>
                                 </form>
+
+                                <button id="logout-button"
+                                    class="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600">
+                                    Keluar
+                                </button>
                             </li>
                         </ul>
                     </div>
@@ -109,3 +134,25 @@
         </div>
     </div>
 </nav>
+<script>
+    document.getElementById('logout-button').addEventListener('click', function(event) {
+        event.preventDefault(); // Mencegah form submit otomatis
+
+        // Menampilkan SweetAlert konfirmasi
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan keluar dari akun ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, keluar!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika pengguna mengonfirmasi, lakukan submit form logout
+                document.getElementById('logout-form').submit();
+            }
+        });
+    });
+</script>

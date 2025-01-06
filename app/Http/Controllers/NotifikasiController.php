@@ -21,10 +21,11 @@ class NotifikasiController extends Controller
     public function getLatestNotifications()
     {
         $notifications = Notification::latest()->take(5)->get();
-
+        $unreadNotification = Auth::user()->unreadNotifications->count();
         return response()->json([
             'status' => 'success',
-            'notifications' => $notifications
+            'notifications' => $notifications,
+            'unreadNotification' => $unreadNotification,
         ]);
     }
 
