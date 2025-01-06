@@ -36,6 +36,18 @@
             </ol>
         </nav>
         <div class="bg-[#122036] rounded-lg shadow p-6 max-w-lg mx-auto">
+            @if (session('success'))
+                <div id="success-message" class="bg-green-500 text-white p-4 rounded-md mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div id="error-message" class="bg-red-500 text-white p-4 rounded-md mb-4">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="relative w-24 h-24 mx-auto mb-4">
                 <img src="{{ Auth::user()->Avatar ? asset('storage/' . Auth::user()->Avatar) : '/img/profil.jpg' }}"
                     alt="Foto Profil" class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
@@ -149,7 +161,7 @@
                     <label for="telepon" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
                     <input type="text" id="telepon" name="telepon"
                         class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="081234567890" required>
+                        placeholder="08XXXXXXXXXX" required>
                     @error('telepon')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
@@ -229,5 +241,25 @@
                 this.setCustomValidity('');
             }
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Cek jika ada pesan sukses atau error
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        // Menyembunyikan pesan sukses setelah 5 detik
+        if (successMessage) {
+            setTimeout(function() {
+                successMessage.style.display = 'none';
+            }, 5000); // 5000 ms = 5 detik
+        }
+
+        // Menyembunyikan pesan error setelah 5 detik
+        if (errorMessage) {
+            setTimeout(function() {
+                errorMessage.style.display = 'none';
+            }, 5000); // 5000 ms = 5 detik
+        }
     });
 </script>
