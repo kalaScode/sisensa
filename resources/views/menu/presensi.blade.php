@@ -1,3 +1,14 @@
+@php
+    $id_Perusahaan = Auth::user()->id_Perusahaan;
+    $perusahaan = DB::table('perusahaan')
+        ->select('Latitude', 'Longitude')
+        ->where('id_Perusahaan', $id_Perusahaan) // Ganti 'id' dengan 'id_Perusahaan'
+        ->first();
+    $targetLat = $perusahaan->Latitude ?? null;
+    $targetLon = $perusahaan->Longitude ?? null;
+@endphp
+
+
 <!-- presensi.blade.php -->
 <x-navbar></x-navbar>
 <div id="successAlert" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -216,8 +227,13 @@ function showErrorAlert(message) {
         let currentAddress = null;
         let photoDataUrl = null;  // Menyimpan data URL foto
 
-        const targetLat = -6.2311505;
-        const targetLon = 106.8669003;
+        const targetLat = {{ $targetLat ?? 'null' }};
+        const targetLon = {{ $targetLon ?? 'null' }};
+        if (targetLat === null || targetLon === null) {
+            console.error('Target lokasi tidak ditemukan!');
+            showErrorAlert('Lokasi target perusahaan tidak ditemukan. Silakan hubungi administrator.');
+            return;
+        }
 
         async function checkLocation() {
             if (navigator.geolocation) {
