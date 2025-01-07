@@ -85,12 +85,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/karyawan/update-telepon', [KaryawanController::class, 'updateTelepon'])->name('update-telepon');
     Route::post('/karyawan/update-alamat', [KaryawanController::class, 'updateAlamat'])->name('update-alamat');
-    Route::post('/update-avatar', [KaryawanController::class, 'updateAvatar'])->name('update-avatar');
+    Route::post('/karyawan/update-avatar', [KaryawanController::class, 'updateAvatar'])->name('update-avatar');
 });
 
 //Route Untuk Notifikasi
 Route::middleware('auth')->group(function () {
-    Route::get('/notifikasi', [NotifikasiController::class, 'showNotifications'])->name('notifikasi');
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifications.index');
+    // Route::get('/notifikasi', [NotifikasiController::class, 'showNotifications'])->name('notifikasi');
     Route::get('/notifications/latest', [NotifikasiController::class, 'getLatestNotifications'])->name('notifications.latest');
     Route::post('/notifikasi/mark-all-read', [NotifikasiController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::patch('/notifications/{id}/mark-as-read', [NotifikasiController::class, 'markAsRead'])->name('notification.markAsRead');

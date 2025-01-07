@@ -1,5 +1,5 @@
 <x-navbar></x-navbar>
-<header class="py-3 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<header class="max-w-7xl sm:px-6 lg:px-36 py-3">
     <nav class="flex mt-6 mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
@@ -35,11 +35,11 @@
         </ol>
     </nav>
 </header>
-<header class="py-3 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<header class="max-w-7xl sm:px-6 lg:px-36 py-2">
     <h1 class="text-2xl font-semibold text-gray-800">Buat Pengumuman</h1>
 </header>
 
-<main class="py-4 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<main class="max-w-7xl sm:px-6 lg:px-36 py-2">
     <!-- Menampilkan pesan sukses jika ada -->
     @if (session('success'))
         <div class="mb-4 text-green-500">
