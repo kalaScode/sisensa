@@ -8,7 +8,7 @@ class Perusahaan extends Model
 {
     protected $table = 'perusahaan';
     protected $primaryKey = 'id_Perusahaan';
-    protected $fillable = ['id_Perusahaan', 'nama_perusahaan'];
+    protected $fillable = ['id_Perusahaan', 'nama_Perusahaan'];
 
     public function user()
     {
