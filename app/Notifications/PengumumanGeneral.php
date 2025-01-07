@@ -13,14 +13,16 @@ class PengumumanGeneral extends Notification
 
     public $judul;
     public $isi_pengumuman;
+    private $sender;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($judul, $isi_pengumuman)
+    public function __construct($judul, $isi_pengumuman, $sender)
     {
         $this->judul = $judul;
         $this->isi_pengumuman = $isi_pengumuman;
+        $this->sender = $sender;
     }
 
     /**
@@ -55,6 +57,10 @@ class PengumumanGeneral extends Notification
         return [
             'message' => $this->judul,         // Judul pengumuman
             'description' => $this->isi_pengumuman, // Isi pengumuman
+            'sender_name' => $this->sender->name, // Nama pengirim
+            'sender_avatar' => $this->sender->Avatar, // Foto pengirim
+            'sender_jabatan' => $this->sender->jabatan->nama_Jabatan, // Jabatan pengirim
+            'sender_perusahaan_id' => $this->sender->id_Perusahaan,
         ];
     }
 }

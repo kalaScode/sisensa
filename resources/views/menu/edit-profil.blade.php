@@ -119,54 +119,62 @@
 
 <!-- Modal Foto -->
 <div id="foto-modal" tabindex="-1" aria-hidden="true"
-    class="hidden fixed inset-0 z-50 justify-center items-center w-full h-screen bg-gray-900 bg-opacity-50">
+    class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-screen bg-gray-900 bg-opacity-50">
     <div class="relative w-full max-w-md mx-auto bg-white rounded-lg shadow-lg">
-        <div class="p-4">
+        <!-- Modal Header -->
+        <div class="p-4 border-b">
             <h3 class="text-lg font-semibold text-gray-700">Upload Foto Profil</h3>
-            <form action="{{ route('update-avatar') }}" method="POST" enctype="multipart/form-data">
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-4">
+            <form id="avatar-form" action="{{ route('update-avatar') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
-                    <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
                     <input type="file" id="avatar" name="avatar" accept="image/*"
-                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        required>
                     @error('avatar')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
-
-                <div class="flex justify-end space-x-2 mt-4">
+                <div class="flex justify-end space-x-2">
+                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                        data-modal-hide="foto-modal">Batal</button>
                     <button type="submit"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Unggah</button>
                 </div>
             </form>
-
-            @if (session('success'))
-                <div class="bg-green-500 text-white p-4 rounded-md mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
         </div>
     </div>
 </div>
 
 <!-- Modal Telepon -->
 <div id="telepon-modal" tabindex="-1" aria-hidden="true"
-    class="hidden fixed inset-0 z-50 justify-center items-center w-full h-screen bg-gray-900 bg-opacity-50">
+    class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-screen bg-gray-900 bg-opacity-50">
     <div class="relative w-full max-w-md mx-auto bg-white rounded-lg shadow-lg">
-        <div class="p-4">
+        <!-- Modal Header -->
+        <div class="p-4 border-b">
             <h3 class="text-lg font-semibold text-gray-700">Edit Nomor Telepon</h3>
-            <form action="{{ route('update-telepon') }}" method="POST" class="mt-4 space-y-4">
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-4">
+            <form action="{{ route('update-telepon') }}" method="POST" class="space-y-4">
                 @csrf
+                <!-- Input Telepon -->
                 <div>
                     <label for="telepon" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
                     <input type="text" id="telepon" name="telepon"
-                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="08XXXXXXXXXX" required>
                     @error('telepon')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="flex justify-end space-x-2">
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
                         data-modal-hide="telepon-modal">Batal</button>
                     <button type="submit"
@@ -176,6 +184,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Modal Alamat -->
 <div id="alamat-modal" tabindex="-1" aria-hidden="true"
@@ -260,6 +269,27 @@
             setTimeout(function() {
                 errorMessage.style.display = 'none';
             }, 5000); // 5000 ms = 5 detik
+        }
+    });
+
+    const avatarInput = document.getElementById('avatar');
+    const form = document.getElementById('avatar-form');
+    const modal = document.getElementById('foto-modal');
+
+    avatarInput.addEventListener('change', function() {
+        const file = this.files[0];
+
+        // Validate file type and size
+        const isImage = file && file.type.startsWith('image/');
+        const isSizeValid = file && file.size <= 5 * 1024 * 1024; // 5MB in bytes
+
+        // Set custom validity
+        if (!isImage) {
+            avatarInput.setCustomValidity('Format file harus jpg/jpeg/png.');
+        } else if (!isSizeValid) {
+            avatarInput.setCustomValidity('Ukuran file maksimal 5MB.');
+        } else {
+            avatarInput.setCustomValidity('');
         }
     });
 </script>

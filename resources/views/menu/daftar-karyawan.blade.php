@@ -1,5 +1,5 @@
 <x-navbar></x-navbar>
-<main class="max-w-7xl mx-auto sm:px-6 lg:px-36 py-10">
+<main class="max-w-7xl sm:px-6 lg:px-36 py-10">
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
@@ -79,7 +79,8 @@
                                             <div class="flex items-center">
                                                 <div class="h-10 w-10 flex-shrink-0">
                                                     <img src="{{ $item->Avatar ? asset('storage/' . $item->Avatar) : '/img/profil.jpg' }}"
-                                                        alt="Foto Profil">
+                                                        alt="Foto Profil"
+                                                        class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                                                 </div>
                                                 <div class="ml-4">
                                                     <div class="text-sm font-medium text-gray-900">{{ $item->name }}
@@ -280,7 +281,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </main>
 
 <script>
