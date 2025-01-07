@@ -64,7 +64,7 @@
                                         @else
                                             <!-- Tombol Tandai Sudah Dibaca -->
                                             <form
-                                                action="{{ route('notification.markAsRead', $notification->id), 'mark-as-read' }}"
+                                                action="{{ route('notification.markAsRead', $notification->id, 'mark-as-read') }}"
                                                 method="POST" class="mt-2">
                                                 @csrf
                                                 <button type="submit"
