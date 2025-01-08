@@ -1,5 +1,5 @@
 <x-navbar></x-navbar>
-<main class="max-w-7xl mx-auto sm:px-6 lg:px-36 py-10">
+<main class="max-w-7xl sm:px-6 lg:px-36 py-10">
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
@@ -42,11 +42,38 @@
 
             <div class="p-6">
                 <div class="relative mb-6">
-                    <form action="{{ route('daftar-karyawan') }}" method="GET" class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input id="searchInput" name="search" type="text" value="{{ old('search', $search) }}"
-                            placeholder="Cari karyawan..."
-                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-custom focus:border-custom">
+                    <form action="{{ route('daftar-karyawan') }}" method="GET"
+                        class="flex flex-wrap items-center gap-4 mb-6">
+                        <!-- Input Pencarian -->
+                        <div class="flex items-center border border-gray-300 rounded-lg shadow-sm max-w-md w-full">
+                            <input type="text" name="search"
+                                class="flex-grow px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
+                                placeholder="Cari karyawan..." value="{{ request('search') }}" />
+                            <button type="submit"
+                                class="bg-blue-500 text-white px-4 py-2 text-sm rounded-r-lg hover:bg-blue-600 transition">
+                                Cari
+                            </button>
+                        </div>
+
+                        <!-- Dropdown Filter Jabatan -->
+                        <div class="max-w-xs w-full">
+                            <select name="jabatan"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">-- Filter berdasarkan Jabatan --</option>
+                                @foreach ($jabatan as $j)
+                                    <option value="{{ $j->id_Jabatan }}"
+                                        {{ request('jabatan') == $j->id_Jabatan ? 'selected' : '' }}>
+                                        {{ $j->nama_Jabatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tombol Reset Filter -->
+                        <a href="{{ route('daftar-karyawan') }}"
+                            class="bg-gray-200 text-gray-700 px-4 py-2 text-sm rounded-lg hover:bg-gray-300 transition">
+                            Reset
+                        </a>
                     </form>
                 </div>
 
@@ -79,7 +106,8 @@
                                             <div class="flex items-center">
                                                 <div class="h-10 w-10 flex-shrink-0">
                                                     <img src="{{ $item->Avatar ? asset('storage/' . $item->Avatar) : '/img/profil.jpg' }}"
-                                                        alt="Foto Profil">
+                                                        alt="Foto Profil"
+                                                        class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                                                 </div>
                                                 <div class="ml-4">
                                                     <div class="text-sm font-medium text-gray-900">{{ $item->name }}
@@ -280,7 +308,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </main>
 
 <script>

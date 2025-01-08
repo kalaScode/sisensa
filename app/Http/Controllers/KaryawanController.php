@@ -29,7 +29,7 @@ class KaryawanController extends Controller
             });
 
         // Pencarian
-        if ($request->filled('search')) { // Gunakan filled untuk mengecek apakah parameter 'search' ada dan tidak kosong
+        if ($request->filled('search')) {
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
@@ -39,7 +39,7 @@ class KaryawanController extends Controller
                     ->orWhere('alamat', 'like', '%' . $search . '%')
                     ->orWhere('status_Kerja', 'like', '%' . $search . '%');
 
-                // Cek jika relasi 'jabatan' tersedia
+                // Filter pada relasi 'jabatan'
                 if (method_exists(Karyawan::class, 'jabatan')) {
                     $q->orWhereHas('jabatan', function ($subQuery) use ($search) {
                         $subQuery->where('nama_Jabatan', 'like', '%' . $search . '%');
@@ -48,16 +48,27 @@ class KaryawanController extends Controller
             });
         }
 
+        // Filter berdasarkan jabatan
+        if ($request->filled('jabatan')) {
+            $query->where('id_Jabatan', $request->jabatan);
+        }
+
         // Pagination
         $karyawan = $query->paginate(10);
+
+        // Ambil data jabatan sesuai perusahaan pengguna
+        $jabatan = Jabatan::where('id_Perusahaan', Auth::user()->id_Perusahaan)->get();
+
         // Ambil data perusahaan
         $perusahaan = Perusahaan::all();
         $role = Auth::User()->id_Otoritas;
-        // Kirimkan nilai pencarian dan data perusahaan ke view
+
+        // Kirimkan nilai pencarian, data perusahaan, dan jabatan ke view
         return view('page.pdaftar_karyawan', [
             'karyawan' => $karyawan,
             'search' => $request->search,
-            'perusahaan' => $perusahaan, // Kirim data perusahaan
+            'jabatan' => $jabatan, // Kirim data jabatan ke view
+            'perusahaan' => $perusahaan,
             'role' => $role,
         ]);
     }
@@ -201,9 +212,10 @@ class KaryawanController extends Controller
         $karyawan->save();
 
         // Kirim notifikasi ke karyawan
+        $sender = Auth::user();
         $user = User::find($karyawan->user_id); // Sesuaikan jika ada relasi dengan tabel user
         if ($user) {
-            $user->notify(new PerubahanStatusAkun('aktif'));; // Status "aktif" dikirim dalam notifikasi
+            $user->notify(new PerubahanStatusAkun('aktif', $sender));; // Status "aktif" dikirim dalam notifikasi
         }
 
         // Redirect kembali dengan pesan sukses
@@ -219,11 +231,11 @@ class KaryawanController extends Controller
         // Ubah status akun menjadi dibatalkan
         $karyawan->status_Akun = 2; // Misalnya 2 berarti akun dibatalkan
         $karyawan->save();
-
+        $sender = Auth::user();
         // Kirim notifikasi ke karyawan jika ada relasi dengan User
         $user = User::find($karyawan->user_id); // Sesuaikan dengan relasi yang benar
         if ($user) {
-            $user->notify(new PerubahanStatusAkun('dibatalkan')); // Status "dibatalkan" dikirim dalam notifikasi
+            $user->notify(new PerubahanStatusAkun('dibatalkan', $sender)); // Status "dibatalkan" dikirim dalam notifikasi
         }
 
         // Redirect kembali dengan pesan sukses
@@ -235,21 +247,32 @@ class KaryawanController extends Controller
     public function updateAvatar(Request $request)
     {
         $request->validate([
-            'avatar' => ['required', 'file', 'image', 'max:2048'], // Validasi file gambar
+            'avatar' => 'required|image|mimes:jpeg,jpg,png|max:5120', // Max 5MB
         ]);
-
-        $avatar = $request->file('avatar')->store('avatars', 'public');
 
         $user = Auth::user();
-        if (!$user || !($user instanceof User)) {
-            return redirect()->back()->with('error', 'User tidak valid.');
+
+        if ($request->hasFile('avatar')) {
+
+            if (!$user || !($user instanceof User)) {
+                return redirect()->back()->with('error', 'User tidak valid.');
+            }
+            // Hapus avatar lama jika ada
+            if ($user->Avatar && Storage::exists('public/' . $user->Avatar)) {
+                Storage::delete('public/' . $user->Avatar);
+            }
+            // Simpan file baru
+            $filePath = $request->file('avatar')->store('public/avatars');
+            $fileName = str_replace('public/', '', $filePath);
+
+            // Update path avatar di database
+            $user->Avatar = $fileName;
+            $user->save();
+
+            return redirect()->back()->with('success', 'Foto profil berhasil diperbarui.');
         }
 
-        $user->update([
-            'Avatar' => basename($avatar),
-        ]);
-
-        return redirect()->back()->with('success', 'Avatar berhasil diperbarui!');
+        return redirect()->back()->with('error', 'Gagal memperbarui foto profil.');
     }
 
     // Update nomor telepon
@@ -275,7 +298,6 @@ class KaryawanController extends Controller
         // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Nomor telepon berhasil diperbarui!');
     }
-
 
     // Update alamat
     public function updateAlamat(Request $request)

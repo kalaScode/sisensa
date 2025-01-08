@@ -1,5 +1,5 @@
 <x-navbar></x-navbar>
-<main class="max-w-7xl mx-auto sm:px-6 lg:px-36 py-10">
+<main class="max-w-7xl sm:px-6 lg:px-36 py-10">
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
@@ -100,7 +100,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="h-10 w-10 flex-shrink-0">
-                                                    <img src="{{ Auth::user()->Avatar ? asset('storage/' . Auth::user()->Avatar) : '/img/profil.jpg' }}"
+                                                    <img src="{{ $k->Avatar ? asset('storage/' . $k->Avatar) : '/img/profil.jpg' }}"
                                                         alt="Foto Profil"
                                                         class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                                                 </div>

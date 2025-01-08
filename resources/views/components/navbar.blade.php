@@ -35,19 +35,24 @@
                             Notifikasi
                         </div>
                         <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                            @foreach ($notifications as $notification)
+                            @forelse ($notificationsNavbar as $notification)
                                 <a href="/notifikasi"
                                     class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 w-full max-w-lg {{ $notification->read_at ? 'bg-gray-200 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700' }}">
-                                    <!-- Foto User -->
+
+                                    <!-- Foto Pengirim -->
                                     <div class="flex-shrink-0">
                                         <img class="rounded-full w-11 h-11 object-cover border-2 border-gray-300 dark:border-gray-600"
-                                            src="{{ $notification->notifiable->avatar ?? '/img/profil.jpg' }}"
-                                            alt="{{ $notification->notifiable->name ?? 'User Photo' }}">
+                                            src="{{ file_exists(public_path('storage/' . ($notification->data['sender_avatar'] ?? ''))) &&
+                                            $notification->data['sender_avatar']
+                                                ? asset('storage/' . $notification->data['sender_avatar'])
+                                                : asset('img/profil.jpg') }}"
+                                            alt="{{ $notification->data['sender_name'] ?? 'User Photo' }}">
                                     </div>
+
                                     <div class="w-full ps-3 relative">
                                         <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                                            {{ $notification->notifiable->name ?? 'Unknown User' }} -
-                                            {{ $notification->notifiable->jabatan->nama_Jabatan ?? 'Unknown Position' }}
+                                            {{ $notification->data['sender_name'] ?? 'Unknown User' }} -
+                                            {{ $notification->data['sender_jabatan'] ?? 'Unknown Position' }}
                                         </div>
                                         <div class="text-gray-400 text-xs dark:text-gray-500">
                                             {{ $notification->data['message'] ?? 'No message' }}
@@ -63,10 +68,10 @@
                                             </span>
                                         @else
                                             <!-- Tombol Tandai Sudah Dibaca -->
-                                            <form
-                                                action="{{ route('notification.markAsRead', $notification->id, 'mark-as-read') }}"
+                                            <form action="{{ route('notification.markAsRead', $notification->id) }}"
                                                 method="POST" class="mt-2">
                                                 @csrf
+                                                @method('PATCH')
                                                 <button type="submit"
                                                     class="absolute top-0 right-2 text-yellow-600 hover:text-yellow-800">
                                                     <i class="fa-solid fa-check-double"></i>
@@ -75,11 +80,10 @@
                                         @endif
                                     </div>
                                 </a>
-                            @endforeach
+                            @empty
+                                <p class="text-center text-gray-500 py-4 dark:text-gray-400">Tidak ada notifikasi</p>
+                            @endforelse
                         </div>
-
-
-
                         <a href="/notifikasi"
                             class="flex items-center justify-center py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
                             <svg class="w-6 h-6 mr-2 text-gray-800 dark:text-white" aria-hidden="true"
@@ -89,7 +93,7 @@
                                     d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
                                 <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
-                            View all
+                            Lihat Semua
                         </a>
                     </div>
                 </div>

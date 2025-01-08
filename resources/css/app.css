@@ -50,3 +50,21 @@
     overflow-y: auto; /* Scroll vertikal pada konten */
     padding-right: 10px; /* Agar tidak terpotong dengan scrollbar */
 }
+
+/* Pastikan html dan body memiliki tinggi penuh */
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Gunakan Flexbox untuk menata layout */
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Footer akan selalu berada di bawah */
+footer {
+    margin-top: auto;
+}

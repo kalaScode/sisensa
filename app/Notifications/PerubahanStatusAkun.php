@@ -12,15 +12,17 @@ class PerubahanStatusAkun extends Notification
     use Queueable;
 
     protected $action;
+    private $sender;
 
     /**
      * Create a new notification instance.
      *
      * @param string $action
      */
-    public function __construct($action)
+    public function __construct($action, $sender)
     {
         $this->action = $action;
+        $this->sender = $sender;
     }
 
     /**
@@ -56,6 +58,10 @@ class PerubahanStatusAkun extends Notification
         return [
             'message' => $message,
             'description' => $description,
+            'sender_name' => $this->sender->name, // Nama pengirim
+            'sender_avatar' => $this->sender->Avatar, // Foto pengirim
+            'sender_jabatan' => $this->sender->jabatan->nama_Jabatan, // Jabatan pengirim
+            'sender_perusahaan_id' => $this->sender->id_Perusahaan,
         ];
     }
 
