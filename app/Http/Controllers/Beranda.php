@@ -20,6 +20,7 @@ class Beranda extends Controller
         return view('page.pberanda', [
             'role' => $role,
             'latestNotification' => $latestNotification,
+            'title' => 'Dashboard Beranda',
         ]);
     }
 }
