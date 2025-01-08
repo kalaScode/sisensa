@@ -45,35 +45,19 @@
                     <form action="{{ route('daftar-karyawan') }}" method="GET"
                         class="flex flex-wrap items-center gap-4 mb-6">
                         <!-- Input Pencarian -->
-                        <div class="flex items-center border border-gray-300 rounded-lg shadow-sm max-w-md w-full">
+                        <div class="flex items-center rounded-lg shadow-sm max-w-md w-full">
                             <input type="text" name="search"
-                                class="flex-grow px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
+                                class="flex-grow px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 rounded-l-lg"
                                 placeholder="Cari karyawan..." value="{{ request('search') }}" />
                             <button type="submit"
-                                class="bg-blue-500 text-white px-4 py-2 text-sm rounded-r-lg hover:bg-blue-600 transition">
-                                Cari
+                                class="bg-blue-400 text-white px-4 py-2 text-sm rounded-r-lg hover:bg-blue-800 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2.0" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
                             </button>
                         </div>
-
-                        <!-- Dropdown Filter Jabatan -->
-                        <div class="max-w-xs w-full">
-                            <select name="jabatan"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">-- Filter berdasarkan Jabatan --</option>
-                                @foreach ($jabatan as $j)
-                                    <option value="{{ $j->id_Jabatan }}"
-                                        {{ request('jabatan') == $j->id_Jabatan ? 'selected' : '' }}>
-                                        {{ $j->nama_Jabatan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Tombol Reset Filter -->
-                        <a href="{{ route('daftar-karyawan') }}"
-                            class="bg-gray-200 text-gray-700 px-4 py-2 text-sm rounded-lg hover:bg-gray-300 transition">
-                            Reset
-                        </a>
                     </form>
                 </div>
 
