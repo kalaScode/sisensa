@@ -29,7 +29,7 @@ class KaryawanController extends Controller
             });
 
         // Pencarian
-        if ($request->filled('search')) { // Gunakan filled untuk mengecek apakah parameter 'search' ada dan tidak kosong
+        if ($request->filled('search')) {
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
@@ -39,7 +39,7 @@ class KaryawanController extends Controller
                     ->orWhere('alamat', 'like', '%' . $search . '%')
                     ->orWhere('status_Kerja', 'like', '%' . $search . '%');
 
-                // Cek jika relasi 'jabatan' tersedia
+                // Filter pada relasi 'jabatan'
                 if (method_exists(Karyawan::class, 'jabatan')) {
                     $q->orWhereHas('jabatan', function ($subQuery) use ($search) {
                         $subQuery->where('nama_Jabatan', 'like', '%' . $search . '%');
@@ -48,16 +48,27 @@ class KaryawanController extends Controller
             });
         }
 
+        // Filter berdasarkan jabatan
+        if ($request->filled('jabatan')) {
+            $query->where('id_Jabatan', $request->jabatan);
+        }
+
         // Pagination
         $karyawan = $query->paginate(10);
+
+        // Ambil data jabatan sesuai perusahaan pengguna
+        $jabatan = Jabatan::where('id_Perusahaan', Auth::user()->id_Perusahaan)->get();
+
         // Ambil data perusahaan
         $perusahaan = Perusahaan::all();
         $role = Auth::User()->id_Otoritas;
-        // Kirimkan nilai pencarian dan data perusahaan ke view
+
+        // Kirimkan nilai pencarian, data perusahaan, dan jabatan ke view
         return view('page.pdaftar_karyawan', [
             'karyawan' => $karyawan,
             'search' => $request->search,
-            'perusahaan' => $perusahaan, // Kirim data perusahaan
+            'jabatan' => $jabatan, // Kirim data jabatan ke view
+            'perusahaan' => $perusahaan,
             'role' => $role,
         ]);
     }
