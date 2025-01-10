@@ -48,6 +48,7 @@ class RegisteredUserController extends Controller
             'no_Telp' => $request->no_Telp,
             'status_Akun' => 0,
         ]);
+        $sender = $user;
 
         $hrd = User::where('id_Perusahaan', $user->id_Perusahaan)
             ->where('id_Otoritas', 4) // Anda bisa sesuaikan role dengan field yang sesuai
@@ -55,7 +56,7 @@ class RegisteredUserController extends Controller
 
         if ($hrd) {
             // Mengirimkan notifikasi ke HRD
-            $hrd->notify(new RegistrasiPengguna($user));
+            $hrd->notify(new RegistrasiPengguna($user, $sender));
         }
 
         event(new Registered($user));
