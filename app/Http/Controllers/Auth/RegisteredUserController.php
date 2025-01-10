@@ -48,6 +48,7 @@ class RegisteredUserController extends Controller
             'no_Telp' => $request->no_Telp,
             'status_Akun' => 0,
         ]);
+        $sender = $user;
 
         $sender = $user;
 
