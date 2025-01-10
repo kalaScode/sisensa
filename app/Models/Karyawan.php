@@ -23,7 +23,7 @@ class Karyawan extends Model
         'id_Perusahaan',
         'id_Jabatan',
         'status_Akun',
-        'saldo_cuti',
+        'saldo_Awal',
         'Avatar'
     ];
 
