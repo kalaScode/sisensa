@@ -12,13 +12,15 @@ class RegistrasiPengguna extends Notification
 {
     use Queueable;
     public $user;
+    private $sender;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user)
+    public function __construct(User $user, $sender)
     {
         $this->user = $user;
+        $this->sender = $sender;
     }
 
     /**
@@ -56,6 +58,10 @@ class RegistrasiPengguna extends Notification
             'email' => $this->user->email,
             'user_id' => $this->user->user_id,
             'id_Perusahaan' => $this->user->id_Perusahaan,
+            'sender_name' => $this->sender->name, // Nama pengirim
+            'sender_avatar' => $this->sender->Avatar, // Foto pengirim
+            'sender_jabatan' => $this->sender->jabatan->nama_Jabatan ?? 'None', // Jabatan pengirim
+            'sender_perusahaan_id' => $this->sender->id_Perusahaan,
         ];
     }
 }
