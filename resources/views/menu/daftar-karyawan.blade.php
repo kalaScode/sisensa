@@ -116,6 +116,7 @@
                                                     data-alamat="{{ $item->Alamat }}"
                                                     data-statuskerja="{{ $item->status_Kerja }}"
                                                     data-statusakun="{{ $item->status_Akun }}"
+                                                    data-saldoawal="{{ $item->saldoCuti->saldo_Awal ?? 12 }}"
                                                     data-saldo="{{ $item->saldoCuti->saldo_Sisa ?? 12 }}"
                                                     onclick="openModal(this)">
                                                     <i class="fa-regular fa-pen-to-square"></i>
@@ -244,6 +245,15 @@
                                                             class="mt-1 block px-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"></textarea>
                                                     </div>
 
+                                                    <!-- Jatah Cuti -->
+                                                    <div class="mb-4">
+                                                        <label for="saldo_Awal"
+                                                            class="block text-sm font-medium text-gray-300">Jatah
+                                                            Cuti</label>
+                                                        <input type="number" id="saldo_Awal" name="saldo_Awal"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
+                                                    </div>
+
                                                     <!-- Saldo Cuti -->
                                                     <div class="mb-4">
                                                         <label for="saldo"
@@ -292,6 +302,7 @@
         document.getElementById('email').value = button.getAttribute('data-email');
         document.getElementById('no_Telp').value = button.getAttribute('data-telepon');
         document.getElementById('alamat').value = button.getAttribute('data-alamat');
+        document.getElementById('saldo_Awal').value = button.getAttribute('data-saldoawal');
         document.getElementById('saldo').value = button.getAttribute('data-saldo');
 
         const statusKerja = button.getAttribute('data-statuskerja');

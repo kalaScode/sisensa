@@ -2,22 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SaldoCuti extends Model
 {
-    protected $table = 'saldo_cuti';
+    use HasFactory;
 
-    // Kolom yang boleh diisi (fillable)
+    protected $table = 'saldo_cuti'; // Nama tabel
+    protected $primaryKey = 'id_Saldocuti'; // Primary key
+
     protected $fillable = [
-        'user_id',  // Relasi dengan tabel user
-        'saldo_Sisa',  // Saldo cuti yang tersisa
+        'user_id',
+        'saldo_Awal',
+        'updated_By',
+        'created_By'
     ];
 
-    // Mendefinisikan relasi dengan model User
+    // Relasi ke user/karyawan
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class, 'user_id');
+    }
+
     public function user()
     {
-        // SaldoCuti belongsTo User, berarti setiap saldo cuti berhubungan dengan satu user
         return $this->belongsTo(User::class, 'user_id');
     }
 }

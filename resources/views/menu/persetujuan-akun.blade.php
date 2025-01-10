@@ -1,23 +1,22 @@
 <x-navbar></x-navbar>
 <main class="max-w-7xl sm:px-6 lg:px-36 py-10">
     <nav class="flex" aria-label="Breadcrumb">
+        <!-- Breadcrumb -->
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
-                <a href="/beranda"
-                    class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
-                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 20 20">
+                <a href="/beranda" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800">
+                    <svg class="w-3 h-3 me-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path
-                            d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 1 1 1 1v4a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                     </svg>
                     Beranda
                 </a>
             </li>
             <li class="inline-flex items-center">
                 <a href="/daftar-karyawan"
-                    class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
-                    <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800">
+                    <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m1 9 4-4-4-4" />
                     </svg>
@@ -25,8 +24,8 @@
                 </a>
             </li>
             <li class="inline-flex items-center text-sm font-medium text-gray-700">
-                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m1 9 4-4-4-4" />
                 </svg>
@@ -34,9 +33,10 @@
             </li>
         </ol>
     </nav>
+
     <div class="flex-1 max-w-8xl w-full mx-auto py-8">
         <div class="bg-white rounded-lg shadow">
-            <!-- Navigation Tabs -->
+            <!-- Tabs Navigation -->
             <div class="border-b border-gray-200">
                 <nav class="flex -mb-px">
                     <a href="/daftar-karyawan">
@@ -61,7 +61,6 @@
                             placeholder="Cari karyawan..."
                             class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-custom focus:border-custom">
                     </form>
-
                 </div>
 
                 <!-- Table -->
@@ -78,50 +77,26 @@
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Nama
                                         Karyawan</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">
-                                        Email
-                                    </th>
+                                        Email</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">
-                                        Jabatan
-                                    </th>
+                                        Jabatan</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">
-                                        Tanggal
-                                        Pengajuan</th>
+                                        Tanggal Pengajuan</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">
-                                        Status
-                                    </th>
+                                        Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Aksi
                                     </th>
                                 </tr>
                             </thead>
-
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($karyawan as $k)
                                     <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $k->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $k->email }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="h-10 w-10 flex-shrink-0">
-                                                    <img src="{{ $k->Avatar ? asset('storage/' . $k->Avatar) : '/img/profil.jpg' }}"
-                                                        alt="Foto Profil"
-                                                        class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ $k->name }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
+                                            {{ $k->jabatan ? $k->jabatan->nama_Jabatan : 'none' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ $k->email }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">
-                                                {{ $k->jabatan ? $k->jabatan->nama_Jabatan : 'none' }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">
-                                                {{ \Carbon\Carbon::parse($k->created_at)->format('d M Y') }}</div>
-                                        </td>
-
+                                            {{ \Carbon\Carbon::parse($k->created_at)->format('d M Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span
                                                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -139,15 +114,10 @@
                                                 </button>
 
                                                 <!-- Ubah Status Button -->
-                                                <form class="ubah-status-form"
-                                                    action="{{ route('ubah-status-akun', $k->user_id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="text-green-600 hover:text-green-900">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                </form>
-
+                                                <button onclick="showStatusKerjaModal({{ $k->user_id }})"
+                                                    class="text-green-600 hover:text-green-900">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
                                                 <!-- Batalkan Akun Button -->
                                                 <form class="batalkan-akun-form"
                                                     action="{{ route('batalkan-akun', $k->user_id) }}" method="POST">
@@ -162,24 +132,63 @@
                                 @endforeach
                             </tbody>
                         </table>
-                </div>
-                <!-- Pagination -->
-                <div class="mt-6 flex items-center justify-between">
-                    <div class="text-sm text-gray-700">
-                        Menampilkan <span class="font-medium">{{ $karyawan->firstItem() }}</span> sampai <span
-                            class="font-medium">{{ $karyawan->lastItem() }}</span> dari <span
-                            class="font-medium">{{ $karyawan->total() }}</span> data
-                    </div>
-                    <div class="flex space-x-2 items-center">
-                        {{ $karyawan->links() }} <!-- Pagination Laravel -->
-                    </div>
+                        <!-- Pagination -->
+                        <div class="mt-6 flex items-center justify-between">
+                            <div class="text-sm text-gray-700">
+                                Menampilkan <span class="font-medium">{{ $karyawan->firstItem() }}</span> sampai <span
+                                    class="font-medium">{{ $karyawan->lastItem() }}</span> dari <span
+                                    class="font-medium">{{ $karyawan->total() }}</span> data
+                            </div>
+                            <div class="flex space-x-2 items-center">
+                                {{ $karyawan->links() }} <!-- Pagination Laravel -->
+                            </div>
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
+    </div>
 </main>
 
 <x-footer></x-footer>
+
+<!-- Modal for Status Kerja -->
+<div id="modalStatusKerja" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-3/4 lg:w-2/5">
+        <div class="border-b pb-4 mb-4">
+            <h2 class="text-2xl font-semibold text-gray-900">Set Status Kerja</h2>
+        </div>
+        <form id="formSetStatusKerja" action="" method="POST">
+            @csrf
+            <div class="space-y-4">
+                <label class="block text-sm font-medium text-gray-700">Pilih Status Kerja:</label>
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <input type="radio" id="statusTetap" name="status_Kerja" value="Tetap"
+                            onclick="updateSaldoAwal('Tetap')">
+                        <label for="statusTetap" class="ml-2 text-gray-800">Tetap</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="statusKontrak" name="status_Kerja" value="Kontrak"
+                            onclick="updateSaldoAwal('Kontrak')">
+                        <label for="statusKontrak" class="ml-2 text-gray-800">Kontrak</label>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label for="saldoAwal" class="block text-sm font-medium text-gray-700">Jatah Cuti:</label>
+                    <input type="text" id="saldoAwal" name="saldo_Awal" value="0" readonly
+                        class="mt-1 block w-full px-4 py-2">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button type="button" onclick="closeModal()"
+                    class="px-5 py-2 text-gray-700 bg-gray-200 rounded-lg">Batal</button>
+                <button type="submit" class="px-5 py-2 text-white bg-blue-600 rounded-lg">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <!-- Modal for employee detail -->
 <div id="employeeDetailModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
@@ -232,10 +241,26 @@
         document.getElementById('employeeDetailModal').classList.remove('hidden');
     }
 
-    // Fungsi untuk menutup modal
-    function closeModal() {
-        document.getElementById('employeeDetailModal').classList.add('hidden');
-    }
+    document.addEventListener('submit', function(event) {
+        if (event.target.matches('#formStatusKerja-' + userId)) {
+            event.preventDefault(); // Mencegah submit default
+
+            // Tampilkan SweetAlert konfirmasi
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Status kerja telah diperbarui.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tutup modal setelah konfirmasi
+                    closeStatusKerjaModal(userId);
+                    // Segarkan halaman atau data yang relevan
+                    location.reload();
+                }
+            });
+        }
+    });
 
     // Menangani konfirmasi SweetAlert saat form disubmit
     document.addEventListener('submit', function(event) {
@@ -276,4 +301,19 @@
             });
         }
     });
+
+    function showStatusKerjaModal(userId) {
+        document.getElementById('modalStatusKerja').classList.remove('hidden');
+        document.getElementById('formSetStatusKerja').action = `/set-status-kerja/${userId}`;
+    }
+
+    function closeModal() {
+        document.getElementById('modalStatusKerja').classList.add('hidden');
+        document.getElementById('employeeDetailModal').classList.add('hidden');
+    }
+
+    function updateSaldoAwal(status) {
+        const saldoInput = document.getElementById('saldoAwal');
+        saldoInput.value = status === 'Tetap' ? 12 : 0;
+    }
 </script>

@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
 //Route untuk Persetujuan Akun
 Route::middleware('auth')->group(function () {
     Route::get('persetujuan-akun/', [KaryawanController::class, 'getPersetujuanAkun'])->name('persetujuan-akun');
+    Route::post('/set-status-kerja/{userId}', [KaryawanController::class, 'setStatusKerja']);
     Route::post('/ubah-status-akun/{user_id}', [KaryawanController::class, 'ubahStatusAkun'])->name('ubah-status-akun');
     Route::post('/batalkan-akun/{user_id}', [KaryawanController::class, 'batalkanAkun'])->name('batalkan-akun');
 });

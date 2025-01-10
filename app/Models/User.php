@@ -21,7 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $primaryKey = 'user_id';
-    
+
     protected $fillable = [
         'name',
         'email',
@@ -34,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'id_Jabatan',
         'Avatar',
         'Alamat',
+        'saldo_Awal',
     ];
 
     public function user()
@@ -62,7 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
             }
         });
     }
-    
+
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'id_Jabatan', 'id_Jabatan');
@@ -71,6 +72,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function routeNotificationForMail($notification)
     {
         return $this->email;
+    }
+
+    public function saldoCuti()
+    {
+        return $this->hasOne(SaldoCuti::class, 'user_id');
     }
 
     /**
