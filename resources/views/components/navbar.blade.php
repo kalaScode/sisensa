@@ -42,10 +42,7 @@
                                     <!-- Foto Pengirim -->
                                     <div class="flex-shrink-0">
                                         <img class="rounded-full w-11 h-11 object-cover border-2 border-gray-300 dark:border-gray-600"
-                                            src="{{ file_exists(public_path('storage/' . ($notification->data['sender_avatar'] ?? ''))) &&
-                                            $notification->data['sender_avatar']
-                                                ? asset('storage/' . $notification->data['sender_avatar'])
-                                                : asset('img/profil.jpg') }}"
+                                            src="{{ asset('storage/' . ($notification->data['sender_avatar'] ?? 'profil.jpg')) }}"
                                             alt="{{ $notification->data['sender_name'] ?? 'User Photo' }}">
                                     </div>
 
