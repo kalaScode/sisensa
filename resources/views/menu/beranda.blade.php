@@ -125,7 +125,7 @@
                 <p class="text-sm text-gray-500">Ajukan cuti</p>
             </a>
             <!-- Card 3 -->
-            <a href="/riwayat_pribadi"
+            <a href="/riwayat-presensi-pribadi"
                 class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                 <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
                     <i class="fas fa-history text-white text-xl"></i>
@@ -161,7 +161,7 @@
             @endif
             <!-- Card 6 -->
             @if (in_array($role, ['3', '4']))
-                <a href="/riwayat_karyawan"
+                <a href="/riwayat-presensi-karyawan"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
