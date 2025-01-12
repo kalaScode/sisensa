@@ -50,6 +50,8 @@ class RegisteredUserController extends Controller
         ]);
         $sender = $user;
 
+        $sender = $user;
+
         $hrd = User::where('id_Perusahaan', $user->id_Perusahaan)
             ->where('id_Otoritas', 4) // Anda bisa sesuaikan role dengan field yang sesuai
             ->first();
