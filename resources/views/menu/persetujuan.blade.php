@@ -53,7 +53,7 @@
         <div class="flex justify-between mb-6">
             <!-- Filter Status -->
             <form action="{{ route('persetujuan-cuti.index') }}" method="GET"
-                class="flex items-center space-x-4 w-1/3">
+                class="flex items-center space-x-4 w-3/4">
                 <!-- Filter Status -->
                 <div class="flex items-center w-full">
                     <select name="status" id="status" class="border-gray-300 rounded-md shadow-sm w-full pl-2 py-2">
