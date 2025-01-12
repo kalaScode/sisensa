@@ -47,7 +47,7 @@
                     <div class="p-4 bg-blue-50 rounded-xl">
                         <div class="text-sm text-gray-600 mb-1">Saldo Cuti Tahunan</div>
                         <div class="text-3xl font-bold text-custom">
-                            {{ Auth::user()->saldo_cuti->saldo_Awal ?? 0 }}
+                            {{ Auth::user()->saldo_cuti->saldo_Awal ?? 0 }} Hari
                         </div>
                     </div>
 
@@ -55,7 +55,7 @@
                     <div class="p-4 bg-gray-50 rounded-xl">
                         <div class="text-sm text-gray-600 mb-1">Cuti Terpakai</div>
                         <div class="text-3xl font-bold text-gray-700">
-                            {{ Auth::user()->saldo_cuti->saldoTerpakai ?? 0 }}
+                            {{ Auth::user()->saldo_cuti->saldo_Terpakai ?? 0 }} Hari
                         </div>
                     </div>
                 </div>

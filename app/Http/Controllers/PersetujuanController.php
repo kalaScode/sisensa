@@ -73,13 +73,13 @@ class PersetujuanController extends Controller
                 $sender = Auth::user();
                 $cuti->user->notify(new NotifikasiPersetujuanCuti($cuti, $sender));
 
-                return redirect()->route('persetujuan.index')->with('success', 'Cuti berhasil disetujui.');
+                return redirect()->route('persetujuan-cuti.index')->with('success', 'Cuti berhasil disetujui.');
             }
 
-            return redirect()->route('persetujuan.index')->with('error', 'Saldo cuti karyawan tidak ditemukan.');
+            return redirect()->route('persetujuan-cuti.index')->with('error', 'Saldo cuti karyawan tidak ditemukan.');
         }
 
-        return redirect()->route('persetujuan.index')->with('error', 'Cuti sudah diproses sebelumnya.');
+        return redirect()->route('persetujuan-cuti.index')->with('error', 'Cuti sudah diproses sebelumnya.');
     }
 
 
@@ -87,7 +87,7 @@ class PersetujuanController extends Controller
     {
         $cuti = Cuti::findOrFail($id);
         if (!$cuti) {
-            return redirect()->route('persetujuan.index')->with('error', 'Pengajuan cuti tidak ditemukan.');
+            return redirect()->route('persetujuan-cuti.index')->with('error', 'Pengajuan cuti tidak ditemukan.');
         }
 
         $cuti->update([
