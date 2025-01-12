@@ -5,9 +5,10 @@
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
                 <a href="/beranda" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800">
-                    <svg class="w-3 h-3 me-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path
-                            d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 1 1 1 1v4a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            d="M19.707 9.293l-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414z" />
                     </svg>
                     Beranda
                 </a>
@@ -153,41 +154,59 @@
 <x-footer></x-footer>
 
 <!-- Modal for Status Kerja -->
-<div id="modalStatusKerja" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg p-8 w-3/4 lg:w-2/5">
+<div id="modalStatusKerja" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+        <!-- Header -->
         <div class="border-b pb-4 mb-4">
-            <h2 class="text-2xl font-semibold text-gray-900">Set Status Kerja</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Set Status Kerja</h2>
         </div>
+
+        <!-- Form -->
         <form id="formSetStatusKerja" action="" method="POST">
             @csrf
-            <div class="space-y-4">
-                <label class="block text-sm font-medium text-gray-700">Pilih Status Kerja:</label>
-                <div class="flex items-center space-x-4">
-                    <div>
-                        <input type="radio" id="statusTetap" name="status_Kerja" value="Tetap"
-                            onclick="updateSaldoAwal('Tetap')">
-                        <label for="statusTetap" class="ml-2 text-gray-800">Tetap</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="statusKontrak" name="status_Kerja" value="Kontrak"
-                            onclick="updateSaldoAwal('Kontrak')">
-                        <label for="statusKontrak" class="ml-2 text-gray-800">Kontrak</label>
+            <div class="space-y-6">
+                <!-- Status Kerja Options -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Pilih Status Kerja:</label>
+                    <div class="flex items-center space-x-6 mt-2">
+                        <div class="flex items-center">
+                            <input type="radio" id="statusTetap" name="status_Kerja" value="Tetap"
+                                onclick="updateSaldoAwal('Tetap')"
+                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <label for="statusTetap" class="ml-2 text-sm text-gray-800">Tetap</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="statusKontrak" name="status_Kerja" value="Kontrak"
+                                onclick="updateSaldoAwal('Kontrak')"
+                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <label for="statusKontrak" class="ml-2 text-sm text-gray-800">Kontrak</label>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-4">
+
+                <!-- Jatah Cuti -->
+                <div>
                     <label for="saldoAwal" class="block text-sm font-medium text-gray-700">Jatah Cuti:</label>
                     <input type="text" id="saldoAwal" name="saldo_Awal" value="0" readonly
-                        class="mt-1 block w-full px-4 py-2">
+                        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-800 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
             </div>
-            <div class="mt-6 flex justify-end">
+
+            <!-- Action Buttons -->
+            <div class="mt-6 flex justify-end space-x-4">
                 <button type="button" onclick="closeModal()"
-                    class="px-5 py-2 text-gray-700 bg-gray-200 rounded-lg">Batal</button>
-                <button type="submit" class="px-5 py-2 text-white bg-blue-600 rounded-lg">Simpan</button>
+                    class="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Batal
+                </button>
+                <button type="submit"
+                    class="px-5 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
 </div>
+
 
 
 <!-- Modal for employee detail -->

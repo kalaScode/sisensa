@@ -1,275 +1,304 @@
 <x-navbar></x-navbar>
-<main class="w-full mx-auto mb-6 px-4 sm:px-6 lg:px-36 py-10 ">
-    <nav class="flex" aria-label="Breadcrumb">
+
+<main class="w-full mx-auto px-4 sm:px-6 lg:px-36 py-10">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-8" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
-                <a href="/beranda" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
-                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                <a href="/beranda" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M19.707 9.293l-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 1 1 2 0v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414z" />
                     </svg>
                     Beranda
                 </a>
             </li>
             <li class="inline-flex items-center text-sm font-medium text-gray-700">
-                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 9 4-4-4-4" />
                 </svg>
                 Persetujuan
-             </li>
+            </li>
         </ol>
     </nav>
-    
-    <div class="bg-white rounded-lg shadow-lg p-6 my-6 backdrop-blur-lg bg-opacity-90">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select class="w-full border-gray-300 rounded-md shadow-sm !rounded-button">
-                    <option value="">Semua Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Disetujui</option>
-                    <option value="rejected">Ditolak</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Karyawan</label>
-                <div class="relative">
-                    <input type="text" class="w-full pl-10 pr-4 py-2 border-gray-300 rounded-md shadow-sm !rounded-button" placeholder="Masukkan nama karyawan..."/>
-                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+
+    <!-- Pesan Error/Success -->
+    @if (session('error'))
+        <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Content -->
+    <div class="p-6 pt-2 bg-white shadow rounded-lg">
+        <div class="border-b mb-2 border-gray-200">
+            <nav class="flex -mb-px">
+                <button class="px-6 py-4 text-sm font-medium text-custom border-b-2 border-[#122036]">Cuti</button>
+                <a href="{{ route('persetujuan-presensi.index') }}">
+                    <button
+                        class="px-6 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">Presensi</button>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Filter Status dan Cari Karyawan -->
+        <div class="flex justify-between mb-6">
+            <!-- Filter Status -->
+            <form action="{{ route('persetujuan-cuti.index') }}" method="GET"
+                class="flex items-center space-x-4 w-1/3">
+                <!-- Filter Status -->
+                <div class="flex items-center w-full">
+                    <select name="status" id="status" class="border-gray-300 rounded-md shadow-sm w-full pl-2 py-2">
+                        <option value="">Semua Status</option>
+                        <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Menunggu
+                        </option>
+                        <option value="Disetujui" {{ request('status') == 'Disetujui' ? 'selected' : '' }}>Disetujui
+                        </option>
+                        <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
                 </div>
+
+                <!-- Tombol Filter -->
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+                    Filter
+                </button>
+            </form>
+
+
+            <!-- Search Bar -->
+            <div class="relative w-1/2">
+                <form action="{{ route('persetujuan-cuti.index') }}" method="GET" class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input id="searchInput" name="search" type="text" value="{{ old('search', $search) }}"
+                        placeholder="Cari karyawan..."
+                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-custom focus:border-custom w-full">
+                </form>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Periode</label>
-                <input type="date" class="w-full border-gray-300 rounded-md shadow-sm !rounded-button"/>
-            </div>
+        </div>
+
+        <!-- Daftar Karyawan -->
+        <div class="bg-white shadow rounded-lg overflow-x-auto">
+            @if ($cuti->isEmpty())
+                <div class="p-4 mb-4 text-sm text-yellow-800 bg-yellow-100 rounded-lg border-l-4 border-yellow-500"
+                    role="alert">
+                    Karyawan tidak ditemukan.
+                </div>
+            @else
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead class="bg-[#122036] text-white">
+                        <tr>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Nama</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Jenis Cuti</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Durasi Cuti</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Periode</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Status</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach ($cuti as $c)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full object-cover"
+                                                src="{{ $c->user->Avatar ? asset('storage/' . $c->user->Avatar) : '/profil.jpg' }}"
+                                                alt="Foto Profil" />
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $c->user->name ?? 'Nama Tidak Ditemukan' }}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                {{ $c->user->jabatan->nama_Jabatan ?? 'Jabatan Tidak Ditemukan' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $c->jenis_Cuti }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $c->tanggal_Mulai->diffInDays($c->tanggal_Selesai) + 1 }} hari
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $c->tanggal_Mulai->format('Y-m-d') }} s/d
+                                    {{ $c->tanggal_Selesai->format('Y-m-d') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {{ $c->status_Cuti == 'Menunggu' ? 'bg-yellow-100 text-yellow-800' : ($c->status_Cuti == 'Disetujui' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') }} ">
+                                        {{ $c->status_Cuti }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                                    <!-- Detail Button -->
+                                    <button
+                                        onclick="showDetailModal('{{ $c->user_id }}', '{{ $c->user->name }}', '{{ $c->Keterangan }}', '{{ asset('storage/' . $c->Attachment ?? '-') }}', '{{ $c->tanggal_Mulai->diffInDays($c->tanggal_Selesai) + 1 }}', '{{ $c->Feedback ?? '-' }}', '{{ $c->jenis_Cuti }}')"
+                                        class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+
+                                    <!-- Tombol Terima dan Tolak hanya jika status_Cuti adalah "Menunggu" -->
+                                    @if ($c->status_Cuti === 'Menunggu')
+                                        <!-- Terima Button -->
+                                        <form action="{{ route('cuti.terima', ['id' => $c->id_Cuti]) }}" method="POST"
+                                            class="inline-block">
+                                            @csrf
+                                            <button type="submit" class="text-green-600 hover:text-green-900">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <!-- Tolak Button -->
+                                        <button type="button" onclick="showFeedbackModal('{{ $c->id_Cuti }}')"
+                                            class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @endif
+
+                                    {{-- Modal Feedback --}}
+                                    <div id="feedbackModal-{{ $c->id_Cuti }}"
+                                        class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+                                        <div class="bg-white rounded-lg shadow-lg p-8 w-3/4 lg:w-2/5">
+                                            <!-- Modal Header with Divider -->
+                                            <div class="border-b pb-4 mb-4">
+                                                <h2 class="text-2xl font-semibold text-gray-900">Tolak Pengajuan Cuti
+                                                </h2>
+                                            </div>
+
+                                            <!-- Modal Content -->
+                                            <form action="{{ route('cuti.tolak', ['id' => $c->id_Cuti]) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="space-y-4 text-gray-800">
+                                                    <div>
+                                                        <strong class="text-dark-600">Alasan Penolakan<br></strong>
+                                                        <textarea name="Feedback" rows="4" class="w-full border-gray-300 rounded-lg"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-6 flex justify-between">
+                                                    <button type="submit"
+                                                        class="px-5 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
+                                                        Kirim
+                                                    </button>
+                                                    <button type="button"
+                                                        onclick="closeFeedbackModal('{{ $c->id_Cuti }}')"
+                                                        class="px-5 py-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none">
+                                                        Batal
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="bg-white shadow rounded-lg overflow-x-auto ">
-        <table class="min-w-full bg-white border boreder-black">
-            <thead class="bg-[#122036] text-white">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Nama</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Tanggal Pengajuan</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Jenis Cuti</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Durasi</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Periode</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Repeat this row for 20 people -->
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-male-posing-isolated-against-blank-studio-wall_273609-12356.jpg" alt="Budi Santoso"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Budi Santoso</div>
-                                    <div class="text-sm text-gray-500">IT Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-02-20</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Tahunan</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-01 s/d 2024-03-03</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <!-- Data Karyawan 2 -->
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-female-posing_273609-12456.jpg" alt="Siti Aisyah"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Siti Aisyah</div>
-                                    <div class="text-sm text-gray-500">HR Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-02-22</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Sakit</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-03 s/d 2024-03-04</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <!-- Repeat similar rows up to 20 -->
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-male-posing_273609-12567.jpg" alt="John Doe"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">John Doe</div>
-                                    <div class="text-sm text-gray-500">Marketing Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-01</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Tahunan</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-10 s/d 2024-03-14</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-male-posing_273609-12478.jpg" alt="Rudi Pratama"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Rudi Pratama</div>
-                                    <div class="text-sm text-gray-500">Finance Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-05</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Sakit</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-10 s/d 2024-03-13</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-woman-smiling_273609-12522.jpg" alt="Sari Mulyani"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Sari Mulyani</div>
-                                    <div class="text-sm text-gray-500">HR Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-02-25</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Melahirkan</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-01 s/d 2024-03-14</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-woman-smiling-outside_273609-12633.jpg" alt="Dewi Kusuma"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Dewi Kusuma</div>
-                                    <div class="text-sm text-gray-500">Marketing Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-01</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Tahunan</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-05 s/d 2024-03-09</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-man-smiling_273609-12714.jpg" alt="Ahmad Zaki"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Ahmad Zaki</div>
-                                    <div class="text-sm text-gray-500">IT Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-02</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Sakit</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-07 s/d 2024-03-08</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover" src="https://img.freepik.com/free-photo/young-woman-laughing_273609-12845.jpg" alt="Lina Pratiwi"/>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Lina Pratiwi</div>
-                                    <div class="text-sm text-gray-500">Sales Department</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-01</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Cuti Tahunan</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">6 hari</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-12 s/d 2024-03-17</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="bg-green-500 text-white px-3 py-1 rounded-md !rounded-button mr-2">Setujui</button>
-                            <button class="bg-soft-red text-white px-3 py-1 rounded-md !rounded-button">Tolak</button>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
+    <!-- Pagination -->
+    <div class="mt-6 flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+            Menampilkan <span class="font-medium">{{ $cuti->firstItem() }}</span> sampai <span
+                class="font-medium">{{ $cuti->lastItem() }}</span> dari <span
+                class="font-medium">{{ $cuti->total() }}</span> data
         </div>
-
-        <!-- Pagination -->
-        <div class="mt-6 flex items-center justify-between">
-            <div class="text-sm text-gray-700">
-                Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">10</span> dari <span class="font-medium">15</span> data
-            </div>
-            <div class="flex space-x-2 items-center">
-                <button class="rounded-lg px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-custom">Sebelumnya</button>
-                <button class="rounded-lg px-4 py-2 border border-gray-300 bg-[#122036] text-white text-sm font-medium">1</button>
-                <button class="rounded-lg px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-custom">2</button>
-                <button class="rounded-lg px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-custom">Selanjutnya</button>
-            </div>                    
+        <div class="flex space-x-2 items-center">
+            {{ $cuti->links() }}
         </div>
+    </div>
 </main>
+
 <x-footer></x-footer>
+
+{{-- Modal Detail Karyawan --}}
+<div id="employeeDetailModal"
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-3/4 lg:w-2/5 max-h-full overflow-y-auto h-3/4">
+        <!-- Modal Header with Divider -->
+        <div class="border-b pb-4 mb-4">
+            <h2 class="text-2xl font-semibold text-gray-900">Detail Informasi Karyawan</h2>
+        </div>
+
+        <!-- Modal Content -->
+        <div id="modalContent" class="space-y-4 text-gray-800">
+            <div><strong class="text-dark-600">Nama Karyawan<br></strong> <span id="modalNama"></span></div>
+            <div><strong class="text-dark-600">Keterangan<br></strong> <span id="modalKeterangan"></span></div>
+            <div><strong class="text-dark-600">Durasi Cuti<br></strong> <span id="modalDurasi"></span></div>
+            <div><strong class="text-dark-600">Lampiran<br></strong> <span id="modalAttachment"></span></div>
+            <div><strong class="text-dark-600">Feedback<br></strong> <span id="modalFeedback"></span></div>
+        </div>
+
+        <!-- Modal Footer with Close Button -->
+        <div class="mt-6 text-right">
+            <button onclick="closeModal()"
+                class="px-5 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    // Fungsi untuk menampilkan modal dengan detail informasi karyawan
+    function showDetailModal(userId, name, Keterangan, Attachment, durasi, Feedback, jenis_Cuti) {
+        let attachmentContent;
+
+        if (jenis_Cuti === 'Sakit' && Attachment) {
+            attachmentContent = `
+            <iframe src="${Attachment}" width="100%" height="400px" frameborder="0" style="border: none;"></iframe>
+        `;
+        } else {
+            attachmentContent = 'Tidak ada Lampiran';
+        }
+
+        // Menyusun konten modal dengan detail karyawan
+        document.getElementById('modalNama').innerText = name;
+        document.getElementById('modalKeterangan').innerText = Keterangan;
+        document.getElementById('modalDurasi').innerText = durasi + ' hari';
+        document.getElementById('modalAttachment').innerHTML = attachmentContent;
+        document.getElementById('modalFeedback').innerText = Feedback ? Feedback : '-';
+
+        // Menampilkan modal
+        document.getElementById('employeeDetailModal').classList.remove('hidden');
+    }
+
+
+
+    //Fungsi untuk menampilkan modal feedback
+    function showFeedbackModal(id) {
+        const modal = document.getElementById(`feedbackModal-${id}`);
+        if (modal) {
+            modal.classList.remove('hidden'); // Menampilkan modal
+        } else {
+            console.error('Modal tidak ditemukan');
+        }
+    }
+
+    function closeFeedbackModal(id) {
+        const modal = document.getElementById(`feedbackModal-${id}`);
+        if (modal) {
+            modal.classList.add('hidden'); // Menyembunyikan modal
+        }
+    }
+
+
+    function closeModal() {
+        document.getElementById('employeeDetailModal').classList.add('hidden');
+    }
+</script>
