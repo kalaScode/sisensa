@@ -15,11 +15,14 @@ class SaldoCutiSeeder extends Seeder
         // Siapkan data saldo cuti untuk setiap user
         $saldoCutiData = [];
         foreach ($users as $user) {
+            $saldo_Awal = 12; // Default saldo awal
+            $saldo_Terpakai = 0; // Default saldo terpakai
             $saldoCutiData[] = [
                 'user_id' => $user->user_id,
                 'Tahun' => now()->year,
-                'saldo_Awal' => 12, // Default saldo awal
-                'saldo_Terpakai' => 0, // Default saldo terpakai
+                'saldo_Awal' => $saldo_Awal,
+                'saldo_Terpakai' => $saldo_Terpakai,
+                'saldo_Sisa' => $saldo_Awal - $saldo_Terpakai, // Rumus saldo sisa
                 'created_At' => now(),
                 'created_By' => null,
                 'updated_At' => now(),
