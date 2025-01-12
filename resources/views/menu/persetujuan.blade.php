@@ -110,7 +110,7 @@
                                     <div class="flex items-center justify-center">
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <img class="h-10 w-10 rounded-full object-cover"
-                                                src="{{ $c->user->Avatar ? asset('storage/' . $c->user->Avatar) : '/profil.jpg' }}"
+                                                src="{{ $c->user->Avatar ? asset('storage/' . $c->user->Avatar) : 'storage/profil.jpg' }}"
                                                 alt="Foto Profil" />
                                         </div>
                                         <div class="ml-4">
