@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(JabatanSeeder::class);
         $this->call(OtorisasiSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(SaldoCutiSeeder::class);
     }
 }
