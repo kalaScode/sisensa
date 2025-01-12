@@ -1,3 +1,24 @@
+@php
+    $id_Perusahaan = Auth::user()->id_Perusahaan;
+    $perusahaan = DB::table('perusahaan')
+        ->select('Latitude', 'Longitude')
+        ->where('id_Perusahaan', $id_Perusahaan) // Ganti 'id' dengan 'id_Perusahaan'
+        ->first();
+    $targetLat = $perusahaan->Latitude ?? null;
+    $targetLon = $perusahaan->Longitude ?? null;
+    $user_id = Auth::id(); // Ambil user_id yang sedang login
+    $today = date('Y-m-d'); // Tanggal hari ini
+
+    // Periksa apakah user sudah melakukan presensi hari ini
+    $presensiHariIni = DB::table('presensi')
+        ->where('user_id', $user_id)
+        ->whereDate('Tanggal', $today)
+        ->exists();
+
+    $statusPresensi = $presensiHariIni ? 'Keluar' : 'Masuk';
+@endphp
+
+
 <!-- presensi.blade.php -->
 <x-navbar></x-navbar>
 <div id="successAlert" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -69,8 +90,17 @@
             <div class="bg-white rounded-lg border-2 border-gray-300 p-6 shadow-lg">
                 <!-- Toggle Presensi -->
                 <div class="mb-6">
-                    <label for="presenceType" class="block text-sm font-medium text-gray-700 mb-2">Jenis
-                        Presensi</label>
+                    <div class="mb-3 flex justify-between">
+                        <!-- Jenis Presensi (left) -->
+                        <div class="flex items-center">
+                            <label for="presenceType" class="block text-sm font-medium text-gray-700">Jenis Presensi</label>
+                        </div>
+                    
+                        <!-- Status Presensi (right) -->
+                        <div class="flex items-center bg-green-100 px-2 py-2 rounded-lg">
+                            <div class="block text-sm font-medium text-gray-700">Presensi {{ $statusPresensi }}</div>
+                        </div>
+                    </div>
                     <div class="relative">
                         <select id="presenceType"
                             class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
@@ -216,8 +246,13 @@ function showErrorAlert(message) {
         let currentAddress = null;
         let photoDataUrl = null;  // Menyimpan data URL foto
 
-        const targetLat = -6.2311505;
-        const targetLon = 106.8669003;
+        const targetLat = {{ $targetLat ?? 'null' }};
+        const targetLon = {{ $targetLon ?? 'null' }};
+        if (targetLat === null || targetLon === null) {
+            console.error('Target lokasi tidak ditemukan!');
+            showErrorAlert('Lokasi target perusahaan tidak ditemukan. Silakan hubungi administrator.');
+            return;
+        }
 
         async function checkLocation() {
             if (navigator.geolocation) {
