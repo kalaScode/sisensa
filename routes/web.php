@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\PersetujuanController;
+use App\Http\Controllers\RiwayatController;
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -57,14 +58,24 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/persetujuan-presensi', [PersetujuanController::class, 'indexPresensi'])->name('persetujuan-presensi.index');
 });
 
-// Route ke halaman persetujuan
-Route::get('/riwayat_pribadi', function () {
-    return view('page.priwayat_pribadi');
+// Route ke halaman riwayat presensi pribadi
+Route::middleware('auth')->group(function () {
+    Route::get('/riwayat-presensi-pribadi', [RiwayatController::class, 'getPresensiPribadi'])->name('riwayat-presensi-pribadi');
 });
 
-// Route ke halaman persetujuan
-Route::get('/riwayat_karyawan', function () {
-    return view('page.priwayat_karyawan');
+// Route ke halaman riwayat cuti pribadi
+Route::middleware('auth')->group(function () {
+    Route::get('/riwayat-cuti-pribadi', [RiwayatController::class, 'getCutiPribadi'])->name('riwayat-cuti-pribadi');
+});
+
+// Route ke halaman riwayat presensi karyawan
+Route::middleware('auth')->group(function () {
+    Route::get('/riwayat-presensi-karyawan', [RiwayatController::class, 'getPresensiKaryawan'])->name('riwayat-presensi-karyawan');
+});
+
+// Route ke halaman riwayat cuti karyawan
+Route::middleware('auth')->group(function () {
+    Route::get('/riwayat-cuti-karyawan', [RiwayatController::class, 'getCutiKaryawan'])->name('riwayat-cuti-karyawan');
 });
 
 // Route ke halaman profil (pemberi persetujuan)
