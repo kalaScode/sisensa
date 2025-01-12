@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Notification;
+use App\Models\SaldoCuti;
+use App\Models\Otoritas;
 use App\Notifications\PengumumanGeneral;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -74,9 +75,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->email;
     }
 
-    public function saldoCuti()
+    public function saldo_cuti()
     {
-        return $this->hasOne(SaldoCuti::class, 'user_id');
+        return $this->hasOne(SaldoCuti::class, 'user_id', 'user_id');
     }
 
     /**

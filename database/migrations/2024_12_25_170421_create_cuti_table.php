@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('cuti', function (Blueprint $table) {
             $table->id('id_Cuti'); // Primary key
-            $table->foreignId('user_id')->constrained('users','user_id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
             $table->enum('jenis_Cuti', ['Cuti', 'Sakit']); // Enum jenis cuti
             $table->date('tanggal_Mulai');
             $table->date('tanggal_Selesai');
             $table->text('Keterangan');
-            $table->string('Attachment', 255);
+            $table->string('Attachment', 255)->nullable();
             $table->enum('status_Cuti', ['Disetujui', 'Menunggu', 'Ditolak'])->default('Menunggu'); // Enum status cuti
             $table->text('Feedback')->nullable();
             $table->dateTime('created_At')->useCurrent();

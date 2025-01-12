@@ -144,7 +144,7 @@
             </a>
             <!-- Card 5 -->
             @if ($role == '3')
-                <a href="/persetujuan"
+                <a href="/persetujuan-cuti"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-7 h-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
