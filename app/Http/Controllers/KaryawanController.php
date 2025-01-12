@@ -91,9 +91,7 @@ class KaryawanController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('no_Telp', 'like', '%' . $search . '%')
-                    ->orWhere('alamat', 'like', '%' . $search . '%')
-                    ->orWhere('status_Kerja', 'like', '%' . $search . '%');
+                    ->orWhere('no_Telp', 'like', '%' . $search . '%');
 
                 // Cek jika relasi 'jabatan' tersedia
                 if (method_exists(Karyawan::class, 'jabatan')) {
@@ -115,6 +113,38 @@ class KaryawanController extends Controller
             'search' => $request->search,
             'perusahaan' => $perusahaan, // Kirim data perusahaan
         ]);
+    }
+
+    public function setStatusKerja(Request $request, $userId)
+    {
+        $karyawan = Karyawan::findOrFail($userId);
+
+        // Ambil status kerja dari request
+        $statusKerja = $request->input('status_Kerja');
+        $saldoAwal = $statusKerja === 'Tetap' ? 12 : 0;
+
+        // Update status kerja dan saldo awal di tabel karyawan
+        $karyawan->update([
+            'status_Kerja' => $statusKerja,
+            'status_Akun' => 1 // Setujui akun
+        ]);
+
+        // Update saldo di tabel saldo_cuti
+        SaldoCuti::updateOrCreate(
+            ['user_id' => $userId],
+            ['saldo_Awal' => $saldoAwal]
+        );
+
+        return redirect()->back()->with('success', 'Karyawan berhasil disetujui dan saldo cuti diperbarui.');
+    }
+
+    // Tolak akun karyawan
+    public function tolakKaryawan($userId)
+    {
+        $karyawan = Karyawan::findOrFail($userId);
+        $karyawan->delete(); // Menghapus karyawan dari database
+
+        return redirect()->back()->with('success', 'Karyawan berhasil ditolak.');
     }
 
     public function getProfil()
@@ -149,6 +179,7 @@ class KaryawanController extends Controller
             ],
             'alamat' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255', // Validasi untuk jabatan
+            'saldo_Awal' => 'nullable|integer|min:0', // Validasi saldo awal
             'saldo' => 'nullable|integer|min:0', // Validasi saldo cuti
         ], [
             'no_Telp.regex' => 'Nomor telepon harus dimulai dengan 08 dan terdiri dari 10 hingga 15 angka.',
@@ -156,6 +187,7 @@ class KaryawanController extends Controller
 
         // Cari karyawan berdasarkan ID
         $karyawan = Karyawan::find($request->user_id);  // Anda bisa menyesuaikan pencarian dengan kebutuhan
+        $saldoAwal = $request->input('saldo_Awal', 0);
 
         // Cek apakah karyawan ditemukan
         if ($karyawan) {
@@ -176,15 +208,29 @@ class KaryawanController extends Controller
                 'status_Akun' => $request->status_Akun,
                 'no_Telp' => $request->no_Telp,
                 'Alamat' => $request->alamat,
+                'updated_By' => Auth::user()->user_id,
             ]);
+            $userId = $request->input('user_id');
+            // Update saldo cuti
+            $saldoCuti = SaldoCuti::updateOrCreate(
+                ['user_id' => $userId],
+                ['saldo_Awal' => $saldoAwal],
+                ['updated_By' => Auth::user()->user_id],
+            );
 
-            // Redirect dengan status sukses
-            return redirect()->route('daftar-karyawan')->with('success', 'Data karyawan berhasil diperbarui.');
+            // Cek apakah saldo cuti berhasil diupdate
+            if ($saldoCuti) {
+                return redirect()->route('daftar-karyawan')->with('success', 'Data karyawan berhasil diperbarui.');
+            } else {
+                return redirect()->route('daftar-karyawan')->with('error', 'Gagal memperbarui saldo cuti.');
+            }
+            dd($saldoCuti);
         }
 
         // Jika karyawan tidak ditemukan
         return redirect()->route('daftar-karyawan')->with('error', 'Karyawan tidak ditemukan.');
     }
+
 
 
     // Hapus karyawan

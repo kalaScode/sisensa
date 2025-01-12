@@ -8,6 +8,8 @@ use PHPUnit\Framework\Attributes\Group;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CutiController;
+use App\Http\Controllers\PersetujuanController;
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -38,13 +40,21 @@ Route::middleware('auth')->group(function () {
 });
 
 // Route ke halaman cuti
-Route::get('/cuti', function () {
-    return view('page.pcuti');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/cuti', [CutiController::class, 'index'])->name('cuti.index');
+    Route::post('/cuti/ajukan', [CutiController::class, 'ajukanCuti'])->name('cuti.ajukan');
+    Route::get('/cuti/saldo-sisa', [CutiController::class, 'getSaldoSisa']);
 });
 
+
 // Route ke halaman persetujuan
-Route::get('/persetujuan', function () {
-    return view('page.ppersetujuan');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/persetujuan-cuti', [PersetujuanController::class, 'index'])->name('persetujuan-cuti.index');
+    Route::post('/persetujuan-cuti/terima/{id}', [PersetujuanController::class, 'terimaCuti'])->name('cuti.terima');
+    Route::post('/persetujuan-cuti/tolak/{id}', [PersetujuanController::class, 'tolakCuti'])->name('cuti.tolak');
+    Route::get('/persetujuan-cuti/terima/{id}', [PersetujuanController::class, 'terimaCuti'])->name('cuti.terima');
+    Route::get('/persetujuan-cuti/tolak/{id}', [PersetujuanController::class, 'tolakCuti'])->name('cuti.tolak');
+    Route::get('/persetujuan-presensi', [PersetujuanController::class, 'indexPresensi'])->name('persetujuan-presensi.index');
 });
 
 // Route ke halaman persetujuan
@@ -77,6 +87,7 @@ Route::middleware('auth')->group(function () {
 //Route untuk Persetujuan Akun
 Route::middleware('auth')->group(function () {
     Route::get('persetujuan-akun/', [KaryawanController::class, 'getPersetujuanAkun'])->name('persetujuan-akun');
+    Route::post('/set-status-kerja/{userId}', [KaryawanController::class, 'setStatusKerja']);
     Route::post('/ubah-status-akun/{user_id}', [KaryawanController::class, 'ubahStatusAkun'])->name('ubah-status-akun');
     Route::post('/batalkan-akun/{user_id}', [KaryawanController::class, 'batalkanAkun'])->name('batalkan-akun');
 });

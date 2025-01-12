@@ -23,7 +23,7 @@ class Karyawan extends Model
         'id_Perusahaan',
         'id_Jabatan',
         'status_Akun',
-        'saldo_cuti',
+        'saldo_Awal',
         'Avatar'
     ];
 
@@ -42,9 +42,9 @@ class Karyawan extends Model
         return $this->belongsTo(Otoritas::class, 'id_Otoritas', 'id_Otoritas');
     }
 
-    public function saldoCuti()
+    public function saldo_cuti()
     {
-        return $this->hasOne(SaldoCuti::class, 'user_id');
+        return $this->hasOne(SaldoCuti::class, 'user_id', 'user_id');
     }
 
     public function routeNotificationForMail($notification)
