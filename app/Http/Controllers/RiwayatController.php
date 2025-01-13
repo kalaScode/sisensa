@@ -59,12 +59,55 @@ class RiwayatController extends Controller
         // Pagination
         $presensi = $query->paginate(10);
 
+        // Range untuk chart
+        $range = $request->input('range-dropdown', 'monthly');
+    
+        if ($range == 'monthly') {
+            // Filter dan Group by Bulan dan Tahun
+            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("MONTHNAME(presensi.Tanggal) as month_name"))
+                ->join('users', 'presensi.user_id', '=', 'users.user_id')
+                ->where('users.id_Perusahaan', $id_Perusahaan)
+                ->where('presensi.Bagian', 'Masuk')
+                ->where('presensi.status_Presensi', 'Disetujui')
+                ->whereYear('presensi.Tanggal', date('Y'))
+                ->where('presensi.user_id', '!=', Auth::user()->user_id)
+                ->groupBy(DB::raw("MONTH(presensi.Tanggal), MONTHNAME(presensi.Tanggal)"))
+                ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
+                ->get();
+        } elseif ($range == 'yearly') {
+            // Filter dan Group by Tahun
+            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("YEAR(presensi.Tanggal) as year"))
+                ->join('users', 'presensi.user_id', '=', 'users.user_id')
+                ->where('users.id_Perusahaan', $id_Perusahaan)
+                ->where('presensi.Bagian', 'Masuk')
+                ->where('presensi.status_Presensi', 'Disetujui')
+                ->where('presensi.user_id', '!=', Auth::user()->user_id)
+                ->groupBy(DB::raw("YEAR(presensi.Tanggal)"))
+                ->orderBy(DB::raw("YEAR(presensi.Tanggal)"), 'asc')
+                ->get();
+        }        
+
+        // Prepare data for the chart
+        if ($range == 'monthly') {
+            // Untuk monthly, ambil nama bulan dan jumlah presensi
+            $labels = $presensiData->pluck('month_name');
+            $data = $presensiData->pluck('count');
+        } elseif ($range == 'yearly') {
+            // Untuk yearly, ambil tahun dan jumlah presensi
+            $labels = $presensiData->pluck('year');
+            $data = $presensiData->pluck('count');
+        }
+
         return view('page.priwayat-presensi-karyawan', [
             'presensi' => $presensi,
             'direktur' => $direktur,
             'search' => $request->search,
             'status' => $request->status,
             'jenis' => $request->jenis,
+            'range' => $range,
+            'presensiData' => $presensiData,
+            'labels' => $labels,
+            'data' => $data,
         ]);
     }
 
@@ -112,6 +155,32 @@ class RiwayatController extends Controller
 
         // Pagination
         $cuti = $query->paginate(10);
+        
+        $year = $request->input('year', now()->year); // Default ke tahun saat ini jika tidak ada input
+        
+        // Menghitung jumlah cuti dan sakit di tiap bulan
+        $cutiData = Cuti::select(
+                DB::raw('MONTH(tanggal_Mulai) as bulan'),
+                DB::raw('SUM(CASE WHEN jenis_Cuti = "Cuti" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_cuti'),
+                DB::raw('SUM(CASE WHEN jenis_Cuti = "Sakit" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_sakit')
+            )
+            ->whereYear('tanggal_Mulai', $year)
+            ->where('status_Cuti', 'Disetujui')
+            ->groupBy(DB::raw('MONTH(tanggal_Mulai)'))
+            ->get();
+
+        // Inisialisasi array untuk data bulan Januari - Desember
+        $months = collect(range(1, 12))->mapWithKeys(function ($month) {
+            return [$month => ['total_cuti' => 0, 'total_sakit' => 0]];
+        });
+
+        // Menyusun data berdasarkan bulan
+        $cutiData->each(function ($data) use ($months) {
+            $months[$data->bulan] = [
+                'total_cuti' => $data->total_cuti,
+                'total_sakit' => $data->total_sakit
+            ];
+        });
 
         return view('page.priwayat-cuti-karyawan', [
             'cuti' => $cuti,
@@ -119,6 +188,8 @@ class RiwayatController extends Controller
             'search' => $request->search,
             'status' => $request->status,
             'jenis' => $request->jenis,
+            'cutiData' => $months,
+            'year' => $year,
         ]);
     }
 
@@ -163,70 +234,56 @@ class RiwayatController extends Controller
         // Pagination
         $presensi = $query->paginate(10);
         
-        // Filter berdasarkan rentang waktu (mingguan, bulanan, tahunan)
-        if ($request->has('range')) {
-            $range = $request->range;
-            $today = \Carbon\Carbon::now();
+        // Range untuk chart
+        $range = $request->input('range-dropdown', 'monthly');
+        
+        if ($range == 'monthly') {
+            // Filter dan Group by Bulan dan Tahun
+            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("MONTHNAME(presensi.Tanggal) as month_name"))
+                ->join('users', 'presensi.user_id', '=', 'users.user_id')
+                ->where('users.id_Perusahaan', $id_Perusahaan)
+                ->where('presensi.Bagian', 'Masuk')
+                ->where('presensi.status_Presensi', 'Disetujui')
+                ->whereYear('presensi.Tanggal', date('Y'))
+                ->where('presensi.user_id', '=', Auth::user()->user_id)
+                ->groupBy(DB::raw("MONTH(presensi.Tanggal), MONTHNAME(presensi.Tanggal)"))
+                ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
+                ->get();
+        } elseif ($range == 'yearly') {
+            // Filter dan Group by Tahun
+            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("YEAR(presensi.Tanggal) as year"))
+                ->join('users', 'presensi.user_id', '=', 'users.user_id')
+                ->where('users.id_Perusahaan', $id_Perusahaan)
+                ->where('presensi.Bagian', 'Masuk')
+                ->where('presensi.status_Presensi', 'Disetujui')
+                ->where('presensi.user_id', '=', Auth::user()->user_id)
+                ->groupBy(DB::raw("YEAR(presensi.Tanggal)"))
+                ->orderBy(DB::raw("YEAR(presensi.Tanggal)"), 'asc')
+                ->get();
+        } 
 
-            if ($range == 'mingguan') {
-                $query->whereBetween('presensi.Waktu', [
-                    $today->startOfWeek(), $today->endOfWeek()
-                ]);
-            } elseif ($range == 'bulanan') {
-                $query->whereBetween('presensi.Waktu', [
-                    $today->startOfMonth(), $today->endOfMonth()
-                ]);
-            } elseif ($range == 'tahunan') {
-                $query->whereBetween('presensi.Waktu', [
-                    $today->startOfYear(), $today->endOfYear()
-                ]);
-            }
+        // Prepare data for the chart
+        if ($range == 'monthly') {
+            // Untuk monthly, ambil nama bulan dan jumlah presensi
+            $labels = $presensiData->pluck('month_name');
+            $data = $presensiData->pluck('count');
+        } elseif ($range == 'yearly') {
+            // Untuk yearly, ambil tahun dan jumlah presensi
+            $labels = $presensiData->pluck('year');
+            $data = $presensiData->pluck('count');
         }
-
-        // Get the attendance data for the chart
-        $attendanceData = $this->getAttendanceData($request);
-
+        
         return view('page.priwayat-presensi-pribadi', [
             'presensi' => $presensi,
             'direktur' => $direktur,
             'search' => $request->search,
             'status' => $request->status,
             'jenis' => $request->jenis,
-            'attendanceData' => $attendanceData, // Pass data for the chart
+            'range' => $range,
+            'presensiData' => $presensiData,
+            'labels' => $labels,
+            'data' => $data,
         ]);
-    }
-
-    private function getAttendanceData(Request $request)
-    {
-        $range = $request->has('range') ? $request->range : 'mingguan';
-        $today = \Carbon\Carbon::now();
-
-        $query = Presensi::query();
-        $query->where('presensi.user_id', Auth::User()->user_id);
-
-        // Handle date range filtering for the chart
-        if ($range == 'mingguan') {
-            $query->whereBetween('presensi.Waktu', [
-                $today->startOfWeek(), $today->endOfWeek()
-            ]);
-        } elseif ($range == 'bulanan') {
-            $query->whereBetween('presensi.Waktu', [
-                $today->startOfMonth(), $today->endOfMonth()
-            ]);
-        } elseif ($range == 'tahunan') {
-            $query->whereBetween('presensi.Waktu', [
-                $today->startOfYear(), $today->endOfYear()
-            ]);
-        }
-
-        // Count attendance (approved status)
-        $attendanceCounts = $query->where('presensi.status_Presensi', 'Disetujui')
-                                ->selectRaw('count(*) as count, DATE_FORMAT(presensi.Waktu, "%Y-%m-%d") as date')
-                                ->groupBy('date')
-                                ->orderBy('date', 'asc')
-                                ->get();
-
-        return $attendanceCounts;
     }
 
     // Tampilkan cuti pribadi
@@ -271,12 +328,24 @@ class RiwayatController extends Controller
         // Pagination
         $cuti = $query->paginate(10);
 
+        $year = $request->input('year', now()->year); // Default ke tahun saat ini jika tidak ada input
+        $userId = Auth::id(); // Ambil ID pengguna yang sedang login
+        $cutiData = Cuti::select('jenis_Cuti', DB::raw('SUM(DATEDIFF(tanggal_Selesai, tanggal_Mulai)) as total'))
+        ->whereYear('tanggal_mulai', $year)
+        ->where('user_id', $userId)
+        ->where('status_Cuti', 'Disetujui')
+        ->groupBy('jenis_Cuti')
+        ->get();
+
+
         return view('page.priwayat-cuti-pribadi', [
             'cuti' => $cuti,
             'direktur' => $direktur,
             'search' => $request->search,
             'status' => $request->status,
             'jenis' => $request->jenis,
+            'cutiData' => $cutiData,
+            'year' => $year,
         ]);
     }
 }

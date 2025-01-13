@@ -108,9 +108,13 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
+                                                <div class="h-10 w-10 flex-shrink-0">
+                                                    <img src="{{ $item->Avatar ? asset('storage/' . $item->Avatar) : '/img/profil.jpg' }}"
+                                                        alt="Foto Profil"
+                                                        class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
+                                                </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ $item->user->name ?? 'Tidak diketahui' }}
-                                                    </div>
+                                                    <div class="text-sm font-medium text-gray-900">{{ $item->user->name ?? 'Tidak diketahui' }}</div>
                                                     <div class="text-sm text-gray-500">ID: {{ $item->user_id }}</div>
                                                 </div>
                                             </div>
@@ -162,4 +166,103 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="flex-1 max-w-8xl w-full mx-auto py-8 relative">
+        <div class="bg-white rounded-lg shadow p-4 inline-block">
+            <!-- Dropdown untuk Tahun -->
+            <div class="absolute top-4 left-4">
+                <select name="cuti-dropdown" id="cuti-dropdown"
+                    class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5">
+                    <option value="th2022" {{ $year == 2022 ? 'selected' : '' }}>2022</option>
+                    <option value="th2023" {{ $year == 2023 ? 'selected' : '' }}>2023</option>
+                    <option value="th2024" {{ $year == 2024 ? 'selected' : '' }}>2024</option>
+                    <option value="th2025" {{ $year == 2025 ? 'selected' : '' }}>2025</option>
+                </select>
+            </div>
+
+            <!-- Container Utama -->
+            <div class="relative" style="width:30vw;">
+                <!-- Pie Chart -->
+                <div class="chart-container flex items-center justify-center">
+                    <canvas id="myChart"></canvas>
+                </div>
+
+                <!-- Sisa Saldo Cuti -->
+                <div class="absolute bottom-1 right-1 bg-blue-50 p-4 rounded-xl shadow-lg">
+                    <div class="text-sm text-gray-600 mb-1">Sisa Saldo Cuti Anda</div>
+                    <div class="text-xl font-bold text-custom">
+                        {{ Auth::user()->saldo_cuti->saldo_Sisa ?? 0 }} Hari
+                    </div>
+                </div>
+
+                <!-- Tidak ada informasi pengambilan cuti pada tahun ini -->
+                @if ($cutiData->isEmpty())
+                    <div class="absolute top-40 left-1/2 transform -translate-x-1/2 bg-yellow-100 p-4 rounded-xl shadow-lg">
+                        <div class="text-sm text-gray-600">Tidak ada informasi pengambilan cuti di tahun ini</div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const data = @json($cutiData->pluck('total'));
+        const labels = @json($cutiData->pluck('jenis_Cuti'));
+
+        const myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah:',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(54, 163, 235, 0.55)',
+                        'rgba(255, 99, 133, 0.55)',
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right', 
+                        labels: {
+                            font: {
+                                size: 16, 
+                                weight: 'bold', 
+                            },
+                            color: 'black', 
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribusi Jenis Cuti Tahun {{ $year }}',
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                        color: '#333',
+                    },
+                },
+            }
+        });
+
+        document.getElementById('cuti-dropdown').addEventListener('change', function () {
+            const year = this.value.replace('th', ''); // Ambil tahun dari dropdown
+            const url = `{{ route('riwayat-cuti-pribadi') }}?year=${year}`;
+            window.location.href = url; // Redirect ke URL baru dengan parameter tahun
+        });
+    });
+</script>
