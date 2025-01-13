@@ -1,3 +1,24 @@
+@php
+    $id_Perusahaan = Auth::user()->id_Perusahaan;
+    $perusahaan = DB::table('perusahaan')
+        ->select('Latitude', 'Longitude')
+        ->where('id_Perusahaan', $id_Perusahaan) // Ganti 'id' dengan 'id_Perusahaan'
+        ->first();
+    $targetLat = $perusahaan->Latitude ?? null;
+    $targetLon = $perusahaan->Longitude ?? null;
+    $user_id = Auth::id(); // Ambil user_id yang sedang login
+    $today = date('Y-m-d'); // Tanggal hari ini
+
+    // Periksa apakah user sudah melakukan presensi hari ini
+    $presensiHariIni = DB::table('presensi')
+        ->where('user_id', $user_id)
+        ->whereDate('Tanggal', $today)
+        ->exists();
+
+    $statusPresensi = $presensiHariIni ? 'Keluar' : 'Masuk';
+@endphp
+
+
 <!-- presensi.blade.php -->
 <x-navbar></x-navbar>
 <div id="successAlert" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -18,7 +39,7 @@
     </div>
 </div>
 
-<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-4">
+<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-2" style="margin-top: 65px;">
     <div class="flex items-center">
         <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -69,8 +90,17 @@
             <div class="bg-white rounded-lg border-2 border-gray-300 p-6 shadow-lg">
                 <!-- Toggle Presensi -->
                 <div class="mb-6">
-                    <label for="presenceType" class="block text-sm font-medium text-gray-700 mb-2">Jenis
-                        Presensi</label>
+                    <div class="mb-3 flex justify-between">
+                        <!-- Jenis Presensi (left) -->
+                        <div class="flex items-center">
+                            <label for="presenceType" class="block text-sm font-medium text-gray-700">Jenis Presensi</label>
+                        </div>
+                    
+                        <!-- Status Presensi (right) -->
+                        <div class="flex items-center bg-green-100 px-2 py-2 rounded-lg">
+                            <div class="block text-sm font-medium text-gray-700">Presensi {{ $statusPresensi }}</div>
+                        </div>
+                    </div>
                     <div class="relative">
                         <select id="presenceType"
                             class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
@@ -216,8 +246,13 @@ function showErrorAlert(message) {
         let currentAddress = null;
         let photoDataUrl = null;  // Menyimpan data URL foto
 
-        const targetLat = -6.2311505;
-        const targetLon = 106.8669003;
+        const targetLat = {{ $targetLat ?? 'null' }};
+        const targetLon = {{ $targetLon ?? 'null' }};
+        if (targetLat === null || targetLon === null) {
+            console.error('Target lokasi tidak ditemukan!');
+            showErrorAlert('Lokasi target perusahaan tidak ditemukan. Silakan hubungi administrator.');
+            return;
+        }
 
         async function checkLocation() {
             if (navigator.geolocation) {
@@ -323,19 +358,22 @@ function showErrorAlert(message) {
     }
 }
 
-        function updateUI() {
-            const finishButton = document.getElementById("finishButton");
-            const messages = [];
+function updateUI() {
+    const finishButton = document.getElementById("finishButton");
+    const messages = [];
 
-            if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
-            if (presenceType === "office" && !isWithinRange) messages.push(
-                "Jarak harus dalam radius 100 meter");
+    if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
+    if (presenceType === "office" && !isWithinRange) {
+        messages.push("Jarak harus dalam radius 100 meter");
+    }
 
-            finishButton.disabled = !(isFaceDetected && (presenceType === "outside" || isWithinRange));
+    // Tombol tidak lagi di-disable tetapi memunculkan pesan
+    finishButton.disabled = false;
 
-            const warningList = document.getElementById("warningList");
-            warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
-        }
+    const warningList = document.getElementById("warningList");
+    warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+}
+
 
         async function startCamera() {
             try {
@@ -396,13 +434,17 @@ function showErrorAlert(message) {
             photoDataUrl = dataUrl; // Simpan data foto untuk dikirimkan
         }
 
-
-        document.getElementById("finishButton").addEventListener("click", () => {
-            if (!finishButton.disabled) {
-                capturePhoto();
-                savePresensi();
-                //window.location.href = "{{ route('beranda') }}";
+        document.getElementById("finishButton").addEventListener("click", async () => {
+            const finishButton = document.getElementById("finishButton");
+            if (!(isFaceDetected && (presenceType === "outside" || isWithinRange))) {
+                showErrorAlert("Presensi gagal karena syarat belum terpenuhi. Perhatikan syarat presensi sebelum menekan tombol Presensi.");
+                setTimeout(3000); // Tunggu 3 detik sebelum mengalihkan
+                return;
             }
+
+            // Jika semua syarat terpenuhi, lanjutkan menyimpan presensi
+            capturePhoto();
+            savePresensi();
         });
 
         document.getElementById("toggleCamera").addEventListener("click", () => {

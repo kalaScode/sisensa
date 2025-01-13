@@ -58,7 +58,7 @@ class PersetujuanController extends Controller
             if ($saldoCuti) {
                 // Periksa apakah saldo mencukupi
                 if ($saldoCuti->saldo_Sisa < $durasi) {
-                    return redirect()->route('persetujuan.index')->with('error', 'Saldo cuti karyawan tidak mencukupi.');
+                    return redirect()->route('persetujuan-cuti.index')->with('error', 'Saldo cuti karyawan tidak mencukupi.');
                 }
 
                 // Ubah status cuti menjadi 'Disetujui'

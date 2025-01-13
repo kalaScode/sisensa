@@ -127,8 +127,8 @@
                                                     data-alamat="{{ $item->Alamat }}"
                                                     data-statuskerja="{{ $item->status_Kerja }}"
                                                     data-statusakun="{{ $item->status_Akun }}"
-                                                    data-saldoawal="{{ $item->saldoCuti->saldo_Awal ?? 12 }}"
-                                                    data-saldo="{{ $item->saldoCuti->saldo_Sisa ?? 12 }}"
+                                                    data-saldoawal="{{ $item->saldo_cuti->saldo_Awal ?? 12 }}"
+                                                    data-saldo="{{ $item->saldo_cuti->saldo_Sisa ?? 12 }}"
                                                     onclick="openModal(this)">
                                                     <i class="fa-regular fa-pen-to-square"></i>
                                                 </button>
@@ -269,7 +269,7 @@
                                                     <div class="mb-4">
                                                         <label for="saldo"
                                                             class="block text-sm font-medium text-gray-300">Saldo
-                                                            Cuti</label>
+                                                            Cuti (Default) </label>
                                                         <input type="number" id="saldo" name="saldo"
                                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
                                                             readonly>

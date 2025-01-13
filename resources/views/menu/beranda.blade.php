@@ -1,3 +1,7 @@
+@php
+    use Carbon\Carbon;
+@endphp
+
 <x-navbar></x-navbar>
 <main class="max-w-7xl mx-auto sm:px-6 lg:px-36 py-6">
     <nav class="flex" aria-label="Breadcrumb">
@@ -89,14 +93,18 @@
             <!-- Masuk -->
             <div
                 class="bg-gray-50 rounded-xl p-3 hover:shadow-md transition-all w-1/2 h-24 flex flex-col justify-center items-center">
-                <div class="text-xl font-semibold text-[#1f2937] mb-1">08:00</div>
+                <div class="text-xl font-semibold text-[#1f2937] mb-1">
+                    {{ Carbon::parse(Auth::user()->perusahaan->jam_Masuk)->format('H:i') }}
+                </div>
                 <div class="text-sm text-gray-600 text-center">Masuk</div>
             </div>
 
             <!-- Keluar -->
             <div
                 class="bg-gray-50 rounded-xl p-3 hover:shadow-md transition-all w-1/2 h-24 flex flex-col justify-center items-center">
-                <div class="text-xl font-semibold text-green-500 mb-1">17:00</div>
+                <div class="text-xl font-semibold text-green-500 mb-1">
+                    {{ Carbon::parse(Auth::user()->perusahaan->jam_Keluar)->format('H:i') }}
+                </div>
                 <div class="text-sm text-gray-600 text-center">Keluar</div>
             </div>
         </div>
