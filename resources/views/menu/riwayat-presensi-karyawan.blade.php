@@ -109,9 +109,13 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
+                                                <div class="h-10 w-10 flex-shrink-0">
+                                                    <img src="{{ $item->Avatar ? asset('storage/' . $item->Avatar) : '/img/profil.jpg' }}"
+                                                        alt="Foto Profil"
+                                                        class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
+                                                </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ $item->user->name ?? 'Tidak diketahui' }}
-                                                    </div>
+                                                    <div class="text-sm font-medium text-gray-900">{{ $item->user->name ?? 'Tidak diketahui' }}</div>
                                                     <div class="text-sm text-gray-500">ID: {{ $item->user_id }}</div>
                                                 </div>
                                             </div>
@@ -162,4 +166,92 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="flex-1 max-w-8xl w-full mx-auto py-8 relative">
+        <div class="bg-white rounded-lg shadow p-4 inline-block">
+            <!-- Dropdown untuk Rentang Waktu -->
+            <div class="absolute top-4 left-4">
+                <select name="range-dropdown" id="range-dropdown" 
+                    class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5">
+                    <option value="monthly" {{ $range == 'monthly' ? 'selected' : '' }}>Bulanan</option>
+                    <option value="yearly" {{ $range == 'yearly' ? 'selected' : '' }}>Tahunan</option>
+                </select>
+            </div>
+
+            <!-- Container Chart -->
+            <div class="relative" style="width:60wv;">
+                <div class="chart-container flex items-center justify-center" style="width: 100%;">
+                    <canvas id="presensiChart" style="max-width: 1200px; height: 500px;"></canvas>
+                </div>
+                <!-- Tidak ada informasi pengambilan cuti pada tahun ini -->
+                @if ($data->isEmpty())
+                    <div class="absolute top-40 left-1/2 transform -translate-x-1/2 bg-yellow-100 p-4 rounded-xl shadow-lg">
+                        <div class="text-sm text-gray-600">Tidak ada data presensi</div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('presensiChart').getContext('2d');
+        
+        const data = @json($data); 
+        const labels = @json($labels);
+
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels, 
+                datasets: [{
+                    label: 'Jumlah Presensi',
+                    data: data, 
+                    backgroundColor: 'rgba(54, 163, 235, 0.55)',
+                    borderColor:'rgba(54, 162, 235, 1)',
+                    borderWidth: 1 
+                }]
+            },
+            options: {
+                responsive: true, 
+                plugins: {
+                    legend: {
+                        position: 'right', 
+                        labels: {
+                            font: {
+                                size: 16, 
+                                weight: 'bold',
+                            },
+                            color: 'black', 
+                        }
+                    },
+                    title: {
+                        display: true, 
+                        text: `Grafik Presensi ${ @json($range) === 'monthly' ? 'Bulanan' : 'Tahunan' }`, // Set the title based on the range
+                        font: {
+                            size: 18, 
+                            weight: 'bold', 
+                        },
+                        color: '#333',
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        // Event listener to handle the range dropdown change
+        document.getElementById('range-dropdown').addEventListener('change', function () {
+            const selectedRange = this.value; // Get the selected range (monthly or yearly)
+            const url = `{{ route('riwayat-presensi-karyawan') }}?range-dropdown=${selectedRange}`; // Construct the URL with the selected range parameter
+            window.location.href = url; // Redirect to the updated URL
+        });
+    });
+</script>
