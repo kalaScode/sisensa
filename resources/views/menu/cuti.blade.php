@@ -47,7 +47,7 @@
                     <div class="p-4 bg-blue-50 rounded-xl">
                         <div class="text-sm text-gray-600 mb-1">Saldo Cuti Tahunan</div>
                         <div class="text-3xl font-bold text-custom">
-                            {{ Auth::user()->saldo_cuti->saldo_Awal ?? 0 }} Hari
+                            {{ Auth::user()->saldo_cuti->saldo_Sisa ?? 0 }} Hari
                         </div>
                     </div>
 

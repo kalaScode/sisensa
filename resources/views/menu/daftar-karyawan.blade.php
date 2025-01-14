@@ -127,8 +127,7 @@
                                                     data-alamat="{{ $item->Alamat }}"
                                                     data-statuskerja="{{ $item->status_Kerja }}"
                                                     data-statusakun="{{ $item->status_Akun }}"
-                                                    data-saldoawal="{{ $item->saldo_cuti->saldo_Awal ?? 12 }}"
-                                                    data-saldo="{{ $item->saldo_cuti->saldo_Sisa ?? 12 }}"
+                                                    data-saldosisa="{{ $item->saldo_cuti->saldo_Sisa ?? 12 }}"
                                                     onclick="openModal(this)">
                                                     <i class="fa-regular fa-pen-to-square"></i>
                                                 </button>
@@ -258,21 +257,11 @@
 
                                                     <!-- Jatah Cuti -->
                                                     <div class="mb-4">
-                                                        <label for="saldo_Awal"
-                                                            class="block text-sm font-medium text-gray-300">Jatah
-                                                            Cuti</label>
-                                                        <input type="number" id="saldo_Awal" name="saldo_Awal"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
-                                                    </div>
-
-                                                    <!-- Saldo Cuti -->
-                                                    <div class="mb-4">
-                                                        <label for="saldo"
+                                                        <label for="saldo_Sisa"
                                                             class="block text-sm font-medium text-gray-300">Saldo
-                                                            Cuti (Default) </label>
-                                                        <input type="number" id="saldo" name="saldo"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
-                                                            readonly>
+                                                            Sisa</label>
+                                                        <input type="number" id="saldo_Sisa" name="saldo_Sisa"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
                                                     </div>
 
                                                     <!-- Submit -->
@@ -313,8 +302,7 @@
         document.getElementById('email').value = button.getAttribute('data-email');
         document.getElementById('no_Telp').value = button.getAttribute('data-telepon');
         document.getElementById('alamat').value = button.getAttribute('data-alamat');
-        document.getElementById('saldo_Awal').value = button.getAttribute('data-saldoawal');
-        document.getElementById('saldo').value = button.getAttribute('data-saldo');
+        document.getElementById('saldo_Sisa').value = button.getAttribute('data-saldosisa');
 
         const statusKerja = button.getAttribute('data-statuskerja');
         if (statusKerja === "Tetap") {
