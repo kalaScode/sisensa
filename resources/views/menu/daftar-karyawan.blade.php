@@ -353,6 +353,7 @@
             </div>
         </div>
 </main>
+<x-footer></x-footer>
 
 <script>
     function openModal(button) {
