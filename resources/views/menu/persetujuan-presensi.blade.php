@@ -58,11 +58,9 @@
                 <div class="flex items-center w-full">
                     <select name="status" id="status" class="border-gray-300 rounded-md shadow-sm w-full pl-2 py-2">
                         <option value="">Semua Status</option>
-                        <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Menunggu
-                        </option>
                         <option value="Disetujui" {{ request('status') == 'Disetujui' ? 'selected' : '' }}>Disetujui
                         </option>
-                        <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="Dibatalkan" {{ request('status') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                     </select>
                 </div>
 
@@ -101,7 +99,8 @@
                             <th class="px-6 py-3 text-center text-xs font-semibold">Tanggal</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Waktu</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Foto</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold">Alamat</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Lokasi Presensi</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Status</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Aksi</th>
                         </tr>
                     </thead>
@@ -112,7 +111,7 @@
                                     <div class="flex items-center justify-center">
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <img class="h-10 w-10 rounded-full object-cover"
-                                                src="{{ $p->user->Avatar ? asset('storage/' . $p->user->Avatar) : 'storage/profil.jpg' }}"
+                                                src="{{ $p->user->Avatar ? asset('storage/' . $p->user->Avatar) : 'img/profil.jpg' }}"
                                                 alt="Foto Profil" />
                                         </div>
                                         <div class="ml-4">
@@ -132,9 +131,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $p->Waktu}} 
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <img class="h-30 w-30"
-                                    src="{{ $p->Foto ? asset('storage/' . $p->Foto) : 'storage/presensi.jpg' }}"
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-1000">
+                                    <img class="h-100 w-100"
+                                    src="{{ $p->Foto ? asset('/' . $p->Foto) : 'Tidak Ada Foto' }}"
                                     alt="Foto Presensi" />
                             
                                 </td>
@@ -146,71 +145,26 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    {{ $p->status_Presensi == 'Menunggu' ? 'bg-yellow-100 text-yellow-800' : ($p->status_Presensi == 'Disetujui' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') }} ">
+                                    {{$p->status_Presensi == 'Disetujui' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} ">
                                         {{ $p->status_Presensi }}
                                     </span>
                                 </td>
-                                
+
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
                                     <!-- Detail Button -->
                                     <button
-                                        onclick="showDetailModal('{{ $p->user_id }}', '{{ $p->user->name }}','{{ $p->jenis_Presensi }}','{{ $p->Tanggal }}', '{{ $p->Waktu }}', '{{ $p->Foto }}', '{{ asset('storage/' . $p->Alamat ?? '-') }}')"
+                                        onclick="showDetailModal('{{ $p->user_id }}', '{{ $p->user->name }}','{{ $p->jenis_Presensi }}','{{ $p->Tanggal }}', '{{ $p->Waktu }}', '{{ asset('/' . $p->Foto ?? '-') }}', '{{ $p->Alamat }}')"
                                         class="text-blue-600 hover:text-blue-900">
                                         <i class="fas fa-info-circle"></i>
                                     </button>
-
-                                    <!-- Tombol Terima dan Tolak hanya jika status_Presensi adalah "Menunggu" -->
-                                    @if ($p->status_Presensi === 'Menunggu')
-                                        <!-- Terima Button -->
-                                        <form action="{{ route('presensi.terima', ['id' => $p->id_Presensi]) }}" method="POST"
-                                            class="inline-block">
-                                            @csrf
-                                            <button type="submit" class="text-green-600 hover:text-green-900">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </form>
-                                        <!-- Tolak Button -->
-                                        <button type="button" onclick="showFeedbackModal('{{ $p->id_Presensi }}')"
-                                            class="text-red-600 hover:text-red-900">
+                                    <!-- Tolak Button -->
+                                    <form action="{{ route('presensi.tolak', [$p->id_Presensi]) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-red-600 hover:text-red-900">
                                             <i class="fas fa-times"></i>
                                         </button>
-                                    @endif
+                                    </form>
 
-                                    {{-- Modal Feedback --}}
-                                    <div id="feedbackModal-{{ $p->id_Presensi }}"
-                                        class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-                                        <div class="bg-white rounded-lg shadow-lg p-8 w-3/4 lg:w-2/5">
-                                            <!-- Modal Header with Divider -->
-                                            <div class="border-b pb-4 mb-4">
-                                                <h2 class="text-2xl font-semibold text-gray-900">Tolak Pengajuan Presensi
-                                                </h2>
-                                            </div>
-
-                                            <!-- Modal Content -->
-                                            <form action="{{ route('presensi.tolak', ['id' => $p->id_Presensi]) }}"
-                                                method="POST">
-                                                @csrf
-                                                <div class="space-y-4 text-gray-800">
-                                                    <div>
-                                                        <strong class="text-dark-600">Alasan Penolakan<br></strong>
-                                                        <textarea name="Feedback" rows="4" class="w-full border-gray-300 rounded-lg"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="mt-6 flex justify-between">
-                                                    <button type="submit"
-                                                        class="px-5 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
-                                                        Kirim
-                                                    </button>
-                                                    <button type="button"
-                                                        onclick="closeFeedbackModal('{{ $p->id_Presensii }}')"
-                                                        class="px-5 py-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none">
-                                                        Batal
-                                                    </button>
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -238,8 +192,11 @@
             <div><strong class="text-dark-600">Jenis Presensi<br></strong> <span id="modalJenisPresensi"></span></div>
             <div><strong class="text-dark-600">Tanggal<br></strong> <span id="modalTanggal"></span></div>
             <div><strong class="text-dark-600">Waktu<br></strong> <span id="modalWaktu"></span></div>
-            <div><strong class="text-dark-600">Foto<br></strong> <span id="modalFoto"></span></div>
-            <div><strong class="text-dark-600">Alamat<br></strong> <span id="modalAlamat"></span></div>
+            <div>
+                <strong class="text-dark-600">Foto<br></strong>
+                <img id="modalFoto" src="placeholder-image-url.jpg" alt="Foto Karyawan" class="w-full max-w-sm rounded-lg">
+            </div>
+            <div><strong class="text-dark-600">Lokasi Presensi<br></strong> <span id="modalAlamat"></span></div>
         </div>
 
         <!-- Modal Footer with Close Button -->
@@ -255,13 +212,13 @@
 
 <script>
     // Fungsi untuk menampilkan modal dengan detail informasi karyawan
-    function showDetailModal(userId, name, jenis_Presensi, Tanggal, Waktu, Foto) {
+    function showDetailModal(userId, name, jenis_Presensi, Tanggal, Waktu, Foto, Alamat) {
         // Menyusun konten modal dengan detail karyawan
         document.getElementById('modalNama').innerText = name;
         document.getElementById('modalJenisPresensi').innerText = jenis_Presensi;
-        document.getElementById('modalTanggal').innerText = Tanggal + ' hari';
+        document.getElementById('modalTanggal').innerText = Tanggal;
         document.getElementById('modalWaktu').innerText = Waktu;
-        document.getElementById('modalFoto').innerText = Foto ? Foto : '-';
+        document.getElementById('modalFoto').src = Foto ? Foto : '-';
         document.getElementById('modalAlamat').innerText = Alamat ? Alamat : '-';
 
         // Menampilkan modal

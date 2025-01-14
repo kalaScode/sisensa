@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Presensi;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class PresensiController extends Controller
@@ -37,53 +38,26 @@ class PresensiController extends Controller
         return view('page.ppersetujuan-presensi', compact('presensi', 'search', 'status'));
     }
 
-
-    //Persetujuan Presensi
-    public function terimaPresensi($id)
-    {
-        // Cari Presensi
-        $presensi = Presensi::findOrFail($id);
-
-        if ($presensi->status_Presensi === 'Menunggu') {
-            
-            if ($saldoCuti) {
-        
-                // Ubah status cuti menjadi 'Disetujui'
-                $presensi->status_Presensi = 'Disetujui';
-                $presensi->save();
-
-
-                // Kirim notifikasi
-                $sender = Auth::user();
-                $presensi->user->notify(new NotifikasiPersetujuanPresensi($presensi, $sender));
-
-                return redirect()->route('persetujuan-presensi.index')->with('success', 'Presensi berhasil disetujui.');
-            }
-
-        }
-
-        return redirect()->route('persetujuan-presensi.index')->with('error', 'Presensi sudah diproses sebelumnya.');
-    }
-
-
     public function tolakPresensi(Request $request, $id)
     {
-        $presensi = Presesi::findOrFail($id);
+        $presensi = Presensi::findOrFail($id);
+    
         if (!$presensi) {
             return redirect()->route('persetujuan-presensi.index')->with('error', 'Pengajuan presensi tidak ditemukan.');
         }
-
-        $presensi->update([
-            'status_Presensi' => 'Ditolak',
-            'Feedback' => $request->input('Feedback')
-        ]);
-
-        // Kirim notifikasi
-        $sender = Auth::user();
-        $cuti->user->notify(new NotifikasiPersetujuanPresensi($presensi, $sender));
-
-        return redirect()->back()->with('success', 'Presensi ditolak dengan feedback.');
+    
+        // Logika tambahan untuk status "Disetujui"
+        if ($presensi->status_Presensi === 'Disetujui') {
+            $presensi->update([
+                'status_Presensi' => 'Dibatalkan'
+            ]);
+    
+            return redirect()->back()->with('success', 'Presensi yang disetujui telah dibatalkan.');
+        }
+    $presensi->save();
     }
+    
+
 
 
     public function store(Request $request)
