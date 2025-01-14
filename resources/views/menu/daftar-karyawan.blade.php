@@ -353,7 +353,7 @@
             </div>
         </div>
 </main>
-
+<x-footer></x-footer>
 <script>
     function openModal(button) {
         document.getElementById('user_id').value = button.getAttribute('data-id');
