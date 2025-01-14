@@ -151,40 +151,74 @@
 </main>
 <x-footer></x-footer>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    //Script Untuk Tanggal
+    // Meminta akses OAuth 2.0 menggunakan client ID dan secret Anda
+    function authenticate() {
+        return gapi.auth2.getAuthInstance()
+            .signIn({
+                scope: "https://www.googleapis.com/auth/calendar.readonly"
+            })
+            .then(function() {
+                console.log("Sign-in successful");
+            }, function(error) {
+                console.log("Error signing in", error);
+            });
+    }
+
+    // Menyusun dan mengambil event dari kalender (misalnya hari libur nasional dan weekend)
+    function loadCalendar() {
+        gapi.client.calendar.events.list({
+            calendarId: 'primary', // Bisa diganti dengan ID kalender nasional atau publik
+            timeMin: (new Date()).toISOString(),
+            showDeleted: false,
+            singleEvents: true,
+            orderBy: 'startTime'
+        }).then(function(response) {
+            var events = response.result.items;
+            if (events.length > 0) {
+                console.log("Hari Libur atau Event:");
+                events.forEach(function(event) {
+                    console.log(event.summary + ' (' + event.start.dateTime + ')');
+                    // Simpan event ini untuk menandai tanggal di kalender Flatpickr Anda
+                });
+            } else {
+                console.log('No upcoming events found.');
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Ambil saldo cuti dari backend
         fetch('/cuti/saldo-sisa')
             .then(response => response.json())
             .then(data => {
-                const saldoSisa = data.saldo_sisa;
+                const saldoSisa = data.saldo_sisa; // Ambil saldo cuti yang tersisa
 
                 // Inisialisasi Flatpickr
                 flatpickr('#tanggalCuti', {
                     mode: 'range', // Mode range untuk rentang tanggal
-                    dateFormat: 'Y-m-d', // Format tanggal
+                    dateFormat: 'Y-m-d', // Format tanggal yang dipilih
                     minDate: 'today', // Mulai dari hari ini
-                    maxDate: new Date().fp_incr(30), // Contoh: 30 hari ke depan
+                    // Menghapus maxDate agar tidak ada batasan
                     onClose: function(selectedDates, dateStr, instance) {
-                        // Hitung jumlah hari yang dipilih
-                        const dayCount = (selectedDates[1] - selectedDates[0]) / (1000 * 60 *
-                            60 * 24) + 1;
+                        if (selectedDates.length === 2) {
+                            // Hitung jumlah hari yang dipilih
+                            const dayCount = (selectedDates[1] - selectedDates[0]) / (1000 *
+                                60 * 60 * 24) + 1;
 
-                        if (dayCount > saldoSisa) {
-                            // Tampilkan SweetAlert
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Saldo Cuti Tidak Cukup',
-                                text: `Anda hanya memiliki ${saldoSisa} hari cuti tersisa.`,
-                                confirmButtonText: 'Mengerti',
-                                confirmButtonColor: '#3085d6',
-                            }).then(() => {
-                                instance
-                                    .clear(); // Hapus pilihan setelah dialog ditutup
-                            });
+                            if (dayCount > saldoSisa) {
+                                // Tampilkan SweetAlert jika saldo cuti tidak cukup
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Saldo Cuti Tidak Cukup',
+                                    text: `Anda hanya memiliki ${saldoSisa} hari cuti tersisa.`,
+                                    confirmButtonText: 'Mengerti',
+                                    confirmButtonColor: '#3085d6',
+                                }).then(() => {
+                                    instance
+                                        .clear(); // Hapus pilihan setelah dialog ditutup
+                                });
+                            }
                         }
                     }
                 });
@@ -202,7 +236,6 @@
                 });
             });
     });
-
     //Script untuk unggah dokumen
     document.getElementById('upload-icon').addEventListener('click', function() {
         document.getElementById('file-upload').click();

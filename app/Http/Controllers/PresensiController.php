@@ -10,10 +10,81 @@ use Carbon\Carbon;
 
 class PresensiController extends Controller
 {
-    public function index()
+    public function indexPresensi(Request $request)
     {
-        return view('presensi');
+        $search = $request->input('search', ''); // Ambil nilai pencarian, default kosong
+        $status = $request->input('status', '');
+
+        // Ambil ID perusahaan dari user yang sedang login
+        $idPerusahaan = Auth::user()->id_Perusahaan;
+
+        // Query data cuti berdasarkan filter, pencarian, dan id_perusahaan
+        $presensi = Presensi::query()
+            ->whereHas('user', function ($query) use ($idPerusahaan) {
+                $query->where('id_Perusahaan', $idPerusahaan);
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status_Presensi', $status);
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('user', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->paginate(10);
+
+        // Kirim data ke view
+        return view('page.ppersetujuan-presensi', compact('presensi', 'search', 'status'));
     }
+
+
+    //Persetujuan Presensi
+    public function terimaPresensi($id)
+    {
+        // Cari Presensi
+        $presensi = Presensi::findOrFail($id);
+
+        if ($presensi->status_Presensi === 'Menunggu') {
+            
+            if ($saldoCuti) {
+        
+                // Ubah status cuti menjadi 'Disetujui'
+                $presensi->status_Presensi = 'Disetujui';
+                $presensi->save();
+
+
+                // Kirim notifikasi
+                $sender = Auth::user();
+                $presensi->user->notify(new NotifikasiPersetujuanPresensi($presensi, $sender));
+
+                return redirect()->route('persetujuan-presensi.index')->with('success', 'Presensi berhasil disetujui.');
+            }
+
+        }
+
+        return redirect()->route('persetujuan-presensi.index')->with('error', 'Presensi sudah diproses sebelumnya.');
+    }
+
+
+    public function tolakPresensi(Request $request, $id)
+    {
+        $presensi = Presesi::findOrFail($id);
+        if (!$presensi) {
+            return redirect()->route('persetujuan-presensi.index')->with('error', 'Pengajuan presensi tidak ditemukan.');
+        }
+
+        $presensi->update([
+            'status_Presensi' => 'Ditolak',
+            'Feedback' => $request->input('Feedback')
+        ]);
+
+        // Kirim notifikasi
+        $sender = Auth::user();
+        $cuti->user->notify(new NotifikasiPersetujuanPresensi($presensi, $sender));
+
+        return redirect()->back()->with('success', 'Presensi ditolak dengan feedback.');
+    }
+
 
     public function store(Request $request)
     {
@@ -126,4 +197,6 @@ class PresensiController extends Controller
             return response()->json(['alreadyFinalized' => false], 500);
         }
     }
+
+
 }

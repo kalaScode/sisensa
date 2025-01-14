@@ -39,7 +39,7 @@
     </div>
 </div>
 
-<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-4">
+<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-2" style="margin-top: 65px;">
     <div class="flex items-center">
         <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -158,17 +158,17 @@
                 </div>
 
                 <!-- Tombol -->
-                <div class="flex justify-between">
+                <div class="flex justify-between flex-wrap gap-5">
                     <button id="cancelButton"
-                        class="bg-gray-200 text-gray-700 px-8 py-2 rounded-md hover:bg-gray-300 focus:outline-none">
+                        class="flex-1 bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300 focus:outline-none">
                         Batal
                     </button>
                     <button id="toggleCamera"
-                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
+                        class="flex-1 bg-blue-500 text-white px-2 py-0.5 rounded-md hover:bg-blue-600 focus:outline-none">
                         Aktifkan Kamera
                     </button>
                     <button id="finishButton"
-                        class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
+                        class="flex-1 bg-yellow-400 text-[#122036] px-2 py-0.5 rounded-md hover:bg-yellow-500 focus:outline-none"
                         disabled>
                         Presensi
                     </button>
@@ -358,19 +358,22 @@ function showErrorAlert(message) {
     }
 }
 
-        function updateUI() {
-            const finishButton = document.getElementById("finishButton");
-            const messages = [];
+function updateUI() {
+    const finishButton = document.getElementById("finishButton");
+    const messages = [];
 
-            if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
-            if (presenceType === "office" && !isWithinRange) messages.push(
-                "Jarak harus dalam radius 100 meter");
+    if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
+    if (presenceType === "office" && !isWithinRange) {
+        messages.push("Jarak harus dalam radius 100 meter");
+    }
 
-            finishButton.disabled = !(isFaceDetected && (presenceType === "outside" || isWithinRange));
+    // Tombol tidak lagi di-disable tetapi memunculkan pesan
+    finishButton.disabled = false;
 
-            const warningList = document.getElementById("warningList");
-            warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
-        }
+    const warningList = document.getElementById("warningList");
+    warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+}
+
 
         async function startCamera() {
             try {
@@ -431,13 +434,17 @@ function showErrorAlert(message) {
             photoDataUrl = dataUrl; // Simpan data foto untuk dikirimkan
         }
 
-
-        document.getElementById("finishButton").addEventListener("click", () => {
-            if (!finishButton.disabled) {
-                capturePhoto();
-                savePresensi();
-                //window.location.href = "{{ route('beranda') }}";
+        document.getElementById("finishButton").addEventListener("click", async () => {
+            const finishButton = document.getElementById("finishButton");
+            if (!(isFaceDetected && (presenceType === "outside" || isWithinRange))) {
+                showErrorAlert("Presensi gagal karena syarat belum terpenuhi. Perhatikan syarat presensi sebelum menekan tombol Presensi.");
+                setTimeout(3000); // Tunggu 3 detik sebelum mengalihkan
+                return;
             }
+
+            // Jika semua syarat terpenuhi, lanjutkan menyimpan presensi
+            capturePhoto();
+            savePresensi();
         });
 
         document.getElementById("toggleCamera").addEventListener("click", () => {
