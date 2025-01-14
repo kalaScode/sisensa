@@ -158,17 +158,17 @@
                 </div>
 
                 <!-- Tombol -->
-                <div class="flex justify-between">
+                <div class="flex justify-between flex-wrap gap-5">
                     <button id="cancelButton"
-                        class="bg-gray-200 text-gray-700 px-8 py-2 rounded-md hover:bg-gray-300 focus:outline-none">
+                        class="flex-1 bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300 focus:outline-none">
                         Batal
                     </button>
                     <button id="toggleCamera"
-                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
+                        class="flex-1 bg-blue-500 text-white px-2 py-0.5 rounded-md hover:bg-blue-600 focus:outline-none">
                         Aktifkan Kamera
                     </button>
                     <button id="finishButton"
-                        class="bg-yellow-400 text-[#122036] px-8 py-2 rounded-md hover:opacity-90 focus:outline-none"
+                        class="flex-1 bg-yellow-400 text-[#122036] px-2 py-0.5 rounded-md hover:bg-yellow-500 focus:outline-none"
                         disabled>
                         Presensi
                     </button>
