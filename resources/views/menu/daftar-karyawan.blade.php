@@ -179,7 +179,7 @@
                                                         <label for="perusahaan"
                                                             class="block text-sm font-medium text-gray-300">Perusahaan</label>
                                                         <input type="text" id="perusahaan" name="perusahaan"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
                                                             readonly>
                                                     </div>
 
@@ -196,7 +196,7 @@
                                                         <label for="email"
                                                             class="block text-sm font-medium text-gray-300">Email</label>
                                                         <input type="email" id="email" name="email"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
                                                             readonly>
                                                     </div>
 
@@ -245,7 +245,7 @@
                                                             class="block text-sm font-medium text-gray-300">No
                                                             Telepon</label>
                                                         <input type="text" id="no_Telp" name="no_Telp"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"readonly>
                                                     </div>
 
                                                     <!-- Alamat -->
@@ -271,7 +271,7 @@
                                                             class="block text-sm font-medium text-gray-300">Saldo
                                                             Cuti (Default) </label>
                                                         <input type="number" id="saldo" name="saldo"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
                                                             readonly>
                                                     </div>
 
