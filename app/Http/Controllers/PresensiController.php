@@ -6,14 +6,59 @@ use Illuminate\Http\Request;
 use App\Models\Presensi;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class PresensiController extends Controller
 {
-    public function index()
+    public function indexPresensi(Request $request)
     {
-        return view('presensi');
+        $search = $request->input('search', ''); // Ambil nilai pencarian, default kosong
+        $status = $request->input('status', '');
+
+        // Ambil ID perusahaan dari user yang sedang login
+        $idPerusahaan = Auth::user()->id_Perusahaan;
+
+        // Query data cuti berdasarkan filter, pencarian, dan id_perusahaan
+        $presensi = Presensi::query()
+            ->whereHas('user', function ($query) use ($idPerusahaan) {
+                $query->where('id_Perusahaan', $idPerusahaan);
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status_Presensi', $status);
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('user', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->paginate(10);
+
+        // Kirim data ke view
+        return view('page.ppersetujuan-presensi', compact('presensi', 'search', 'status'));
     }
+
+    public function tolakPresensi(Request $request, $id)
+    {
+        $presensi = Presensi::findOrFail($id);
+    
+        if (!$presensi) {
+            return redirect()->route('persetujuan-presensi.index')->with('error', 'Pengajuan presensi tidak ditemukan.');
+        }
+    
+        // Logika tambahan untuk status "Disetujui"
+        if ($presensi->status_Presensi === 'Disetujui') {
+            $presensi->update([
+                'status_Presensi' => 'Dibatalkan'
+            ]);
+    
+            return redirect()->back()->with('success', 'Presensi yang disetujui telah dibatalkan.');
+        }
+    $presensi->save();
+    }
+    
+
+
 
     public function store(Request $request)
     {
@@ -126,4 +171,6 @@ class PresensiController extends Controller
             return response()->json(['alreadyFinalized' => false], 500);
         }
     }
+
+
 }

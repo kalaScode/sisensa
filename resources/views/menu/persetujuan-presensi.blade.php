@@ -52,17 +52,15 @@
         <!-- Filter Status dan Cari Karyawan -->
         <div class="flex justify-between mb-6">
             <!-- Filter Status -->
-            <form action="{{ route('persetujuan-cuti.index') }}" method="GET"
-                class="flex items-center space-x-4 w-1/3">
+            <form action="{{ route('persetujuan-presensi.index') }}" method="GET"
+                class="flex items-center space-x-4 w-3/4">
                 <!-- Filter Status -->
                 <div class="flex items-center w-full">
                     <select name="status" id="status" class="border-gray-300 rounded-md shadow-sm w-full pl-2 py-2">
                         <option value="">Semua Status</option>
-                        <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Menunggu
-                        </option>
                         <option value="Disetujui" {{ request('status') == 'Disetujui' ? 'selected' : '' }}>Disetujui
                         </option>
-                        <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="Dibatalkan" {{ request('status') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                     </select>
                 </div>
 
@@ -75,7 +73,7 @@
 
             <!-- Search Bar -->
             <div class="relative w-1/2">
-                <form action="{{ route('persetujuan-cuti.index') }}" method="GET" class="relative">
+                <form action="{{ route('persetujuan-presensi.index') }}" method="GET" class="relative">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     <input id="searchInput" name="search" type="text" value="{{ old('search', $search) }}"
                         placeholder="Cari karyawan..."
@@ -84,9 +82,10 @@
             </div>
         </div>
 
+
         <!-- Daftar Karyawan -->
         <div class="bg-white shadow rounded-lg overflow-x-auto">
-            @if ($cuti->isEmpty())
+            @if ($presensi->isEmpty())
                 <div class="p-4 mb-4 text-sm text-yellow-800 bg-yellow-100 rounded-lg border-l-4 border-yellow-500"
                     role="alert">
                     Karyawan tidak ditemukan.
@@ -96,33 +95,158 @@
                     <thead class="bg-[#122036] text-white">
                         <tr>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Nama</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold">Jenis Cuti</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold">Durasi Cuti</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold">Periode</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Jenis Presensi</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Tanggal</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Waktu</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Foto</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Lokasi Presensi</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Status</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($cuti as $c)
+                        @foreach ($presensi as $p)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full object-cover"
+                                                src="{{ $p->user->Avatar ? asset('storage/' . $p->user->Avatar) : 'img/profil.jpg' }}"
+                                                alt="Foto Profil" />
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $p->user->name ?? 'Nama Tidak Ditemukan' }}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                {{ $p->user->jabatan->nama_Jabatan ?? 'Jabatan Tidak Ditemukan' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $p->jenis_Presensi }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $p->Tanggal}}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $p->Waktu}} 
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-1000">
+                                    <img class="h-100 w-100"
+                                    src="{{ $p->Foto ? asset('/' . $p->Foto) : 'Tidak Ada Foto' }}"
+                                    alt="Foto Presensi" />
+                            
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $p->Alamat ?? '-'}} 
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {{$p->status_Presensi == 'Disetujui' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} ">
+                                        {{ $p->status_Presensi }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                                    <!-- Detail Button -->
+                                    <button
+                                        onclick="showDetailModal('{{ $p->user_id }}', '{{ $p->user->name }}','{{ $p->jenis_Presensi }}','{{ $p->Tanggal }}', '{{ $p->Waktu }}', '{{ asset('/' . $p->Foto ?? '-') }}', '{{ $p->Alamat }}')"
+                                        class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <!-- Tolak Button -->
+                                    <form action="{{ route('presensi.tolak', [$p->id_Presensi]) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
             @endif
         </div>
     </div>
-
-    <!-- Pagination -->
-    <div class="mt-6 flex items-center justify-between">
-        <div class="text-sm text-gray-700">
-            Menampilkan <span class="font-medium">{{ $cuti->firstItem() }}</span> sampai <span
-                class="font-medium">{{ $cuti->lastItem() }}</span> dari <span
-                class="font-medium">{{ $cuti->total() }}</span> data
-        </div>
-        <div class="flex space-x-2 items-center">
-            {{ $cuti->links() }}
-        </div>
-    </div>
 </main>
 
 <x-footer></x-footer>
+
+{{-- Modal Detail Karyawan --}}
+<div id="employeeDetailModal"
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-3/4 lg:w-2/5 max-h-full overflow-y-auto h-3/4">
+        <!-- Modal Header with Divider -->
+        <div class="border-b pb-4 mb-4">
+            <h2 class="text-2xl font-semibold text-gray-900">Detail Informasi Karyawan</h2>
+        </div>
+
+        <!-- Modal Content -->
+        <div id="modalContent" class="space-y-4 text-gray-800">
+            <div><strong class="text-dark-600">Nama Karyawan<br></strong> <span id="modalNama"></span></div>
+            <div><strong class="text-dark-600">Jenis Presensi<br></strong> <span id="modalJenisPresensi"></span></div>
+            <div><strong class="text-dark-600">Tanggal<br></strong> <span id="modalTanggal"></span></div>
+            <div><strong class="text-dark-600">Waktu<br></strong> <span id="modalWaktu"></span></div>
+            <div>
+                <strong class="text-dark-600">Foto<br></strong>
+                <img id="modalFoto" src="placeholder-image-url.jpg" alt="Foto Karyawan" class="w-full max-w-sm rounded-lg">
+            </div>
+            <div><strong class="text-dark-600">Lokasi Presensi<br></strong> <span id="modalAlamat"></span></div>
+        </div>
+
+        <!-- Modal Footer with Close Button -->
+        <div class="mt-6 text-right">
+            <button onclick="closeModal()"
+                class="px-5 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Fungsi untuk menampilkan modal dengan detail informasi karyawan
+    function showDetailModal(userId, name, jenis_Presensi, Tanggal, Waktu, Foto, Alamat) {
+        // Menyusun konten modal dengan detail karyawan
+        document.getElementById('modalNama').innerText = name;
+        document.getElementById('modalJenisPresensi').innerText = jenis_Presensi;
+        document.getElementById('modalTanggal').innerText = Tanggal;
+        document.getElementById('modalWaktu').innerText = Waktu;
+        document.getElementById('modalFoto').src = Foto ? Foto : '-';
+        document.getElementById('modalAlamat').innerText = Alamat ? Alamat : '-';
+
+        // Menampilkan modal
+        document.getElementById('employeeDetailModal').classList.remove('hidden');
+    }
+
+
+
+    //Fungsi untuk menampilkan modal feedback
+    function showFeedbackModal(id) {
+        const modal = document.getElementById(`feedbackModal-${id}`);
+        if (modal) {
+            modal.classList.remove('hidden'); // Menampilkan modal
+        } else {
+            console.error('Modal tidak ditemukan');
+        }
+    }
+
+    function closeFeedbackModal(id) {
+        const modal = document.getElementById(`feedbackModal-${id}`);
+        if (modal) {
+            modal.classList.add('hidden'); // Menyembunyikan modal
+        }
+    }
+
+
+    function closeModal() {
+        document.getElementById('employeeDetailModal').classList.add('hidden');
+    }
+</script>
+
