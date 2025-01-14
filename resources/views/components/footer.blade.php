@@ -1,3 +1,4 @@
+{{-- Footer dark --}}
 <footer class="bg-dark-grey-900 dark:bg-gray-900">
     <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div class="md:flex md:justify-between">
