@@ -178,16 +178,77 @@
                                                         <label for="perusahaan"
                                                             class="block text-sm font-medium text-gray-300">Perusahaan</label>
                                                         <input type="text" id="perusahaan" name="perusahaan"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
                                                             readonly>
                                                     </div>
 
                                                     <!-- Jabatan -->
                                                     <div class="mb-4">
                                                         <label for="jabatan"
-                                                            class="block text-sm font-medium text-gray-300">Jabatan</label>
-                                                        <input type="text" id="jabatan" name="jabatan"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
+                                                            class="block text-sm font-medium text-gray-300">Pilih
+                                                            Jabatan</label>
+                                                        <select id="jabatan" name="jabatan"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-500 sm:text-sm px-4 py-2 text-base">
+                                                            @php
+                                                                $id_Perusahaan = Auth::user()->id_Perusahaan;
+                                                                $jabatanList = [];
+
+                                                                switch ($id_Perusahaan) {
+                                                                    case 1:
+                                                                        $jabatanList = [
+                                                                            'NONE - PT Bersama Kreasi Teknik',
+                                                                            'Master Administrator',
+                                                                            'Administrator Berkreasi',
+                                                                            'Direktur Berkreasi',
+                                                                            'HRD Berkreasi',
+                                                                            'Software Developer',
+                                                                            'Quality Assurance',
+                                                                            'IT Consultant',
+                                                                        ];
+                                                                        break;
+                                                                    case 2:
+                                                                        $jabatanList = [
+                                                                            'NONE - PT Stand Focus Technolofy',
+                                                                            'Administrator SFT',
+                                                                            'Direktur SFT',
+                                                                            'HRD SFT',
+                                                                            'Senior Developer',
+                                                                            'Junior Developer',
+                                                                            'Fullstack Developer',
+                                                                        ];
+                                                                        break;
+                                                                    case 3:
+                                                                        $jabatanList = [
+                                                                            'NONE - PT Lima Bersaudara Logistik',
+                                                                            'Administrator Limbers',
+                                                                            'Direktur Limbers',
+                                                                            'HRD Limbers',
+                                                                            'Logistic Staff',
+                                                                            'Development Staff',
+                                                                            'Driver',
+                                                                        ];
+                                                                        break;
+                                                                    case 4:
+                                                                        $jabatanList = [
+                                                                            'NONE - PT Toko Expert Global',
+                                                                            'Administrator Toko Expert',
+                                                                            'Direktur Toko Expert',
+                                                                            'HRD Toko Expert',
+                                                                            'Staff Toko',
+                                                                        ];
+                                                                        break;
+                                                                    default:
+                                                                        $jabatanList = [
+                                                                            'NONE - Perusahaan Tidak Diketahui',
+                                                                        ];
+                                                                }
+                                                            @endphp
+
+                                                            @foreach ($jabatanList as $jabatan)
+                                                                <option value="{{ $jabatan }}">
+                                                                    {{ $jabatan }}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
 
                                                     <!-- Email -->
@@ -195,7 +256,7 @@
                                                         <label for="email"
                                                             class="block text-sm font-medium text-gray-300">Email</label>
                                                         <input type="email" id="email" name="email"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
                                                             readonly>
                                                     </div>
 
@@ -244,7 +305,7 @@
                                                             class="block text-sm font-medium text-gray-300">No
                                                             Telepon</label>
                                                         <input type="text" id="no_Telp" name="no_Telp"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"readonly>
                                                     </div>
 
                                                     <!-- Alamat -->

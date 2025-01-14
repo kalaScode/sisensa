@@ -251,9 +251,6 @@
 </div>
 
 
-
-
-
 <script>
     // Fungsi untuk menampilkan modal dengan detail informasi karyawan
     function showDetailModal(userId, name, Keterangan, Attachment, durasi, Feedback, jenis_Cuti) {
