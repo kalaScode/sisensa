@@ -46,35 +46,49 @@ class CutiController extends Controller
         }
 
         // Simpan data cuti ke database
-        $cuti = new Cuti();
-        $cuti->user_id = Auth::user()->user_id;
-        $cuti->tanggal_Mulai = $tanggalMulai;
-        $cuti->tanggal_Selesai = $tanggalSelesai;
-        $cuti->jenis_Cuti = $validated['jenis_Cuti'];
-        $cuti->keterangan = $validated['Keterangan'];
+        try {
+            $cuti = new Cuti();
+            $cuti->user_id = Auth::user()->user_id;
+            $cuti->tanggal_Mulai = $tanggalMulai;
+            $cuti->tanggal_Selesai = $tanggalSelesai;
+            $cuti->jenis_Cuti = $validated['jenis_Cuti'];
+            $cuti->keterangan = $validated['Keterangan'];
 
-        // Upload file jika ada
-        if ($request->hasFile('Attachment')) {
-            $path = $request->file('Attachment')->store('attachments', 'public');
-            $cuti->attachment = $path;
+            // Upload file jika ada
+            if ($request->hasFile('Attachment')) {
+                $file = $request->file('Attachment');
+
+                // Pastikan file valid dan aman
+                if ($file->isValid()) {
+                    // Generate unique file name to avoid conflicts
+                    $fileName = uniqid('cuti_', true) . '.' . $file->getClientOriginalExtension();
+
+                    // Store file securely in the public disk
+                    $path = $file->storeAs('attachments', $fileName, 'public');
+                    $cuti->attachment = $path;
+                }
+            }
+
+            $cuti->save();
+
+            // Kirim notifikasi ke HRD dalam perusahaan yang sama
+            $sender = Auth::user();
+            $direktur = User::where('id_Perusahaan', $sender->id_Perusahaan)
+                ->where('id_Otoritas', 3) // Sesuaikan id_Otoritas dengan direktur
+                ->first();
+
+            if ($direktur) {
+                // Mengirimkan notifikasi ke Direktur
+                $direktur->notify(new PengajuanCuti($cuti, $sender));
+            } else {
+                // Jika direktur tidak ditemukan
+                return redirect()->back()->with('error', 'Direktur tidak ditemukan.');
+            }
+
+            return redirect()->route('cuti.index')->with('success', 'Pengajuan cuti berhasil dikirim.');
+        } catch (\Exception $e) {
+            // Menangani kesalahan dan memberikan respons yang lebih informatif
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengajukan cuti. Silakan coba lagi.');
         }
-
-        $cuti->save();
-
-        // Kirim notifikasi ke HRD dalam perusahaan yang sama
-        $sender = Auth::user();
-        $direktur = User::where('id_Perusahaan', $sender->id_Perusahaan)
-            ->where('id_Otoritas', 3) // Sesuaikan id_Otoritas dengan direktur
-            ->first();
-
-        if ($direktur) {
-            // Mengirimkan notifikasi ke Direktur
-            $direktur->notify(new PengajuanCuti($cuti, $sender));
-        } else {
-            // Jika direktur tidak ditemukan
-            return redirect()->back()->with('error', 'Direktur tidak ditemukan.');
-        }
-
-        return redirect()->route('cuti.index')->with('success', 'Pengajuan cuti berhasil dikirim.');
     }
 }

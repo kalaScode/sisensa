@@ -18,6 +18,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ mix('js/app.js') }}"></script>
 
+    {{-- FlatPicker --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 </head>
 
 <body class="pt-12" style="font-family: 'Jakarta Sans', sans-serif;">
