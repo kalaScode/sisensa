@@ -67,6 +67,7 @@ class PersetujuanController extends Controller
 
                 // Update saldo cuti user
                 $saldoCuti->saldo_Terpakai += $durasi;
+                $saldoCuti->saldo_Sisa -= $durasi; // Kurangi saldo sisa
                 $saldoCuti->save();
 
                 // Kirim notifikasi
