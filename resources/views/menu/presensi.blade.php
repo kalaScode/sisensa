@@ -160,19 +160,16 @@
                 <!-- Tombol -->
                 <div class="flex justify-between flex-wrap gap-5">
                     <button id="cancelButton"
-                        class="flex-1 bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300 focus:outline-none">
+                        class="flex-1 bg-gray-200 text-gray-700 px-2 py-2 rounded-md hover:bg-gray-300 focus:outline-none">
                         Batal
                     </button>
-                    <button id="toggleCamera"
-                        class="flex-1 bg-blue-500 text-white px-2 py-0.5 rounded-md hover:bg-blue-600 focus:outline-none">
-                        Aktifkan Kamera
-                    </button>
                     <button id="finishButton"
-                        class="flex-1 bg-yellow-400 text-[#122036] px-2 py-0.5 rounded-md hover:bg-yellow-500 focus:outline-none"
+                        class="flex-1 bg-yellow-400 text-[#122036] px-2 py-2 rounded-md hover:bg-yellow-500 focus:outline-none"
                         disabled>
                         Presensi
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -447,14 +444,6 @@ function updateUI() {
             savePresensi();
         });
 
-        document.getElementById("toggleCamera").addEventListener("click", () => {
-            if (!isCameraOn) {
-                startCamera();
-                document.getElementById("toggleCamera").innerText = "Matikan Kamera";
-            } else {
-                location.reload();
-            }
-        });
         document.getElementById("cancelButton").addEventListener("click", () => {
             window.location.href = "{{ route('beranda') }}";
         });
@@ -465,6 +454,7 @@ function updateUI() {
             updateUI();
         });
 
+        startCamera();
         checkLocation();
     };
 </script>
