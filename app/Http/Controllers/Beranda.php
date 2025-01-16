@@ -62,12 +62,18 @@ class Beranda extends Controller
         $lamaKerjaFormatted = '--:--';
         
         // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk
+
         if ($presentMasuk) {
-            // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk default
-            if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now())) {
-                $lamaKerja = $waktuSekarang->diffInMinutes($jamMasuk); // Hitung selisih antara waktu sekarang dan jam masuk
+            // Jika sudah ada presensi keluar, hitung lama kerja dari presensi masuk hingga presensi keluar
+            if ($presensiKeluar) {
+                $lamaKerja = $presentMasuk->diffInMinutes($jamKeluar);
             } else {
-                $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
+                // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk default
+                if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now())) {
+                    $lamaKerja = $waktuSekarang->diffInMinutes($jamMasuk); // Hitung selisih antara waktu sekarang dan jam masuk
+                } else {
+                    $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
+                }
             }
 
             // Mengubah lama kerja dalam menit menjadi format jam dan menit
@@ -75,7 +81,11 @@ class Beranda extends Controller
             $minutes = $lamaKerja % 60;
             $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
         }
-    
+        $lamaKerjaColor = 'text-yellow-500'; // Default warna
+
+        if ($presensiKeluar) {
+            $lamaKerjaColor = 'text-red-500'; // Ubah warna jika presensi keluar sudah dilakukan
+        }
         return view('page.pberanda', [
             'role' => $role,
             'latestNotification' => $latestNotification,
@@ -83,6 +93,7 @@ class Beranda extends Controller
             'jamMasuk' => $presentMasuk ? $presentMasuk->format('H:i') :'--:--', // Format jam:menit
             'jamKeluar' => $jamKeluar ? $jamKeluar->format('H:i') : '--:--', // Format jam:menit jika ada presensi keluar, jika tidak '--:--'
             'lamaKerja' => $lamaKerjaFormatted, // Lama kerja dalam format jam:menit
+            'lamaKerjaColor' => $lamaKerjaColor,
         ]);
     }
 }
