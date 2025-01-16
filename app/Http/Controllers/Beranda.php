@@ -67,6 +67,11 @@ class Beranda extends Controller
             // Jika sudah ada presensi keluar, hitung lama kerja dari presensi masuk hingga presensi keluar
             if ($presensiKeluar) {
                 $lamaKerja = $presentMasuk->diffInMinutes($jamKeluar);
+                // Mengubah lama kerja dalam menit menjadi format jam dan menit
+                $hours = floor($lamaKerja / 60);
+                $minutes = $lamaKerja % 60;
+                $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
+                
             } else {
                 // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk default
                 if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now())) {
@@ -74,12 +79,11 @@ class Beranda extends Controller
                 } else {
                     $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
                 }
+                // Mengubah lama kerja dalam menit menjadi format jam dan menit
+                $hours = floor($lamaKerja / 60+1);
+                $minutes = $lamaKerja % 60;
+                $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
             }
-
-            // Mengubah lama kerja dalam menit menjadi format jam dan menit
-            $hours = floor($lamaKerja / 60+1);
-            $minutes = $lamaKerja % 60;
-            $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
         }
         $lamaKerjaColor = 'text-yellow-500'; // Default warna
 
