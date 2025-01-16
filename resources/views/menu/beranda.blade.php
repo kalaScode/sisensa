@@ -94,13 +94,13 @@
                 </div>
                 <div class="text-sm text-gray-600 text-center">Masuk</div>
             </div>
-            <!-- Countdown -->
+            <!-- Lamakerja -->
             <div
                 class="bg-gray-50 rounded-xl p-3 hover:shadow-md transition-all w-1/2 h-24 flex flex-col justify-center items-center">
                 <div class="text-xl font-semibold text-yellow-500 mb-1">
-                    {{ $countdown }}
+                    {{ $lamaKerja }}
                 </div>
-                <div class="text-sm text-gray-600 text-center">Keluar</div>
+                <div class="text-sm text-gray-600 text-center">Berjalan</div>
             </div>
             <!-- Keluar -->
             <div
