@@ -78,6 +78,7 @@ class PresensiController extends Controller
             $alreadyFinalized = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
                 ->where('Bagian', 'Keluar')
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
 
             if ($alreadyFinalized) {
@@ -90,6 +91,7 @@ class PresensiController extends Controller
             // Cek apakah sudah ada presensi hari ini
             $existingPresensi = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
                 
             $bagian = $existingPresensi ? 'Keluar' : 'Masuk';
@@ -161,6 +163,7 @@ class PresensiController extends Controller
             $alreadyFinalized = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
                 ->where('Bagian', 'Keluar')
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
 
             return response()->json(['alreadyFinalized' => $alreadyFinalized]);
