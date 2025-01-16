@@ -304,7 +304,7 @@
                                                             class="block text-sm font-medium text-gray-300">No
                                                             Telepon</label>
                                                         <input type="text" id="no_Telp" name="no_Telp"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-black-500"readonly>
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"readonly>
                                                     </div>
 
                                                     <!-- Alamat -->
