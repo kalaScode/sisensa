@@ -123,7 +123,13 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $c->jenis_Cuti }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    @if ($p->jenis_Cuti === 'Cuti')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $p->jenis_Cuti }}</span>
+                                    @elseif ($p->jenis_Cuti === 'Sakit')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">{{ $p->jenis_Cuti }}</span>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $c->tanggal_Mulai->diffInDays($c->tanggal_Selesai) + 1 }} hari
                                 </td>

@@ -136,11 +136,15 @@
 
                                 </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $p->Bagian }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    @if ($p->Bagian === 'Masuk')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $p->Bagian }}</span>
+                                    @elseif ($p->Bagian === 'Keluar')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">{{ $p->Bagian }}</span>
+                                    @endif
                                 </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate max-w-[400px]">
                                     {{ $p->Alamat ?? '-' }}
                                 </td>
 
