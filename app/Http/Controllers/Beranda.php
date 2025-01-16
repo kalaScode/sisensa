@@ -22,6 +22,7 @@ class Beranda extends Controller
         $perusahaan = DB::table('perusahaan')
             ->select('jam_Masuk', 'jam_Keluar')
             ->where('id_Perusahaan', $id_Perusahaan)
+            ->where('status_Presensi', 'Disetujui')
             ->first();
     
         if (!$perusahaan) {
@@ -37,6 +38,7 @@ class Beranda extends Controller
         $presensiMasuk = Presensi::where('user_id', Auth::id())
             ->whereDate('Tanggal', Carbon::today('GMT+7'))
             ->where('Bagian', 'Masuk')
+            ->where('status_Presensi', 'Disetujui')
             ->first();
     
         if ($presensiMasuk) {
@@ -49,6 +51,7 @@ class Beranda extends Controller
         $presensiKeluar = Presensi::where('user_id', Auth::id())
             ->whereDate('Tanggal', Carbon::today('GMT+7'))
             ->where('Bagian', 'Keluar')
+            ->where('status_Presensi', 'Disetujui')
             ->first();
     
         if ($presensiKeluar) {

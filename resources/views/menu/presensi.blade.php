@@ -13,12 +13,14 @@
     $presensiHariIni = DB::table('presensi')
         ->where('user_id', $user_id)
         ->whereDate('Tanggal', $today)
+        ->where('status_Presensi', 'Disetujui')
         ->exists();
 
     $statusPresensi = $presensiHariIni ? 'Keluar' : 'Masuk';
     $tipePresensiSebelumnya = DB::table('presensi')
         ->where('user_id', $user_id)
         ->whereDate('Tanggal', $today)
+        ->where('status_Presensi', 'Disetujui')
         ->orderBy('Waktu', 'asc') // Ambil presensi pertama (Masuk)
         ->value('jenis_Presensi'); // Ambil jenis_Presensi ('office' atau 'outside')
 @endphp

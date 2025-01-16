@@ -6,14 +6,56 @@ use Illuminate\Http\Request;
 use App\Models\Presensi;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class PresensiController extends Controller
 {
-    public function index()
+    public function indexPresensi(Request $request)
     {
-        return view('presensi');
+        $search = $request->input('search', ''); // Ambil nilai pencarian, default kosong
+        $status = $request->input('status', '');
+
+        // Ambil ID perusahaan dari user yang sedang login
+        $idPerusahaan = Auth::user()->id_Perusahaan;
+
+        // Query data cuti berdasarkan filter, pencarian, dan id_perusahaan
+        $presensi = Presensi::query()
+            ->whereHas('user', function ($query) use ($idPerusahaan) {
+                $query->where('id_Perusahaan', $idPerusahaan);
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status_Presensi', $status);
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('user', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->paginate(10);
+
+        // Kirim data ke view
+        return view('page.ppersetujuan-presensi', compact('presensi', 'search', 'status'));
     }
+
+    public function tolakPresensi(Request $request, $id)
+    {
+        // Debugging untuk Memverifikasi ID
+       // dd($id)
+        
+        // Menemukan data presensi berdasarkan ID
+        $presensi = Presensi::findOrFail($id);
+        
+        // Ubah status menjadi "Dibatalkan"
+        $presensi->status_Presensi = "Dibatalkan";
+        $presensi->save();
+
+        // Redirect dengan pesan sukses
+        return redirect()->back()->with("success","Presensi dibatalkan!");
+    }
+    
+
+
 
     public function store(Request $request)
     {
@@ -36,6 +78,7 @@ class PresensiController extends Controller
             $alreadyFinalized = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
                 ->where('Bagian', 'Keluar')
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
 
             if ($alreadyFinalized) {
@@ -48,6 +91,7 @@ class PresensiController extends Controller
             // Cek apakah sudah ada presensi hari ini
             $existingPresensi = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
                 
             $bagian = $existingPresensi ? 'Keluar' : 'Masuk';
@@ -119,6 +163,7 @@ class PresensiController extends Controller
             $alreadyFinalized = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
                 ->where('Bagian', 'Keluar')
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
 
             return response()->json(['alreadyFinalized' => $alreadyFinalized]);
@@ -126,4 +171,5 @@ class PresensiController extends Controller
             return response()->json(['alreadyFinalized' => false], 500);
         }
     }
+
 }
