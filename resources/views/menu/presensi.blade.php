@@ -16,6 +16,11 @@
         ->exists();
 
     $statusPresensi = $presensiHariIni ? 'Keluar' : 'Masuk';
+    $tipePresensiSebelumnya = DB::table('presensi')
+        ->where('user_id', $user_id)
+        ->whereDate('Tanggal', $today)
+        ->orderBy('Waktu', 'asc') // Ambil presensi pertama (Masuk)
+        ->value('jenis_Presensi'); // Ambil jenis_Presensi ('office' atau 'outside')
 @endphp
 
 
@@ -103,9 +108,10 @@
                     </div>
                     <div class="relative">
                         <select id="presenceType"
-                            class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
-                            <option value="office">Dalam Kantor</option>
-                            <option value="outside">Dinas</option>
+                            class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100"
+                            {{ $tipePresensiSebelumnya ? 'disabled' : '' }}>
+                            <option value="office" {{ $tipePresensiSebelumnya === 'Biasa' ? 'selected' : '' }}>Dalam Kantor</option>
+                            <option value="outside" {{ $tipePresensiSebelumnya === 'Dinas' ? 'selected' : '' }}>Dinas</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
