@@ -14,22 +14,22 @@
                         <h2 class="mb-6 text-sm font-semibold text-white uppercase">Our Company</h2>
                         <ul class="space-y-4 text-gray-500 dark:text-gray-400 font-medium">
                             <li>
-                                <a href="https://samakreasi.com/home" class="hover:underline">
+                                <a href="https://samakreasi.com/home" class="hover:underline" target="_blank">
                                     &gt; PT Bersama Kreasi Teknik
                                 </a>
                             </li>
                             <li>
-                                <a href="https://standfocustech.com/" class="hover:underline">
+                                <a href="https://standfocustech.com/" class="hover:underline" target="_blank">
                                     &gt; PT Stand Focus Technology
                                 </a>
                             </li>
                             <li>
-                                <a href="https://dev.limabersaudara.com/" class="hover:underline">
+                                <a href="https://dev.limabersaudara.com/" class="hover:underline" target="_blank">
                                     &gt; PT Lima Bersaudara Logistik
                                 </a>
                             </li>
                             <li>
-                                <a href="https://tokoexpert.com/" class="hover:underline">
+                                <a href="https://tokoexpert.com/" class="hover:underline" target="_blank">
                                     &gt; PT Toko Expert Global
                                 </a>
                             </li>
