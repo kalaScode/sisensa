@@ -22,7 +22,6 @@ class Beranda extends Controller
         $perusahaan = DB::table('perusahaan')
             ->select('jam_Masuk', 'jam_Keluar')
             ->where('id_Perusahaan', $id_Perusahaan)
-            ->where('status_Presensi', 'Disetujui')
             ->first();
     
         if (!$perusahaan) {
