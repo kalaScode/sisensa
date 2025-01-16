@@ -16,6 +16,7 @@ class Presensi extends Model
         'Waktu',
         'Latitude',
         'Longitude',
+        'status_Presensi',
         'Alamat',
         'Bagian',
         'Keterangan',

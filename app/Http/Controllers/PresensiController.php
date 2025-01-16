@@ -40,21 +40,18 @@ class PresensiController extends Controller
 
     public function tolakPresensi(Request $request, $id)
     {
+        // Debugging untuk Memverifikasi ID
+       // dd($id)
+        
+        // Menemukan data presensi berdasarkan ID
         $presensi = Presensi::findOrFail($id);
-    
-        if (!$presensi) {
-            return redirect()->route('persetujuan-presensi.index')->with('error', 'Pengajuan presensi tidak ditemukan.');
-        }
-    
-        // Logika tambahan untuk status "Disetujui"
-        if ($presensi->status_Presensi === 'Disetujui') {
-            $presensi->update([
-                'status_Presensi' => 'Dibatalkan'
-            ]);
-    
-            return redirect()->back()->with('success', 'Presensi yang disetujui telah dibatalkan.');
-        }
-    $presensi->save();
+        
+        // Ubah status menjadi "Dibatalkan"
+        $presensi->status_Presensi = "Dibatalkan";
+        $presensi->save();
+
+        // Redirect dengan pesan sukses
+        return redirect()->back()->with("success","Presensi dibatalkan!");
     }
     
 
@@ -81,6 +78,7 @@ class PresensiController extends Controller
             $alreadyFinalized = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
                 ->where('Bagian', 'Keluar')
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
 
             if ($alreadyFinalized) {
@@ -93,6 +91,7 @@ class PresensiController extends Controller
             // Cek apakah sudah ada presensi hari ini
             $existingPresensi = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
                 
             $bagian = $existingPresensi ? 'Keluar' : 'Masuk';
@@ -164,6 +163,7 @@ class PresensiController extends Controller
             $alreadyFinalized = Presensi::where('user_id', $user_id)
                 ->where('Tanggal', $today)
                 ->where('Bagian', 'Keluar')
+                ->where('status_Presensi', 'Disetujui')
                 ->exists();
 
             return response()->json(['alreadyFinalized' => $alreadyFinalized]);
@@ -171,6 +171,5 @@ class PresensiController extends Controller
             return response()->json(['alreadyFinalized' => false], 500);
         }
     }
-
 
 }

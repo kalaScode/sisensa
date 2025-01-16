@@ -13,9 +13,16 @@
     $presensiHariIni = DB::table('presensi')
         ->where('user_id', $user_id)
         ->whereDate('Tanggal', $today)
+        ->where('status_Presensi', 'Disetujui')
         ->exists();
 
     $statusPresensi = $presensiHariIni ? 'Keluar' : 'Masuk';
+    $tipePresensiSebelumnya = DB::table('presensi')
+        ->where('user_id', $user_id)
+        ->whereDate('Tanggal', $today)
+        ->where('status_Presensi', 'Disetujui')
+        ->orderBy('Waktu', 'asc') // Ambil presensi pertama (Masuk)
+        ->value('jenis_Presensi'); // Ambil jenis_Presensi ('office' atau 'outside')
 @endphp
 
 
@@ -103,9 +110,10 @@
                     </div>
                     <div class="relative">
                         <select id="presenceType"
-                            class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100">
-                            <option value="office">Dalam Kantor</option>
-                            <option value="outside">Dinas</option>
+                            class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100"
+                            {{ $tipePresensiSebelumnya ? 'disabled' : '' }}>
+                            <option value="Biasa" {{ ($tipePresensiSebelumnya && $tipePresensiSebelumnya === 'Biasa') || (!$tipePresensiSebelumnya && old('presenceType') === 'Biasa') ? 'selected' : '' }}>Dalam Kantor</option>
+                            <option value="Dinas" {{ ($tipePresensiSebelumnya && $tipePresensiSebelumnya === 'Dinas') || (!$tipePresensiSebelumnya && old('presenceType') === 'Dinas') ? 'selected' : '' }}>Dinas</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -160,19 +168,16 @@
                 <!-- Tombol -->
                 <div class="flex justify-between flex-wrap gap-5">
                     <button id="cancelButton"
-                        class="flex-1 bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300 focus:outline-none">
+                        class="flex-1 bg-gray-200 text-gray-700 px-2 py-2 rounded-md hover:bg-gray-300 focus:outline-none">
                         Batal
                     </button>
-                    <button id="toggleCamera"
-                        class="flex-1 bg-blue-500 text-white px-2 py-0.5 rounded-md hover:bg-blue-600 focus:outline-none">
-                        Aktifkan Kamera
-                    </button>
                     <button id="finishButton"
-                        class="flex-1 bg-yellow-400 text-[#122036] px-2 py-0.5 rounded-md hover:bg-yellow-500 focus:outline-none"
+                        class="flex-1 bg-yellow-400 text-[#122036] px-2 py-2 rounded-md hover:bg-yellow-500 focus:outline-none"
                         disabled>
                         Presensi
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -236,7 +241,7 @@ function showErrorAlert(message) {
         let video = document.getElementById("video");
         let canvas = document.getElementById("canvas");
         let cameraMessage = document.getElementById("cameraMessage");
-        let presenceType = "office";
+        let presenceType = document.getElementById("presenceType").value;
         let isCameraOn = false;
         let detectionInterval;
         let isFaceDetected = false;
@@ -269,7 +274,7 @@ function showErrorAlert(message) {
 
                     const distanceContainer = document.getElementById("distanceContainer");
 
-                    if (presenceType === "office") {
+                    if (presenceType === "Biasa") {
                         const distance = getDistance(userLat, userLon, targetLat, targetLon)
                             .toFixed(2);
                         document.getElementById("distanceText").innerText =
@@ -334,7 +339,7 @@ function showErrorAlert(message) {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({
-                jenis_Presensi: document.getElementById("presenceType").value === 'office' ? 'Biasa' : 'Dinas',
+                jenis_Presensi: document.getElementById("presenceType").value === 'Biasa' ? 'Biasa' : 'Dinas',
                 Tanggal: new Date().toISOString().split('T')[0],
                 Waktu: new Date().toISOString(),
                 Latitude: currentLat,
@@ -363,7 +368,7 @@ function updateUI() {
     const messages = [];
 
     if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
-    if (presenceType === "office" && !isWithinRange) {
+    if (presenceType === "Biasa" && !isWithinRange) {
         messages.push("Jarak harus dalam radius 100 meter");
     }
 
@@ -436,7 +441,7 @@ function updateUI() {
 
         document.getElementById("finishButton").addEventListener("click", async () => {
             const finishButton = document.getElementById("finishButton");
-            if (!(isFaceDetected && (presenceType === "outside" || isWithinRange))) {
+            if (!(isFaceDetected && (presenceType === "Dinas" || isWithinRange))) {
                 showErrorAlert("Presensi gagal karena syarat belum terpenuhi. Perhatikan syarat presensi sebelum menekan tombol Presensi.");
                 setTimeout(3000); // Tunggu 3 detik sebelum mengalihkan
                 return;
@@ -447,14 +452,6 @@ function updateUI() {
             savePresensi();
         });
 
-        document.getElementById("toggleCamera").addEventListener("click", () => {
-            if (!isCameraOn) {
-                startCamera();
-                document.getElementById("toggleCamera").innerText = "Matikan Kamera";
-            } else {
-                location.reload();
-            }
-        });
         document.getElementById("cancelButton").addEventListener("click", () => {
             window.location.href = "{{ route('beranda') }}";
         });
@@ -465,6 +462,7 @@ function updateUI() {
             updateUI();
         });
 
+        startCamera();
         checkLocation();
     };
 </script>

@@ -26,13 +26,8 @@
     </nav>
 
     <!-- Pesan Error/Success -->
-    @if (session('error'))
-        <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
-            {{ session('error') }}
-        </div>
-    @endif
     @if (session('success'))
-        <div class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+        <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
             {{ session('success') }}
         </div>
     @endif
@@ -60,7 +55,8 @@
                         <option value="">Semua Status</option>
                         <option value="Disetujui" {{ request('status') == 'Disetujui' ? 'selected' : '' }}>Disetujui
                         </option>
-                        <option value="Dibatalkan" {{ request('status') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                        <option value="Dibatalkan" {{ request('status') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan
+                        </option>
                     </select>
                 </div>
 
@@ -125,32 +121,33 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $p->jenis_Presensi }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $p->Tanggal}}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $p->jenis_Presensi }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $p->Waktu}} 
+                                    {{ $p->Tanggal }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $p->Waktu }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-1000">
                                     <img class="h-100 w-100"
-                                    src="{{ $p->Foto ? asset('/' . $p->Foto) : 'Tidak Ada Foto' }}"
-                                    alt="Foto Presensi" />
-                            
-                                </td>
-                                
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $p->Bagian}}
+                                        src="{{ $p->Foto ? asset('/' . $p->Foto) : 'Tidak Ada Foto' }}"
+                                        alt="Foto Presensi" />
+
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $p->Alamat ?? '-'}} 
+                                    {{ $p->Bagian }}
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $p->Alamat ?? '-' }}
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    {{$p->status_Presensi == 'Disetujui' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} ">
+                                    {{ $p->status_Presensi == 'Disetujui' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} ">
                                         {{ $p->status_Presensi }}
                                     </span>
                                 </td>
@@ -163,13 +160,18 @@
                                         <i class="fas fa-info-circle"></i>
                                     </button>
                                     <!-- Tolak Button -->
-                                    <form action="{{ route('presensi.tolak', [$p->id_Presensi]) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </form>
-
+                                    @if ($p->status_Presensi != 'Dibatalkan')
+                                        <form id="form-tolak--{{ $p->id_Presensi }}"
+                                            action="{{ route('presensi.tolak', [$p->id_Presensi]) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="button" class="text-red-600 hover:text-red-900"
+                                                onclick="confirmTolak('{{ $p->id_Presensi }}')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -199,7 +201,8 @@
             <div><strong class="text-dark-600">Waktu<br></strong> <span id="modalWaktu"></span></div>
             <div>
                 <strong class="text-dark-600">Foto<br></strong>
-                <img id="modalFoto" src="placeholder-image-url.jpg" alt="Foto Karyawan" class="w-full max-w-sm rounded-lg">
+                <img id="modalFoto" src="placeholder-image-url.jpg" alt="Foto Karyawan"
+                    class="w-full max-w-sm rounded-lg">
             </div>
             <div><strong class="text-dark-600">Lokasi Presensi<br></strong> <span id="modalAlamat"></span></div>
         </div>
@@ -231,27 +234,25 @@
     }
 
 
-
-    //Fungsi untuk menampilkan modal feedback
-    function showFeedbackModal(id) {
-        const modal = document.getElementById(`feedbackModal-${id}`);
-        if (modal) {
-            modal.classList.remove('hidden'); // Menampilkan modal
-        } else {
-            console.error('Modal tidak ditemukan');
-        }
-    }
-
-    function closeFeedbackModal(id) {
-        const modal = document.getElementById(`feedbackModal-${id}`);
-        if (modal) {
-            modal.classList.add('hidden'); // Menyembunyikan modal
-        }
-    }
-
-
     function closeModal() {
         document.getElementById('employeeDetailModal').classList.add('hidden');
     }
-</script>
 
+    function confirmTolak(idPresensi) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Presensi akan dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, batalkan!',
+            cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit form secara programatis
+                document.getElementById('form-tolak--' + idPresensi).submit();
+            }
+        });
+    }
+</script>
