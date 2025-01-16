@@ -29,7 +29,6 @@ class Beranda extends Controller
         }
     
         $jamMasukDefault = Carbon::parse($perusahaan->jam_Masuk);
-        $jamKeluarDefault = Carbon::parse($perusahaan->jam_Keluar);
     
         // Default jam masuk
         $jamMasuk = $jamMasukDefault;
@@ -42,6 +41,8 @@ class Beranda extends Controller
     
         if ($presensiMasuk) {
             $presentMasuk = Carbon::parse($presensiMasuk->Waktu);
+        } else {
+            $presentMasuk = null; // Jika belum ada presensi masuk
         }
     
         // Cek presensi keluar hari ini
@@ -58,24 +59,28 @@ class Beranda extends Controller
     
         // Hitung lama kerja
         $waktuSekarang = Carbon::now();
+        $lamaKerjaFormatted = '--:--';
         
         // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk
-        if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now())) {
-            $lamaKerja = $waktuSekarang->diffInMinutes($jamMasuk); // Hitung selisih antara waktu sekarang dan jam masuk
-        } else {
-            $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
+        if ($presentMasuk) {
+            // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk default
+            if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now())) {
+                $lamaKerja = $waktuSekarang->diffInMinutes($jamMasuk); // Hitung selisih antara waktu sekarang dan jam masuk
+            } else {
+                $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
+            }
+
+            // Mengubah lama kerja dalam menit menjadi format jam dan menit
+            $hours = floor($lamaKerja / 60+1);
+            $minutes = $lamaKerja % 60;
+            $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
         }
-        
-        // Mengubah lama kerja dalam menit menjadi format jam dan menit
-        $hours = floor($lamaKerja / 60+1);
-        $minutes = $lamaKerja % 60;
-        $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
     
         return view('page.pberanda', [
             'role' => $role,
             'latestNotification' => $latestNotification,
             'title' => 'Dashboard Beranda',
-            'jamMasuk' => $presentMasuk->format('H:i'), // Format jam:menit
+            'jamMasuk' => $presentMasuk ? $presentMasuk->format('H:i') :'--:--', // Format jam:menit
             'jamKeluar' => $jamKeluar ? $jamKeluar->format('H:i') : '--:--', // Format jam:menit jika ada presensi keluar, jika tidak '--:--'
             'lamaKerja' => $lamaKerjaFormatted, // Lama kerja dalam format jam:menit
         ]);
