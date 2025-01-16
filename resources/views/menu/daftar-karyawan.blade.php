@@ -127,8 +127,7 @@
                                                     data-alamat="{{ $item->Alamat }}"
                                                     data-statuskerja="{{ $item->status_Kerja }}"
                                                     data-statusakun="{{ $item->status_Akun }}"
-                                                    data-saldoawal="{{ $item->saldo_cuti->saldo_Awal ?? 12 }}"
-                                                    data-saldo="{{ $item->saldo_cuti->saldo_Sisa ?? 12 }}"
+                                                    data-saldosisa="{{ $item->saldo_cuti->saldo_Sisa ?? 12 }}"
                                                     onclick="openModal(this)">
                                                     <i class="fa-regular fa-pen-to-square"></i>
                                                 </button>
@@ -185,8 +184,11 @@
 
                                                     <!-- Jabatan -->
                                                     <div class="mb-4">
-                                                        <label for="jabatan" class="block text-sm font-medium text-gray-300">Pilih Jabatan</label>
-                                                        <select id="jabatan" name="jabatan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-500 sm:text-sm px-4 py-2 text-base">
+                                                        <label for="jabatan"
+                                                            class="block text-sm font-medium text-gray-300">Pilih
+                                                            Jabatan</label>
+                                                        <select id="jabatan" name="jabatan"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring-indigo-500 sm:text-sm px-4 py-2 text-base">
                                                             @php
                                                                 $id_Perusahaan = Auth::user()->id_Perusahaan;
                                                                 $jabatanList = [];
@@ -194,54 +196,57 @@
                                                                 switch ($id_Perusahaan) {
                                                                     case 1:
                                                                         $jabatanList = [
-                                                                            "NONE - PT Bersama Kreasi Teknik",
-                                                                            "Master Administrator",
-                                                                            "Administrator Berkreasi",
-                                                                            "Direktur Berkreasi",
-                                                                            "HRD Berkreasi",
-                                                                            "Software Developer",
-                                                                            "Quality Assurance",
-                                                                            "IT Consultant",
+                                                                            'NONE - PT Bersama Kreasi Teknik',
+                                                                            'Master Administrator',
+                                                                            'Administrator Berkreasi',
+                                                                            'Direktur Berkreasi',
+                                                                            'HRD Berkreasi',
+                                                                            'Software Developer',
+                                                                            'Quality Assurance',
+                                                                            'IT Consultant',
                                                                         ];
                                                                         break;
                                                                     case 2:
                                                                         $jabatanList = [
-                                                                            "NONE - PT Stand Focus Technolofy",
-                                                                            "Administrator SFT",
-                                                                            "Direktur SFT",
-                                                                            "HRD SFT",
-                                                                            "Senior Developer",
-                                                                            "Junior Developer",
-                                                                            "Fullstack Developer",
+                                                                            'NONE - PT Stand Focus Technolofy',
+                                                                            'Administrator SFT',
+                                                                            'Direktur SFT',
+                                                                            'HRD SFT',
+                                                                            'Senior Developer',
+                                                                            'Junior Developer',
+                                                                            'Fullstack Developer',
                                                                         ];
                                                                         break;
                                                                     case 3:
                                                                         $jabatanList = [
-                                                                            "NONE - PT Lima Bersaudara Logistik",
-                                                                            "Administrator Limbers",
-                                                                            "Direktur Limbers",
-                                                                            "HRD Limbers",
-                                                                            "Logistic Staff",
-                                                                            "Development Staff",
-                                                                            "Driver",
+                                                                            'NONE - PT Lima Bersaudara Logistik',
+                                                                            'Administrator Limbers',
+                                                                            'Direktur Limbers',
+                                                                            'HRD Limbers',
+                                                                            'Logistic Staff',
+                                                                            'Development Staff',
+                                                                            'Driver',
                                                                         ];
                                                                         break;
                                                                     case 4:
                                                                         $jabatanList = [
-                                                                            "NONE - PT Toko Expert Global",
-                                                                            "Administrator Toko Expert",
-                                                                            "Direktur Toko Expert",
-                                                                            "HRD Toko Expert",
-                                                                            "Staff Toko",
+                                                                            'NONE - PT Toko Expert Global',
+                                                                            'Administrator Toko Expert',
+                                                                            'Direktur Toko Expert',
+                                                                            'HRD Toko Expert',
+                                                                            'Staff Toko',
                                                                         ];
                                                                         break;
                                                                     default:
-                                                                        $jabatanList = ["NONE - Perusahaan Tidak Diketahui"];
+                                                                        $jabatanList = [
+                                                                            'NONE - Perusahaan Tidak Diketahui',
+                                                                        ];
                                                                 }
                                                             @endphp
 
                                                             @foreach ($jabatanList as $jabatan)
-                                                                <option value="{{ $jabatan }}">{{ $jabatan }}</option>
+                                                                <option value="{{ $jabatan }}">
+                                                                    {{ $jabatan }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -313,21 +318,11 @@
 
                                                     <!-- Jatah Cuti -->
                                                     <div class="mb-4">
-                                                        <label for="saldo_Awal"
-                                                            class="block text-sm font-medium text-gray-300">Jatah
-                                                            Cuti</label>
-                                                        <input type="number" id="saldo_Awal" name="saldo_Awal"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
-                                                    </div>
-
-                                                    <!-- Saldo Cuti -->
-                                                    <div class="mb-4">
-                                                        <label for="saldo"
+                                                        <label for="saldo_Sisa"
                                                             class="block text-sm font-medium text-gray-300">Saldo
-                                                            Cuti (Default) </label>
-                                                        <input type="number" id="saldo" name="saldo"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
-                                                            readonly>
+                                                            Sisa</label>
+                                                        <input type="number" id="saldo_Sisa" name="saldo_Sisa"
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
                                                     </div>
 
                                                     <!-- Submit -->
@@ -358,7 +353,7 @@
             </div>
         </div>
 </main>
-
+<x-footer></x-footer>
 <script>
     function openModal(button) {
         document.getElementById('user_id').value = button.getAttribute('data-id');
@@ -368,8 +363,7 @@
         document.getElementById('email').value = button.getAttribute('data-email');
         document.getElementById('no_Telp').value = button.getAttribute('data-telepon');
         document.getElementById('alamat').value = button.getAttribute('data-alamat');
-        document.getElementById('saldo_Awal').value = button.getAttribute('data-saldoawal');
-        document.getElementById('saldo').value = button.getAttribute('data-saldo');
+        document.getElementById('saldo_Sisa').value = button.getAttribute('data-saldosisa');
 
         const statusKerja = button.getAttribute('data-statuskerja');
         if (statusKerja === "Tetap") {

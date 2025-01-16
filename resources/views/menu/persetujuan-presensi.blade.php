@@ -99,6 +99,7 @@
                             <th class="px-6 py-3 text-center text-xs font-semibold">Tanggal</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Waktu</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Foto</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold">Bagian</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Lokasi Presensi</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Status</th>
                             <th class="px-6 py-3 text-center text-xs font-semibold">Aksi</th>
@@ -136,6 +137,10 @@
                                     src="{{ $p->Foto ? asset('/' . $p->Foto) : 'Tidak Ada Foto' }}"
                                     alt="Foto Presensi" />
                             
+                                </td>
+                                
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $p->Bagian}}
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

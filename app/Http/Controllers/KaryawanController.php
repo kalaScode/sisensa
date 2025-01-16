@@ -122,7 +122,6 @@ class KaryawanController extends Controller
         // Ambil status kerja dari request
         $statusKerja = $request->input('status_Kerja');
         $saldoAwal = $statusKerja === 'Tetap' ? 12 : 0;
-
         // Update status kerja dan saldo awal di tabel karyawan
         $karyawan->update([
             'status_Kerja' => $statusKerja,
@@ -132,7 +131,8 @@ class KaryawanController extends Controller
         // Update saldo di tabel saldo_cuti
         SaldoCuti::updateOrCreate(
             ['user_id' => $userId],
-            ['saldo_Awal' => $saldoAwal]
+            ['saldo_Awal' => $saldoAwal],
+            ['saldo_Sisa' => $saldoAwal]
         );
 
         return redirect()->back()->with('success', 'Karyawan berhasil disetujui dan saldo cuti diperbarui.');
@@ -179,7 +179,7 @@ class KaryawanController extends Controller
             ],
             'alamat' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255', // Validasi untuk jabatan
-            'saldo_Awal' => 'nullable|integer|min:0', // Validasi saldo awal
+            'saldo_Sisa' => 'nullable|integer|min:0', // Validasi saldo awal
             'saldo' => 'nullable|integer|min:0', // Validasi saldo cuti
         ], [
             'no_Telp.regex' => 'Nomor telepon harus dimulai dengan 08 dan terdiri dari 10 hingga 15 angka.',
@@ -187,7 +187,7 @@ class KaryawanController extends Controller
 
         // Cari karyawan berdasarkan ID
         $karyawan = Karyawan::find($request->user_id);  // Anda bisa menyesuaikan pencarian dengan kebutuhan
-        $saldoAwal = $request->input('saldo_Awal', 0);
+        $saldoSisa = $request->input('saldo_Sisa', 0);
 
         // Cek apakah karyawan ditemukan
         if ($karyawan) {
@@ -214,7 +214,7 @@ class KaryawanController extends Controller
             // Update saldo cuti
             $saldoCuti = SaldoCuti::updateOrCreate(
                 ['user_id' => $userId],
-                ['saldo_Awal' => $saldoAwal],
+                ['saldo_Sisa' => $saldoSisa],
                 ['updated_By' => Auth::user()->user_id],
             );
 
