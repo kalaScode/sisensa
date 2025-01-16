@@ -56,8 +56,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/persetujuan-cuti/terima/{id}', [PersetujuanController::class, 'terimaCuti'])->name('cuti.terima');
     Route::get('/persetujuan-cuti/tolak/{id}', [PersetujuanController::class, 'tolakCuti'])->name('cuti.tolak');
     Route::get('/persetujuan-presensi', [PresensiController::class, 'indexPresensi'])->name('persetujuan-presensi.index');
-    Route::post('/persetujuan-presensi/tolak/{id}', [PresensiController::class, 'tolakPresensi'])->name('presensi.tolak');
-    Route::get('/persetujuan-presensi/tolak/{id}', [PresensiController::class, 'tolakPresensi'])->name('presensi.tolak');
+    // Route::post('/persetujuan-presensi/tolak/{id}', [PresensiController::class, 'tolakPresensi'])->name('presensi.tolak');
+    // Route::get('/persetujuan-presensi/tolak/{id}', [PresensiController::class, 'tolakPresensi'])->name('presensi.tolak');
+    Route::put('/persetujuan-presensi/tolak/{id}', [PresensiController::class, 'tolakPresensi'])->name('presensi.tolak');
 });
 
 // Route ke halaman riwayat presensi pribadi
