@@ -100,7 +100,7 @@
                 <div class="text-xl font-semibold {{ $lamaKerjaColor }} mb-1">
                     {{ $lamaKerja }}
                 </div>
-                <div class="text-sm text-gray-600 text-center">Berjalan</div>
+                <div class="text-sm text-gray-600 text-center">Durasi</div>
             </div>
             <!-- Keluar -->
             <div
