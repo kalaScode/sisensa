@@ -120,7 +120,6 @@
                                                     data-modal-toggle="editdata_modal"
                                                     class="text-blue-600 hover:text-blue-900 mr-3"
                                                     data-id="{{ $item->user_id }}" data-name="{{ $item->name }}"
-                                                    data-perusahaan="{{ $item->perusahaan->nama_Perusahaan }}"
                                                     data-jabatan="{{ $item->jabatan->nama_Jabatan ?? '' }}"
                                                     data-email="{{ $item->email }}"
                                                     data-telepon="{{ $item->no_Telp }}"
@@ -173,14 +172,14 @@
                                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom">
                                                     </div>
 
-                                                    <!-- Perusahaan -->
+                                                    <!-- Perusahaan
                                                     <div class="mb-4">
                                                         <label for="perusahaan"
                                                             class="block text-sm font-medium text-gray-300">Perusahaan</label>
                                                         <input type="text" id="perusahaan" name="perusahaan"
                                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
                                                             readonly>
-                                                    </div>
+                                                    </div> -->
 
                                                     <!-- Jabatan -->
                                                     <div class="mb-4">
@@ -256,8 +255,8 @@
                                                         <label for="email"
                                                             class="block text-sm font-medium text-gray-300">Email</label>
                                                         <input type="email" id="email" name="email"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"
-                                                            readonly>
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-black-500"
+                                                            >
                                                     </div>
 
                                                     <!-- Status Kerja -->
@@ -305,7 +304,7 @@
                                                             class="block text-sm font-medium text-gray-300">No
                                                             Telepon</label>
                                                         <input type="text" id="no_Telp" name="no_Telp"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-gray-500"readonly>
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-black-500"readonly>
                                                     </div>
 
                                                     <!-- Alamat -->
@@ -358,7 +357,7 @@
     function openModal(button) {
         document.getElementById('user_id').value = button.getAttribute('data-id');
         document.getElementById('name').value = button.getAttribute('data-name');
-        document.getElementById('perusahaan').value = button.getAttribute('data-perusahaan');
+        // document.getElementById('perusahaan').value = button.getAttribute('data-perusahaan');
         document.getElementById('jabatan').value = button.getAttribute('data-jabatan');
         document.getElementById('email').value = button.getAttribute('data-email');
         document.getElementById('no_Telp').value = button.getAttribute('data-telepon');

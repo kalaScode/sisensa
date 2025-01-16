@@ -26,13 +26,8 @@
     </nav>
 
     <!-- Pesan Error/Success -->
-    @if (session('error'))
-        <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
-            {{ session('error') }}
-        </div>
-    @endif
     @if (session('success'))
-        <div class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+        <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
             {{ session('success') }}
         </div>
     @endif
@@ -163,9 +158,10 @@
                                         <i class="fas fa-info-circle"></i>
                                     </button>
                                     <!-- Tolak Button -->
-                                    <form action="{{ route('presensi.tolak', [$p->id_Presensi]) }}" method="POST" class="inline">
+                                    <form id="form-tolak--{{$p->id_Presensi}}" action="{{ route('presensi.tolak', [$p->id_Presensi]) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                        @method('PUT')
+                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="confirmTolak('{{ $p->id_Presensi }}')">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </form>
@@ -231,27 +227,30 @@
     }
 
 
-
-    //Fungsi untuk menampilkan modal feedback
-    function showFeedbackModal(id) {
-        const modal = document.getElementById(`feedbackModal-${id}`);
-        if (modal) {
-            modal.classList.remove('hidden'); // Menampilkan modal
-        } else {
-            console.error('Modal tidak ditemukan');
-        }
-    }
-
-    function closeFeedbackModal(id) {
-        const modal = document.getElementById(`feedbackModal-${id}`);
-        if (modal) {
-            modal.classList.add('hidden'); // Menyembunyikan modal
-        }
-    }
-
-
     function closeModal() {
         document.getElementById('employeeDetailModal').classList.add('hidden');
     }
+
+    function confirmTolak(idPresensi) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Presensi akan dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, batalkan!',
+            cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit form secara programatis
+                document.getElementById('form-tolak-' + idPresensi).submit();
+            }
+        });
+    }
+
 </script>
+
+
+
 
