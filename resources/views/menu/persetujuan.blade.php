@@ -149,20 +149,17 @@
                                     <!-- Tombol Terima dan Tolak hanya jika status_Cuti adalah "Menunggu" -->
                                     @if ($c->status_Cuti === 'Menunggu')
                                         <!-- Terima Button -->
-                                        <form action="{{ route('cuti.terima', ['id' => $c->id_Cuti]) }}" method="POST"
-                                            class="inline-block">
-                                            @csrf
-                                            <button type="submit" class="text-green-600 hover:text-green-900">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" onclick="confirmTerima('{{ $c->id_Cuti }}')"
+                                            class="text-green-600 hover:text-green-900">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+
                                         <!-- Tolak Button -->
-                                        <button type="button" onclick="showFeedbackModal('{{ $c->id_Cuti }}')"
+                                        <button type="button" onclick="confirmTolak('{{ $c->id_Cuti }}')"
                                             class="text-red-600 hover:text-red-900">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     @endif
-
                                     {{-- Modal Feedback --}}
                                     <div id="feedbackModal-{{ $c->id_Cuti }}"
                                         class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
@@ -185,9 +182,11 @@
                                                 </div>
                                                 <div class="mt-6 flex justify-between">
                                                     <button type="submit"
+                                                        onclick="return confirmSubmitTolak('{{ $c->id_Cuti }}')"
                                                         class="px-5 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
                                                         Kirim
                                                     </button>
+
                                                     <button type="button"
                                                         onclick="closeFeedbackModal('{{ $c->id_Cuti }}')"
                                                         class="px-5 py-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none">
@@ -297,5 +296,63 @@
 
     function closeModal() {
         document.getElementById('employeeDetailModal').classList.add('hidden');
+    }
+
+    function confirmTerima(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: 'Anda akan menerima pengajuan cuti ini.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Terima',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan ke server
+                const form = document.createElement('form');
+                form.action = `/persetujuan-cuti/terima/${id}`;
+                form.method = 'POST';
+                form.innerHTML = `
+                @csrf
+            `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+
+    function confirmTolak(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: 'Anda akan menolak pengajuan cuti ini.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Tolak',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Tampilkan modal feedback untuk alasan penolakan
+                showFeedbackModal(id);
+            }
+        });
+    }
+
+    function confirmSubmitTolak(id) {
+        return Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Apakah Anda yakin ingin mengirim alasan penolakan ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Kirim',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            return result.isConfirmed;
+        });
     }
 </script>
