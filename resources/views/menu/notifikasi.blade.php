@@ -118,11 +118,16 @@
 
                                 <!-- Pesan Notifikasi dengan warna berbeda -->
                                 <p class="mt-1 text-sm text-gray-800">
-                                    {{ Str::limit($notification->data['message'], 70, '...') }}
+                                    <a href="{{ $notification->data['link'] }}"
+                                        class="text-xl text-gray-900 hover:text-blue-600">
+                                        {{ Str::limit($notification->data['message'], 70, '...') }}
+                                    </a>
                                 </p>
+
                                 <p class="mt-1 text-sm text-gray-500">
-                                    {{ Str::limit($notification->data['description'], 100, '...') }}
+                                    {!! Str::limit($notification->data['description'], 100, '...') !!}
                                 </p>
+
 
                                 <span class="text-xs text-gray-400 mt-2 block">
                                     {{ $notification->created_at->diffForHumans() }}
@@ -161,8 +166,13 @@
                         </div>
 
                         <!-- Detail Pesan Notifikasi -->
-                        <h3 class="text-xl font-medium text-gray-900">{{ $notification->data['message'] }}</h3>
-                        <p class="mt-4 text-sm text-gray-500">{{ $notification->data['description'] }}</p>
+                        <h3 class="text-xl font-medium text-gray-900">
+                            <a href="{{ $notification->data['link'] }}"
+                                class="text-xl text-gray-900 hover:text-blue-600">
+                                {{ $notification->data['message'] }}
+                            </a>
+                        </h3>
+                        <p class="mt-4 text-sm text-gray-500">{!! $notification->data['description'] !!}</p>
                         <div class="mt-4 text-right">
                             <button class="close-modal text-blue-600 hover:text-blue-800">Tutup</button>
                         </div>

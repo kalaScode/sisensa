@@ -58,9 +58,11 @@ class RegistrasiPengguna extends Notification
      */
     public function toArray(object $notifiable): array
     {
+        $url = '/persetujuan-akun';
         return [
             'message' => 'Persetujuan Akun Pengguna Baru',
             'description' => 'Pengguna baru dengan nama ' . $this->user->name . ' telah melakukan registrasi Akun. Silahkan lakukan peninjauan terhadap akun tersebut',
+            'link' => $url,
             'name' => $this->user->name,
             'email' => $this->user->email,
             'user_id' => $this->user->user_id,

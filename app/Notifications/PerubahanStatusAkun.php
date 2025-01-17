@@ -54,10 +54,12 @@ class PerubahanStatusAkun extends Notification
             $message = "Status akun Anda telah diubah.";
             $description = "";
         }
+        $url = url('/');
 
         return [
             'message' => $message,
             'description' => $description,
+            'link' => $url,
             'sender_name' => $this->sender->name, // Nama pengirim
             'sender_avatar' => $this->sender->Avatar, // Foto pengirim
             'sender_jabatan' => $this->sender->jabatan->nama_Jabatan, // Jabatan pengirim

@@ -6,7 +6,8 @@
                 <div class="mb-6 md:mb-0">
                     <a href="https://sisensa.com/" class="flex items-center">
                         <img src="/img/logo.png" class="h-10 mr-3 md:h-14 md:mr-[10px] md:mt-[-20px]" alt="Logo SISENSA" />
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap text-white md:mr-[20px] md:mt-[-20px]">SISENSA</span>
+                        <span
+                            class="self-center text-2xl font-semibold whitespace-nowrap text-white md:mr-[20px] md:mt-[-20px]">SISENSA</span>
                     </a>
                 </div>
                 <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">

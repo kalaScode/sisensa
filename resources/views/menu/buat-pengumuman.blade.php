@@ -61,21 +61,53 @@
 
         <div class="mb-4">
             <label for="isi_pengumuman" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
-            <textarea id="isi_pengumuman" name="isi_pengumuman" rows="4" required
+            <textarea id="isi_pengumuman" name="isi_pengumuman" rows="4"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('isi_pengumuman') border-red-500 @enderror">{{ old('isi_pengumuman') }}</textarea>
             @error('isi_pengumuman')
                 <p class="text-xs text-red-500">{{ $message }}</p>
             @enderror
         </div>
 
+
         <div class="mb-4 flex justify-end">
             <button type="submit"
-                class="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                Kirim Pengumuman
-            </button>
+                class="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Kirim
+                Pengumuman</button>
         </div>
 
     </form>
 </main>
 
 <x-footer></x-footer>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/37.0.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#isi_pengumuman'), {
+            toolbar: ['bold', 'italic', 'link', 'imageUpload', 'mediaEmbed'],
+            simpleUpload: {
+                uploadUrl: '/upload-image', // Endpoint untuk upload gambar
+                success: function(response) {
+                    // Menangani respons JSON dari server
+                    const imageUrl = response.url; // URL gambar yang dikembalikan
+                    const imageTag = `<img src="${imageUrl}" alt="uploaded image" />`;
+
+                    // Menambahkan gambar ke CKEditor
+                    const editor = ClassicEditor.instances.isi_pengumuman;
+                    editor.model.change(writer => {
+                        // Menambahkan gambar yang sudah diupload ke dalam editor
+                        const imageElement = writer.createElement('image', {
+                            src: imageUrl
+                        });
+                        editor.model.insertContent(imageElement);
+                    });
+                },
+                error: function(error) {
+                    console.error('Upload gagal:', error);
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>

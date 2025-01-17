@@ -53,7 +53,7 @@
         <div class="flex justify-between mb-6">
             <!-- Filter Status -->
             <form action="{{ route('persetujuan-cuti.index') }}" method="GET"
-                class="flex items-center space-x-4 w-3/4">
+                class="flex items-center space-x-4 mr-3">
                 <!-- Filter Status -->
                 <div class="flex items-center w-full">
                     <select name="status" id="status" class="border-gray-300 rounded-md shadow-sm w-full pl-2 py-2">
@@ -124,10 +124,12 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    @if ($p->jenis_Cuti === 'Cuti')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $p->jenis_Cuti }}</span>
-                                    @elseif ($p->jenis_Cuti === 'Sakit')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">{{ $p->jenis_Cuti }}</span>
+                                    @if ($c->jenis_Cuti === 'Cuti')
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $c->jenis_Cuti }}</span>
+                                    @elseif ($c->jenis_Cuti === 'Sakit')
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">{{ $c->jenis_Cuti }}</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

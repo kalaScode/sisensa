@@ -255,8 +255,7 @@
                                                         <label for="email"
                                                             class="block text-sm font-medium text-gray-300">Email</label>
                                                         <input type="email" id="email" name="email"
-                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-black-500"
-                                                            >
+                                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-custom focus:border-custom text-black-500">
                                                     </div>
 
                                                     <!-- Status Kerja -->

@@ -4,7 +4,7 @@
             <!-- Logo Section -->
             <div id="logo" class="flex items-center">
                 <a href="/beranda" class="flex items-center">
-                    <img src="img/logo-sisensa.png" class="h-9" alt="sisensa" />
+                    <img src="/img/logo-sisensa.png" class="h-9" alt="sisensa" />
                 </a>
             </div>
 
