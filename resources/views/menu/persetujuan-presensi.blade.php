@@ -48,7 +48,7 @@
         <div class="flex justify-between mb-6">
             <!-- Filter Status -->
             <form action="{{ route('persetujuan-presensi.index') }}" method="GET"
-                class="flex items-center space-x-4 w-3/4">
+                class="flex items-center space-x-4 mr-3">
                 <!-- Filter Status -->
                 <div class="flex items-center w-full">
                     <select name="status" id="status" class="border-gray-300 rounded-md shadow-sm w-full pl-2 py-2">
@@ -138,9 +138,11 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     @if ($p->Bagian === 'Masuk')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $p->Bagian }}</span>
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $p->Bagian }}</span>
                                     @elseif ($p->Bagian === 'Keluar')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">{{ $p->Bagian }}</span>
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">{{ $p->Bagian }}</span>
                                     @endif
                                 </td>
 
