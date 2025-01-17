@@ -8,6 +8,11 @@ use App\Notifications\PengumumanGeneral;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
+
 
 class NotifikasiController extends Controller
 {
@@ -81,17 +86,57 @@ class NotifikasiController extends Controller
         // Validasi input
         $request->validate([
             'judul' => 'required|string|max:255',
-            'isi_pengumuman' => 'required|string',
+            'isi_pengumuman' => '|string',
         ]);
 
-        // Mengambil semua pengguna dari perusahaan yang sama
-        $sender = Auth::user(); // Pengirim adalah pengguna yang sedang login
-        $users = User::where('id_Perusahaan', $sender->id_Perusahaan)->get(); // Menyaring pengguna berdasarkan perusahaan yang sama
+        // Mengambil data pengirim
+        $sender = Auth::user();
+        // Mendapatkan semua pengguna dalam perusahaan yang sama
+        $users = User::where('id_Perusahaan', $sender->id_Perusahaan)->get();
 
-        // Mengirim notifikasi kepada semua pengguna yang berada dalam perusahaan yang sama
+        // Mengirim notifikasi pengumuman kepada pengguna lain dalam perusahaan
         Notification::send($users, new PengumumanGeneral($request->judul, $request->isi_pengumuman, $sender));
 
-        // Redirect ke halaman form pembuatan pengumuman dengan pesan sukses
+        // // Membuat data notifikasi
+        // $data = [
+        //     'message' => $request->judul,
+        //     'description' => $request->isi_pengumuman, // Isi pengumuman dari CKEditor (HTML)
+        //     'link' => '/notifikasi',
+        //     'sender_name' => $sender->name,
+        //     'sender_avatar' => $sender->Avatar,
+        //     'sender_jabatan' => $sender->jabatan->nama_Jabatan,
+        //     'sender_perusahaan_id' => $sender->id_Perusahaan,
+        // ];
+
+        // // Menyimpan notifikasi dalam format JSON ke tabel 'notifications'
+        // DB::table('notifications')->insert([
+        //     'type' => 'App\\Notifications\\PengumumanGeneral',
+        //     'notifiable_type' => 'App\\Models\\User',
+        //     'notifiable_id' => $sender->user_id,
+        //     'data' => json_encode($data),  // Menyimpan data dalam format JSON
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+
+        // Redirect dengan pesan sukses
         return redirect()->route('pengumuman.create')->with('success', 'Pengumuman berhasil dibuat!');
+    }
+
+    public function uploadImage(Request $request)
+    {
+        // Validasi gambar
+        $request->validate([
+            'upload' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+
+        // Menyimpan gambar ke storage
+        $image = $request->file('upload');
+        $imageName = Str::random(10) . '.' . $image->getClientOriginalExtension();
+        $imagePath = $image->storeAs('public/images', $imageName);
+
+        // Mengembalikan URL gambar yang baru diupload
+        return response()->json([
+            'url' => Storage::url($imagePath)
+        ]);
     }
 }

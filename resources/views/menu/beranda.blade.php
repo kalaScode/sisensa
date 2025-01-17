@@ -63,7 +63,7 @@
                                         {{ $latestNotification->data['message'] }}
                                     </h5>
                                     <p class="text-gray-600 text-xs ml-1">
-                                        {{ Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...') }}
+                                        {!! Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...') !!}
                                     </p>
                                 </a>
 

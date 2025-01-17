@@ -37,11 +37,16 @@ class NotifikasiPersetujuanCuti extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+
+        $url = url('/riwayat-cuti-pribadi/');
+
         return (new MailMessage)
             ->subject('Status Cuti Anda Berubah')
             ->line('Pengajuan cuti Anda telah diperbarui.')
-            ->action('Lihat Detail', url('/cuti/' . $this->cuti->id));
+            ->action('Lihat Detail', $url);
     }
+
+
 
     /**
      * Get the array representation of the notification.
@@ -54,7 +59,7 @@ class NotifikasiPersetujuanCuti extends Notification
             'message' => 'Status Cuti Diperbarui',
             'description' => 'Status pengajuan cuti Anda telah berubah menjadi ' . $this->cuti->status_Cuti .
                 ($this->cuti->Feedback ? ' dengan alasan: ' . $this->cuti->Feedback : ''),
-            'link' => '/cuti/' . $this->cuti->id,
+            'link' => '/riwayat-cuti-pribadi/',
             'sender_name' => $this->sender->name, // Nama pengirim
             'sender_avatar' => $this->sender->Avatar, // Foto pengirim
             'sender_jabatan' => $this->sender->jabatan->nama_Jabatan, // Jabatan pengirim

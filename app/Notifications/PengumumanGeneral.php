@@ -43,7 +43,7 @@ class PengumumanGeneral extends Notification
         return (new MailMessage)
             ->line('Pengumuman baru: ' . $this->judul)
             ->line($this->isi_pengumuman)
-            ->action('Lihat Pengumuman', url('/pengumuman'))
+            ->action('Lihat Pengumuman', url('/notifikasi'))
             ->line('Terima kasih telah menggunakan aplikasi kami!');
     }
 
@@ -57,6 +57,7 @@ class PengumumanGeneral extends Notification
         return [
             'message' => $this->judul,         // Judul pengumuman
             'description' => $this->isi_pengumuman, // Isi pengumuman
+            'link' => '/notifikasi',
             'sender_name' => $this->sender->name, // Nama pengirim
             'sender_avatar' => $this->sender->Avatar, // Foto pengirim
             'sender_jabatan' => $this->sender->jabatan->nama_Jabatan, // Jabatan pengirim
