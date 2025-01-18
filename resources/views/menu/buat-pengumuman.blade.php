@@ -86,28 +86,46 @@
         .create(document.querySelector('#isi_pengumuman'), {
             toolbar: ['bold', 'italic', 'link', 'imageUpload', 'mediaEmbed'],
             simpleUpload: {
-                uploadUrl: '/upload-image', // Endpoint untuk upload gambar
-                success: function(response) {
-                    // Menangani respons JSON dari server
-                    const imageUrl = response.url; // URL gambar yang dikembalikan
-                    const imageTag = `<img src="${imageUrl}" alt="uploaded image" />`;
-
-                    // Menambahkan gambar ke CKEditor
-                    const editor = ClassicEditor.instances.isi_pengumuman;
-                    editor.model.change(writer => {
-                        // Menambahkan gambar yang sudah diupload ke dalam editor
-                        const imageElement = writer.createElement('image', {
-                            src: imageUrl
-                        });
-                        editor.model.insertContent(imageElement);
-                    });
-                },
-                error: function(error) {
-                    console.error('Upload gagal:', error);
+                uploadUrl: '/upload-image',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }
         })
+        .then(editor => {
+            console.log('Editor berhasil diinisialisasi');
+            editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+                return {
+                    upload: () => {
+                        console.log('Mengunggah gambar...');
+                        const data = new FormData();
+                        data.append('upload', loader.file);
+
+                        return fetch('/upload-image', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                },
+                                body: data
+                            })
+                            .then(response => {
+                                console.log('Respons diterima:', response);
+                                return response.json();
+                            })
+                            .then(result => {
+                                console.log('Hasil upload:', result);
+                                return {
+                                    default: result.url
+                                };
+                            })
+                            .catch(error => {
+                                console.error('Error upload:', error);
+                            });
+                    }
+                };
+            };
+        })
         .catch(error => {
-            console.error(error);
+            console.error('CKEditor gagal diinisialisasi:', error);
         });
 </script>
