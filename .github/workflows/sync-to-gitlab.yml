@@ -17,8 +17,8 @@ jobs:
       # Set up Git
       - name: Set up Git
         run: |
-          git config --global user.name "Your Name" # Ganti dengan nama Anda
-          git config --global user.email "you@example.com" # Ganti dengan email Anda
+          git config --global user.name "Wilfa Afriyani" # Ganti dengan nama Anda
+          git config --global user.email "222212915@stis.ac.id" # Ganti dengan email Anda
 
       # Add GitLab as remote
       - name: Add GitLab remote
