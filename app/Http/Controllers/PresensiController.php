@@ -72,7 +72,7 @@ class PresensiController extends Controller
             // Ambil user ID dari session
             $user_id = Auth::id(); // atau Auth::user()->id
 
-            $today = now()->toDateString();
+            $today = now('GMT+7')->setTimezone('Asia/Jakarta')->toDateString();
 
             // Cek apakah sudah ada presensi akhir hari ini
             $alreadyFinalized = Presensi::where('user_id', $user_id)
@@ -128,7 +128,7 @@ class PresensiController extends Controller
             $presensi->created_by = $user_id;
             $presensi->updated_by = $user_id;
 
-            $now = Carbon::now()
+            $now = Carbon::now('GMT+7')
             ->setTimezone('Asia/Jakarta')  // Mengonversi dari UTC ke WIB
             ->format('Y-m-d H:i:s');
             $presensi->created_at = $now;  // Timestamp saat ini untuk created_at
@@ -157,7 +157,7 @@ class PresensiController extends Controller
             }
 
             $user_id = Auth::id();
-            $today = now()->toDateString();
+            $today = now('GMT+7')->setTimezone('Asia/Jakarta')->toDateString();
 
             // Cek jika ada presensi dengan bagian "Keluar" hari ini
             $alreadyFinalized = Presensi::where('user_id', $user_id)

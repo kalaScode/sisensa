@@ -45,36 +45,28 @@ class RiwayatController extends Controller
             $query->where('presensi.Bagian', $request->jenis);
         }
 
-        // Pencarian berdasarkan name, Waktu, status_Presensi, Bagian
+        // Filter berdasarkan tahun
+        $range = $request->input('year', 'Tahunan');
+        if ($range != 'Tahunan') {
+            $query->whereYear('presensi.Tanggal', $range);
+        }
+
+        // Pencarian berdasarkan name, Waktu
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('users.name', 'like', '%' . $search . '%')
-                ->orWhere('presensi.Waktu', 'like', '%' . $search . '%')
-                ->orWhere('presensi.status_Presensi', 'like', '%' . $search . '%')
-                ->orWhere('presensi.Bagian', 'like', '%' . $search . '%');
+                ->orWhere('presensi.Waktu', 'like', '%' . $search . '%');
             });
         }
 
         // Pagination
-        $presensi = $query->paginate(10);
+        $presensi = $query->orderBy('presensi.created_At', 'desc')->paginate(10);
 
         // Range untuk chart
-        $range = $request->input('range-dropdown', 'monthly');
-    
-        if ($range == 'monthly') {
-            // Filter dan Group by Bulan dan Tahun
-            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("MONTHNAME(presensi.Tanggal) as month_name"))
-                ->join('users', 'presensi.user_id', '=', 'users.user_id')
-                ->where('users.id_Perusahaan', $id_Perusahaan)
-                ->where('presensi.Bagian', 'Masuk')
-                ->where('presensi.status_Presensi', 'Disetujui')
-                ->whereYear('presensi.Tanggal', date('Y'))
-                ->where('presensi.user_id', '!=', Auth::user()->user_id)
-                ->groupBy(DB::raw("MONTH(presensi.Tanggal), MONTHNAME(presensi.Tanggal)"))
-                ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
-                ->get();
-        } elseif ($range == 'yearly') {
+        $presensiData = [];
+
+        if ($range == 'Tahunan') {
             // Filter dan Group by Tahun
             $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("YEAR(presensi.Tanggal) as year"))
                 ->join('users', 'presensi.user_id', '=', 'users.user_id')
@@ -85,17 +77,40 @@ class RiwayatController extends Controller
                 ->groupBy(DB::raw("YEAR(presensi.Tanggal)"))
                 ->orderBy(DB::raw("YEAR(presensi.Tanggal)"), 'asc')
                 ->get();
-        }        
-
-        // Prepare data for the chart
-        if ($range == 'monthly') {
-            // Untuk monthly, ambil nama bulan dan jumlah presensi
-            $labels = $presensiData->pluck('month_name');
-            $data = $presensiData->pluck('count');
-        } elseif ($range == 'yearly') {
             // Untuk yearly, ambil tahun dan jumlah presensi
             $labels = $presensiData->pluck('year');
             $data = $presensiData->pluck('count');
+        } else {
+            // Daftar semua nama bulan
+            $allMonths = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+
+            // Filter dan Group by Bulan
+            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("MONTH(presensi.Tanggal) as month_number"))
+                ->join('users', 'presensi.user_id', '=', 'users.user_id')
+                ->where('users.id_Perusahaan', $id_Perusahaan)
+                ->where('presensi.Bagian', 'Masuk')
+                ->where('presensi.status_Presensi', 'Disetujui')
+                ->whereYear('presensi.Tanggal', $range)
+                ->where('presensi.user_id', '!=', Auth::user()->user_id)
+                ->groupBy(DB::raw("MONTH(presensi.Tanggal)"))
+                ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
+                ->get();
+            
+            // Buat array bulan dan data dengan nilai default 0
+            $monthlyData = collect($allMonths)->map(function ($month, $index) use ($presensiData) {
+                $monthNumber = $index + 1; // Index dimulai dari 0, sehingga perlu +1 untuk bulan
+                $dataForMonth = $presensiData->firstWhere('month_number', $monthNumber);
+                return [
+                    'month_name' => $month,
+                    'count' => $dataForMonth ? $dataForMonth->count : 0
+                ];
+            });
+
+            $labels = $monthlyData->pluck('month_name');
+            $data = $monthlyData->pluck('count');
         }
 
         return view('page.priwayat-presensi-karyawan', [
@@ -141,34 +156,44 @@ class RiwayatController extends Controller
             $query->where('cuti.jenis_Cuti', $request->jenis);
         }
 
-        // Pencarian berdasarkan name, Waktu, status_cuti, Bagian
+        // Filter berdasarkan tahun
+        $year = $request->input('year', now()->year);
+        $query->whereYear('cuti.tanggal_Mulai', $year);
+
+        // Pencarian berdasarkan name, Waktu
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('users.name', 'like', '%' . $search . '%')
                 ->orWhere('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
-                ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%')
-                ->orWhere('cuti.status_Cuti', 'like', '%' . $search . '%')
-                ->orWhere('cuti.jenis_Cuti', 'like', '%' . $search . '%');
+                ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
             });
         }
 
         // Pagination
-        $cuti = $query->paginate(10);
-        
-        $year = $request->input('year', now()->year); // Default ke tahun saat ini jika tidak ada input
-        
+        $cuti = $query->orderBy('cuti.created_At', 'desc')->paginate(10);
+                
         // Menghitung jumlah cuti dan sakit di tiap bulan
         $cutiData = Cuti::select(
                 DB::raw('MONTH(tanggal_Mulai) as bulan'),
                 DB::raw('SUM(CASE WHEN jenis_Cuti = "Cuti" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_cuti'),
                 DB::raw('SUM(CASE WHEN jenis_Cuti = "Sakit" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_sakit')
             )
+            ->join('users', 'cuti.user_id', '=', 'users.user_id')
             ->whereYear('tanggal_Mulai', $year)
             ->where('status_Cuti', 'Disetujui')
-            ->groupBy(DB::raw('MONTH(tanggal_Mulai)'))
-            ->get();
+            ->where('cuti.user_id', '!=', Auth::user()->user_id)
+            ->where('id_Perusahaan', $id_Perusahaan);
 
+        // Filter data berdasarkan nama jika $search diisi
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $cutiData->where('users.name', 'like', '%' . $search . '%');
+        }
+
+        // Grouping data berdasarkan bulan
+        $cutiData = $cutiData->groupBy(DB::raw('MONTH(tanggal_Mulai)'))->get();
+        
         // Inisialisasi array untuk data bulan Januari - Desember
         $months = collect(range(1, 12))->mapWithKeys(function ($month) {
             return [$month => ['total_cuti' => 0, 'total_sakit' => 0]];
@@ -220,36 +245,27 @@ class RiwayatController extends Controller
             $query->where('presensi.Bagian', $request->jenis);
         }
 
-        // Pencarian berdasarkan name, Waktu, status_Presensi, Bagian
+        // Filter berdasarkan tahun
+        $range = $request->input('year', 'Tahunan');
+        if ($range != 'Tahunan') {
+            $query->whereYear('presensi.Tanggal', $range);
+        }
+
+        // Pencarian berdasarkan Waktu
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('users.name', 'like', '%' . $search . '%')
-                ->orWhere('presensi.Waktu', 'like', '%' . $search . '%')
-                ->orWhere('presensi.status_Presensi', 'like', '%' . $search . '%')
-                ->orWhere('presensi.Bagian', 'like', '%' . $search . '%');
+                $q->where('presensi.Waktu', 'like', '%' . $search . '%');
             });
         }
 
         // Pagination
-        $presensi = $query->paginate(10);
+        $presensi = $query->orderBy('presensi.created_At', 'desc')->paginate(10);
         
         // Range untuk chart
-        $range = $request->input('range-dropdown', 'monthly');
-        
-        if ($range == 'monthly') {
-            // Filter dan Group by Bulan dan Tahun
-            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("MONTHNAME(presensi.Tanggal) as month_name"))
-                ->join('users', 'presensi.user_id', '=', 'users.user_id')
-                ->where('users.id_Perusahaan', $id_Perusahaan)
-                ->where('presensi.Bagian', 'Masuk')
-                ->where('presensi.status_Presensi', 'Disetujui')
-                ->whereYear('presensi.Tanggal', date('Y'))
-                ->where('presensi.user_id', '=', Auth::user()->user_id)
-                ->groupBy(DB::raw("MONTH(presensi.Tanggal), MONTHNAME(presensi.Tanggal)"))
-                ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
-                ->get();
-        } elseif ($range == 'yearly') {
+        $presensiData = [];
+
+        if ($range == 'Tahunan') {
             // Filter dan Group by Tahun
             $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("YEAR(presensi.Tanggal) as year"))
                 ->join('users', 'presensi.user_id', '=', 'users.user_id')
@@ -260,19 +276,42 @@ class RiwayatController extends Controller
                 ->groupBy(DB::raw("YEAR(presensi.Tanggal)"))
                 ->orderBy(DB::raw("YEAR(presensi.Tanggal)"), 'asc')
                 ->get();
-        } 
-
-        // Prepare data for the chart
-        if ($range == 'monthly') {
-            // Untuk monthly, ambil nama bulan dan jumlah presensi
-            $labels = $presensiData->pluck('month_name');
-            $data = $presensiData->pluck('count');
-        } elseif ($range == 'yearly') {
             // Untuk yearly, ambil tahun dan jumlah presensi
             $labels = $presensiData->pluck('year');
             $data = $presensiData->pluck('count');
+        } else {
+            // Daftar semua nama bulan
+            $allMonths = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+
+            // Filter dan Group by Bulan
+            $presensiData = Presensi::select(DB::raw("COUNT(*) as count"), DB::raw("MONTH(presensi.Tanggal) as month_number"))
+                ->join('users', 'presensi.user_id', '=', 'users.user_id')
+                ->where('users.id_Perusahaan', $id_Perusahaan)
+                ->where('presensi.Bagian', 'Masuk')
+                ->where('presensi.status_Presensi', 'Disetujui')
+                ->whereYear('presensi.Tanggal', $range)
+                ->where('presensi.user_id', '=', Auth::user()->user_id)
+                ->groupBy(DB::raw("MONTH(presensi.Tanggal)"))
+                ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
+                ->get();
+            
+            // Buat array bulan dan data dengan nilai default 0
+            $monthlyData = collect($allMonths)->map(function ($month, $index) use ($presensiData) {
+                $monthNumber = $index + 1; // Index dimulai dari 0, sehingga perlu +1 untuk bulan
+                $dataForMonth = $presensiData->firstWhere('month_number', $monthNumber);
+                return [
+                    'month_name' => $month,
+                    'count' => $dataForMonth ? $dataForMonth->count : 0
+                ];
+            });
+
+            $labels = $monthlyData->pluck('month_name');
+            $data = $monthlyData->pluck('count');
         }
-        
+
         return view('page.priwayat-presensi-pribadi', [
             'presensi' => $presensi,
             'direktur' => $direktur,
@@ -286,7 +325,7 @@ class RiwayatController extends Controller
         ]);
     }
 
-    // Tampilkan cuti pribadi
+
     public function getCutiPribadi(Request $request)
     {
         $query = Cuti::query();
@@ -296,48 +335,46 @@ class RiwayatController extends Controller
                         ->pluck('name')
                         ->first();
 
-        // Filter berdasarkan user_id
         $query->where('cuti.user_id', Auth::User()->user_id);
 
-        // Join dengan tabel users untuk filter berdasarkan name, Waktu, status_Cuti, jenis_Cuti
         $query->join('users', 'cuti.user_id', '=', 'users.user_id')
             ->where('users.id_Perusahaan', $id_Perusahaan);
 
-        // Filter berdasarkan status
         if ($request->has('status') && $request->status != '') {
             $query->where('cuti.status_Cuti', $request->status);
         }
 
-        // Filter berdasarkan jenis
         if ($request->has('jenis') && $request->jenis != '') {
             $query->where('cuti.jenis_Cuti', $request->jenis);
         }
 
-        // Pencarian berdasarkan name, Waktu, status_cuti, Bagian
+        $year = $request->input('year', now()->year);
+        $query->whereYear('cuti.tanggal_Mulai', $year);
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('users.name', 'like', '%' . $search . '%')
                 ->orWhere('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
-                ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%')
-                ->orWhere('cuti.status_Cuti', 'like', '%' . $search . '%')
-                ->orWhere('cuti.jenis_Cuti', 'like', '%' . $search . '%');
+                ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
             });
         }
 
-        // Pagination
-        $cuti = $query->paginate(10);
+        $cuti = $query->orderBy('cuti.created_At', 'desc')->paginate(10);
 
-        $year = $request->input('year', now()->year); // Default ke tahun saat ini jika tidak ada input
-        $userId = Auth::id(); // Ambil ID pengguna yang sedang login
-        $cutiData = Cuti::select('jenis_Cuti', DB::raw('SUM(DATEDIFF(tanggal_Selesai, tanggal_Mulai)) as total'))
-        ->whereYear('tanggal_mulai', $year)
-        ->where('user_id', $userId)
+        // Mendapatkan data untuk pie chart berdasarkan tahun yang dipilih
+        $cutiData = Cuti::select(
+            DB::raw('SUM(CASE WHEN jenis_Cuti = "Cuti" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_cuti'),
+            DB::raw('SUM(CASE WHEN jenis_Cuti = "Sakit" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_sakit')
+        )
+        ->join('users', 'cuti.user_id', '=', 'users.user_id')
+        ->whereYear('tanggal_Mulai', $year)
         ->where('status_Cuti', 'Disetujui')
-        ->groupBy('jenis_Cuti')
-        ->get();
-
-
+        ->where('cuti.user_id', '=', Auth::user()->user_id)
+        ->where('id_Perusahaan', $id_Perusahaan)
+        ->first();  // Use first() to get the single result
+        
+        // Pass the data to the view
         return view('page.priwayat-cuti-pribadi', [
             'cuti' => $cuti,
             'direktur' => $direktur,
@@ -345,7 +382,7 @@ class RiwayatController extends Controller
             'status' => $request->status,
             'jenis' => $request->jenis,
             'cutiData' => $cutiData,
-            'year' => $year,
+            'year' => $year
         ]);
     }
 }

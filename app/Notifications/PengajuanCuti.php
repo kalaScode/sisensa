@@ -53,7 +53,7 @@ class PengajuanCuti extends Notification
         return [
             'message' => 'Ada pengajuan cuti baru dari ' . $this->sender->name, // Pesan tambahan
             'description' => 'Silakan tinjau pengajuan cuti tersebut.', // Deskripsi tambahan
-            'link' => '/pengajuan-cuti/',
+            'link' => '/persetujuan-cuti/',
             'user_name' => $this->cuti->user->name,
             'jenis_cuti' => $this->cuti->jenis_Cuti,
             'tanggal_mulai' => $this->cuti->tanggal_Mulai,
