@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Models\Perusahaan;
+use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
@@ -40,6 +41,7 @@ class RegisteredUserController extends Controller
             'no_Telp' => ['required', 'string', 'max:20'],
         ]);
 
+        // Buat akun user baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -49,6 +51,12 @@ class RegisteredUserController extends Controller
             'status_Akun' => 0,
         ]);
 
+        // Set atribut tambahan setelah user berhasil dibuat
+        $user->created_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+        $user->updated_at = $user->created_at;
+        $user->save();
+
+        // Trigger event registered
         event(new Registered($user));
 
         return redirect()->route('login')->with('status', 'Registrasi berhasil! Silahkan verifikasi email melalui link pada email anda.');
