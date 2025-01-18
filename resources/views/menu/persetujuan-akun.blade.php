@@ -204,6 +204,30 @@
                 </button>
             </div>
         </form>
+        <!-- SweetAlert: Display Success or Error Messages -->
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload(); // Segarkan halaman setelah sukses
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: "{{ session('error') }}",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
     </div>
 </div>
 
@@ -260,24 +284,65 @@
         document.getElementById('employeeDetailModal').classList.remove('hidden');
     }
 
-    document.addEventListener('submit', function(event) {
-        if (event.target.matches('#formStatusKerja-' + userId)) {
+    document.addEventListener('submit', async function(event) {
+        if (event.target.matches('#formSetStatusKerja-' + userId)) {
             event.preventDefault(); // Mencegah submit default
 
-            // Tampilkan SweetAlert konfirmasi
-            Swal.fire({
-                title: 'Berhasil!',
-                text: 'Status kerja telah diperbarui.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Tutup modal setelah konfirmasi
-                    closeStatusKerjaModal(userId);
-                    // Segarkan halaman atau data yang relevan
-                    location.reload();
+            // Periksa apakah ada status kerja yang dipilih
+            const form = event.target;
+            const statusTetap = document.getElementById('statusTetap').checked;
+            const statusKontrak = document.getElementById('statusKontrak').checked;
+
+            if (!statusTetap && !statusKontrak) {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'Silakan pilih status kerja terlebih dahulu.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            try {
+                // Kirim data menggunakan Fetch API
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: result.message || 'Status kerja telah diperbarui.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Tutup modal dan segarkan halaman
+                        closeModal();
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: result.message || 'Terjadi kesalahan saat memperbarui status kerja.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
-            });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Tidak dapat menghubungi server. Silakan coba lagi nanti.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
     });
 

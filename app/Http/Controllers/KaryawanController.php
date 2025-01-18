@@ -13,6 +13,7 @@ use App\Notifications\PerubahanStatusAkun;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class KaryawanController extends Controller
 {
@@ -115,28 +116,45 @@ class KaryawanController extends Controller
         ]);
     }
 
-    public function setStatusKerja(Request $request, $userId)
-    {
-        $karyawan = Karyawan::findOrFail($userId);
+public function setStatusKerja(Request $request, $userId)
+{
+    // Validasi input
+    $request->validate([
+        'status_Kerja' => 'required|in:Tetap,Kontrak',
+    ]);
 
+    try {
         // Ambil status kerja dari request
         $statusKerja = $request->input('status_Kerja');
         $saldoAwal = $statusKerja === 'Tetap' ? 12 : 0;
-        // Update status kerja dan saldo awal di tabel karyawan
+
+        // Update status kerja di tabel karyawan
+        $karyawan = Karyawan::findOrFail($userId);
         $karyawan->update([
             'status_Kerja' => $statusKerja,
-            'status_Akun' => 1 // Setujui akun
+            'status_Akun' => 1, // Setujui akun
         ]);
+
+        // Kirim notifikasi ke email pengguna setelah status akun diubah
+        $action = $statusKerja === 'Tetap' ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
+        $sender = Auth::user(); // Pengguna yang mengubah status akun (HRD atau admin)
+
+        // Mengirimkan notifikasi email dan database
+        $karyawan->notify(new PerubahanStatusAkun($action, $sender));
 
         // Update saldo di tabel saldo_cuti
         SaldoCuti::updateOrCreate(
             ['user_id' => $userId],
-            ['saldo_Awal' => $saldoAwal],
-            ['saldo_Sisa' => $saldoAwal]
+            ['saldo_Awal' => $saldoAwal, 'saldo_Sisa' => $saldoAwal]
         );
 
+        // Kirim pesan sukses ke session
         return redirect()->back()->with('success', 'Karyawan berhasil disetujui dan saldo cuti diperbarui.');
+    } catch (\Exception $e) {
+        // Kirim pesan error ke session
+        return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
     }
+}
 
     // Tolak akun karyawan
     public function tolakKaryawan($userId)
