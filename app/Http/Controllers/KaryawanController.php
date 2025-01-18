@@ -139,7 +139,7 @@ public function setStatusKerja(Request $request, $userId)
         ]);
 
         // Kirim notifikasi ke email pengguna setelah status akun diubah
-        $action = $statusKerja === 'Tetap' ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
+        $action = in_array($statusKerja, ['Tetap', 'Kontrak']) ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
         $sender = Auth::user(); // Pengguna yang mengubah status akun (HRD atau admin)
 
         // Mengirimkan notifikasi email dan database
