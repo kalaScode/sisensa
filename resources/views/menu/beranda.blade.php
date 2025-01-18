@@ -63,7 +63,13 @@
                                         {{ $latestNotification->data['message'] }}
                                     </h5>
                                     <p class="text-gray-600 text-xs ml-1">
-                                        {!! Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...') !!}
+                                        {!! 
+                                            preg_replace(
+                                                '/<img[^>]*>/i', 
+                                                '<span class="inline-block w-5 h-5 text-gray-500"><i class="fas fa-image"></i></span>Gambar', 
+                                                Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...')
+                                            ) 
+                                        !!}
                                     </p>
                                 </a>
 

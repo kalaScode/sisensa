@@ -28,39 +28,39 @@ class Beranda extends Controller
             return redirect()->back()->withErrors(['error' => 'Data perusahaan tidak ditemukan.']);
         }
     
-        $jamMasukDefault = Carbon::parse($perusahaan->jam_Masuk, 'GMT+7');
+        $jamMasukDefault = Carbon::parse($perusahaan->jam_Masuk, 'GMT+7')->setTimezone('Asia/Jakarta');
     
         // Default jam masuk
         $jamMasuk = $jamMasukDefault;
         
         // Cek presensi masuk hari ini
         $presensiMasuk = Presensi::where('user_id', Auth::id())
-            ->whereDate('Tanggal', Carbon::today('GMT+7'))
+            ->whereDate('Tanggal', Carbon::today('GMT+7')->setTimezone('Asia/Jakarta'))
             ->where('Bagian', 'Masuk')
             ->where('status_Presensi', 'Disetujui')
             ->first();
     
         if ($presensiMasuk) {
-            $presentMasuk = Carbon::parse($presensiMasuk->Waktu, 'GMT+7');
+            $presentMasuk = Carbon::parse($presensiMasuk->Waktu, 'GMT+7')->setTimezone('Asia/Jakarta');
         } else {
             $presentMasuk = null; // Jika belum ada presensi masuk
         }
     
         // Cek presensi keluar hari ini
         $presensiKeluar = Presensi::where('user_id', Auth::id())
-            ->whereDate('Tanggal', Carbon::today('GMT+7'))
+            ->whereDate('Tanggal', Carbon::today('GMT+7')->setTimezone('Asia/Jakarta'))
             ->where('Bagian', 'Keluar')
             ->where('status_Presensi', 'Disetujui')
             ->first();
     
         if ($presensiKeluar) {
-            $jamKeluar = Carbon::parse($presensiKeluar->Waktu, 'GMT+7');
+            $jamKeluar = Carbon::parse($presensiKeluar->Waktu, 'GMT+7')->setTimezone('Asia/Jakarta');
         } else {
             $jamKeluar = null; // Jika belum ada presensi keluar
         }
     
         // Hitung lama kerja
-        $waktuSekarang = Carbon::now('GMT+7');
+        $waktuSekarang = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta');
         $lamaKerjaFormatted = '--:--';
         
         // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk
@@ -76,7 +76,7 @@ class Beranda extends Controller
                 
             } else {
                 // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk default
-                if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now())) {
+                if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now('GMT+7')->setTimezone('Asia/Jakarta'))) {
                     $lamaKerja = $waktuSekarang->diffInMinutes($jamMasuk); // Hitung selisih antara waktu sekarang dan jam masuk
                 } else {
                     $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
