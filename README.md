@@ -1,38 +1,40 @@
 # sisensa
-Tugas RPL Kelompok 4 - 3SD1
-=======
+
+# Tugas RPL Kelompok 4 - 3SD1
+
 ## SISENSA
 
 SISENSA merupakan Sistem Absensi Karyawan terintegrasi yang dapat mengelola presensi karyawan untuk berbagai perusahaan dengan pengaturan otoritas yang jelas. Sistem ini dilengkapi dengan formulir presensi dengan menggunakan fitur Face Detection dan Geofencing untuk memastikan karyawan hanya dapat melakukan presensi pada saat kamera mendeteksi wajah dan lokasi presensi sesuai dengan yang sudah ditentukan dengan batasan tertentu, serta pada waktu yang sudah ditentukan (untuk presensi masuk dan pulang berdasarkan jam kerja yang ditentukan perusahaan).
 
-## Developers 
+## Developers
 
--   Ainul Fatimah
--   Amanda Amelia Salsabila Sinaga
--   Atikah Nurfadia
--   Muhammad Akmil Triadi
--   Rizky Alif Ichwanto
--   Wafi Aulia Tsabitah
--   Wahyu Satrio Widodo
--   Wilfa Afriyani 
+- Ainul Fatimah
+- Amanda Amelia Salsabila Sinaga
+- Atikah Nurfadia
+- Muhammad Akmil Triadi
+- Rizky Alif Ichwanto
+- Wafi Aulia Tsabitah
+- Wahyu Satrio Widodo
+- Wilfa Afriyani
 
 ## Tech Stack
 
 Aplikasi ini dibangun dengan teknologi berikut:
 
--   Backend:
+- Backend:
 
-    -   PHP dengan Laravel untuk framework server-side.
-    -   MySQL untuk database.
-    -   Blade untuk templating engine.
+    - PHP dengan Laravel untuk framework server-side.
+    - MySQL untuk database.
+    - Blade untuk templating engine.
 
--   Frontend:
-    -   TailwindCSS untuk styling yang responsif dan fleksibel.
-    -   FullCalendar untuk kalender interaktif.
+- Frontend:
 
--   Version Control:
-    -   Git untuk version control.
-    -   GitHub untuk repository dan CI/CD pipeline.
+    - TailwindCSS untuk styling yang responsif dan fleksibel.
+    - Flatpicker untuk kalender.
+
+- Version Control:
+    - Git untuk version control.
+    - GitHub untuk repository dan CI/CD pipeline.
 
 ## Langkah Penggunaan
 
@@ -64,6 +66,19 @@ Buat file .env di root project (salin dari .env.example) dan sesuaikan pengatura
     cp .env.example .env
     php artisan key:generate
 
+Untuk konfigurasi pengaturan email, tambahkan parameter berikut di file .env:
+
+    MAIL_MAILER=smtp
+    MAIL_HOST=smtp.example.com
+    MAIL_PORT=587
+    MAIL_USERNAME=your-email@example.com
+    MAIL_PASSWORD=your-email-password
+    MAIL_ENCRYPTION=tls
+    MAIL_FROM_ADDRESS=no-reply@example.com
+    MAIL_FROM_NAME="${APP_NAME}"
+
+Ganti nilai sesuai dengan pengaturan layanan email yang Anda gunakan.
+
 ### Migrasi Database
 
 Jalankan migrasi untuk membuat tabel di database:
@@ -78,6 +93,10 @@ Jalankan seeder untuk membuat tabel di database:
 
 Untuk menjalankan aplikasi, Anda dapat menggunakan perintah berikut untuk menjalankan server Laravel dan server frontend:
 
+Sebelum menjalankan aplikasi, pastikan untuk membuat symbolic link untuk penyimpanan file dengan perintah berikut:
+
+    php artisan storage:link
+
 #### Backend
 
     php artisan serve
@@ -87,4 +106,5 @@ Untuk menjalankan aplikasi, Anda dapat menggunakan perintah berikut untuk menjal
     npm run dev
 
 Aplikasi backend akan berjalan di http://127.0.0.1:8000, sedangkan frontend (React) akan berjalan di http://localhost:3000.
->>>>>>> c2e9538 (initial commit)
+
+> > > > > > > c2e9538 (initial commit)
