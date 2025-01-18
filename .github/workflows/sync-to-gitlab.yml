@@ -22,7 +22,7 @@ jobs:
 
       # Add GitLab as remote
       - name: Add GitLab remote
-        run: git remote add gitlab https://gitlab.com/Wilfa Afriyani/repository.git
+        run: git remote add gitlab https://git.stis.ac.id/222212915/sisensa.git
 
       # Push changes to GitLab
       - name: Push changes to GitLab
