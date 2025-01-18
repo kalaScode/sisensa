@@ -6,18 +6,21 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
+
 
 class PerubahanStatusAkun extends Notification
 {
     use Queueable;
 
-    protected $action;
-    private $sender;
+    public $action; // Ubah menjadi public agar dapat diakses langsung
+    public $sender; // Ubah menjadi public agar dapat diakses langsung
 
     /**
      * Create a new notification instance.
      *
      * @param string $action
+     * @param object $sender
      */
     public function __construct($action, $sender)
     {
@@ -33,7 +36,7 @@ class PerubahanStatusAkun extends Notification
      */
     public function via($notifiable)
     {
-        return ['database', 'mail'];
+        return ['database', 'mail']; // Channel database dan email
     }
 
     /**
@@ -44,26 +47,27 @@ class PerubahanStatusAkun extends Notification
      */
     public function toDatabase($notifiable)
     {
-        if ($this->action == 'aktif') {
-            $message = "Status akun Anda telah diubah menjadi {$this->action}.";
-            $description = "Harap lengkapi data diri anda pada menu profil.";
-        } elseif ($this->action == 'dibatalkan') {
-            $message = "Pengajuan akun Anda telah {$this->action}.";
+        $message = "Status akun Anda telah diubah.";
+        $description = "";
+
+        if ($this->action === 'aktif') {
+            $message = "Status akun Anda telah diubah menjadi aktif.";
+            $description = "Harap lengkapi data diri Anda pada menu profil.";
+        } elseif ($this->action === 'dibatalkan') {
+            $message = "Pengajuan akun Anda telah dibatalkan.";
             $description = "Harap hubungi HRD untuk informasi lebih lanjut.";
-        } else {
-            $message = "Status akun Anda telah diubah.";
-            $description = "";
         }
+
         $url = url('/');
 
         return [
             'message' => $message,
             'description' => $description,
             'link' => $url,
-            'sender_name' => $this->sender->name, // Nama pengirim
-            'sender_avatar' => $this->sender->Avatar, // Foto pengirim
-            'sender_jabatan' => $this->sender->jabatan->nama_Jabatan, // Jabatan pengirim
-            'sender_perusahaan_id' => $this->sender->id_Perusahaan,
+            'sender_name' => $this->sender->name ?? 'Sistem', // Tambahkan fallback
+            'sender_avatar' => $this->sender->Avatar ?? null, // Tambahkan fallback
+            'sender_jabatan' => $this->sender->jabatan->nama_Jabatan ?? 'Tidak Diketahui', // Tambahkan fallback
+            'sender_perusahaan_id' => $this->sender->id_Perusahaan ?? null,
         ];
     }
 
@@ -75,15 +79,15 @@ class PerubahanStatusAkun extends Notification
      */
     public function toMail($notifiable)
     {
-        $subject = "Perubahan Status Akun";
+        Log::info("Mengirim email untuk status {$this->action} kepada {$notifiable->email}");
 
-        if ($this->action == 'aktif') {
-            $line = "Status akun Anda telah diubah menjadi '{$this->action}'.";
-        } elseif ($this->action == 'dibatalkan') {
-            $line = "Pengajuan akun Anda telah '{$this->action}'. 
-                    Informasi lebih lanjut dapat menghubungi HRD";
-        } else {
-            $line = "Status akun Anda telah diubah.";
+        $subject = "Perubahan Status Akun";
+        $line = "Status akun Anda telah diubah.";
+
+        if ($this->action === 'aktif') {
+            $line = "Status akun Anda telah diubah menjadi 'aktif'. Harap lengkapi data diri Anda pada menu profil.";
+        } elseif ($this->action === 'dibatalkan') {
+            $line = "Pengajuan akun Anda telah dibatalkan. Informasi lebih lanjut dapat menghubungi HRD.";
         }
 
         return (new MailMessage)
