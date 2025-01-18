@@ -95,10 +95,10 @@ class NotifikasiController extends Controller
         // Mendapatkan semua pengguna dalam perusahaan yang sama
         $users = User::where('id_Perusahaan', $sender->id_Perusahaan)->get();
         DB::table('notifications')->insert([
-            'created_by' => Auth::id(),
-            'updated_by' => Auth::id(),
-            'created_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
-            'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+            'created_By' => Auth::id(),
+            'updated_By' => Auth::id(),
+            'created_At' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+            'updated_At' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
         ]);
 
         // Mengirim notifikasi pengumuman kepada pengguna lain dalam perusahaan
