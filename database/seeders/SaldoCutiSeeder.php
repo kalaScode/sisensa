@@ -19,13 +19,13 @@ class SaldoCutiSeeder extends Seeder
             $saldo_Terpakai = 0; // Default saldo terpakai
             $saldoCutiData[] = [
                 'user_id' => $user->user_id,
-                'Tahun' => now()->year,
+                'Tahun' => now('GMT+7')->setTimezone('Asia/Jakarta')->year,
                 'saldo_Awal' => $saldo_Awal,
                 'saldo_Terpakai' => $saldo_Terpakai,
                 'saldo_Sisa' => $saldo_Awal - $saldo_Terpakai, // Rumus saldo sisa
-                'created_At' => now(),
+                'created_At' => now('GMT+7')->setTimezone('Asia/Jakarta'),
                 'created_By' => null,
-                'updated_At' => now(),
+                'updated_At' => now('GMT+7')->setTimezone('Asia/Jakarta'),
                 'updated_By' => null,
             ];
         }
