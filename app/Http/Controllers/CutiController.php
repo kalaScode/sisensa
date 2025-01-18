@@ -55,8 +55,8 @@ class CutiController extends Controller
             $cuti->keterangan = $validated['Keterangan'];
             $cuti->created_By = Auth::id();
             $cuti->updated_By = Auth::id();
-            //$cuti->created_At = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
-            //$cuti->updated_At = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+            // $cuti->created_At = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+            // $cuti->updated_At = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
 
             // Upload file jika ada
             if ($request->hasFile('Attachment')) {
