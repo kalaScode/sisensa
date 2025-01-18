@@ -66,6 +66,11 @@ Buat file .env di root project (salin dari .env.example) dan sesuaikan pengatura
     cp .env.example .env
     php artisan key:generate
 
+Untuk mengatur timezone aplikasi Laravel ke Asia Jakarta, buka file .env dan cari parameter APP_TIMEZONE. Jika belum ada, Anda bisa menambahkannya.
+
+    APP_TIMEZONE=Asia/Jakarta
+
+Tambahkan baris berikut di .env:
 Untuk konfigurasi pengaturan email, tambahkan parameter berikut di file .env:
 
     MAIL_MAILER=smtp
@@ -77,7 +82,7 @@ Untuk konfigurasi pengaturan email, tambahkan parameter berikut di file .env:
     MAIL_FROM_ADDRESS=no-reply@example.com
     MAIL_FROM_NAME="${APP_NAME}"
 
-Ganti nilai sesuai dengan pengaturan layanan email yang Anda gunakan.
+Pastikan Anda mengganti smtp.example.com, your-email@example.com, dan your-email-password dengan informasi yang sesuai dari penyedia layanan email yang Anda gunakan.
 
 ### Migrasi Database
 
@@ -96,6 +101,8 @@ Untuk menjalankan aplikasi, Anda dapat menggunakan perintah berikut untuk menjal
 Sebelum menjalankan aplikasi, pastikan untuk membuat symbolic link untuk penyimpanan file dengan perintah berikut:
 
     php artisan storage:link
+
+setelah itu harus copy file profil.jpg di public/images ke public/storage
 
 #### Backend
 
