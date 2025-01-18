@@ -11,7 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-
+use Carbon\Carbon;
 
 
 class NotifikasiController extends Controller
@@ -70,6 +70,7 @@ class NotifikasiController extends Controller
         $notification = Auth::user()->notifications->find($id);
         if ($notification) {
             $notification->markAsRead();
+            $notification->read_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
             return redirect()->back()->with('success', 'Notifikasi berhasil ditandai sebagai sudah dibaca');
         }
 
@@ -93,6 +94,12 @@ class NotifikasiController extends Controller
         $sender = Auth::user();
         // Mendapatkan semua pengguna dalam perusahaan yang sama
         $users = User::where('id_Perusahaan', $sender->id_Perusahaan)->get();
+        DB::table('notifications')->insert([
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
+            'created_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+        ]);
 
         // Mengirim notifikasi pengumuman kepada pengguna lain dalam perusahaan
         Notification::send($users, new PengumumanGeneral($request->judul, $request->isi_pengumuman, $sender));
