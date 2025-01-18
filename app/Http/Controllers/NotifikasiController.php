@@ -124,19 +124,16 @@ class NotifikasiController extends Controller
 
     public function uploadImage(Request $request)
     {
-        // Validasi gambar
         $request->validate([
             'upload' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        // Menyimpan gambar ke storage
         $image = $request->file('upload');
         $imageName = Str::random(10) . '.' . $image->getClientOriginalExtension();
-        $imagePath = $image->storeAs('public/images', $imageName);
+        $imagePath = $image->storeAs('storage/images', $imageName);
 
-        // Mengembalikan URL gambar yang baru diupload
         return response()->json([
-            'url' => Storage::url($imagePath)
+            'url' => Storage::url($imagePath) // Mengembalikan URL gambar
         ]);
     }
 }
