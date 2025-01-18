@@ -63,8 +63,8 @@ class PersetujuanController extends Controller
 
                 // Ubah status cuti menjadi 'Disetujui'
                 $cuti->status_Cuti = 'Disetujui';
-                $cuti->updated_by = Auth::id();
-                $cuti->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+                $cuti->updated_By = Auth::id();
+                $cuti->updated_At = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
                 $cuti->save();
 
                 // Update saldo cuti user
@@ -92,8 +92,8 @@ class PersetujuanController extends Controller
         if (!$cuti) {
             return redirect()->route('persetujuan-cuti.index')->with('error', 'Pengajuan cuti tidak ditemukan.');
         }
-        $cuti->updated_by = Auth::id();
-        $cuti->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+        $cuti->updated_By = Auth::id();
+        $cuti->updated_At = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
         $cuti->update([
             'status_Cuti' => 'Ditolak',
             'Feedback' => $request->input('Feedback')
