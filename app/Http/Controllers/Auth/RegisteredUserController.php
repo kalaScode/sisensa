@@ -50,19 +50,17 @@ class RegisteredUserController extends Controller
         ]);
         $sender = $user;
 
-        $sender = $user;
+        // $hrd = User::where('id_Perusahaan', $user->id_Perusahaan)
+        //     ->where('id_Otoritas', 4) // Anda bisa sesuaikan role dengan field yang sesuai
+        //     ->first();
 
-        $hrd = User::where('id_Perusahaan', $user->id_Perusahaan)
-            ->where('id_Otoritas', 4) // Anda bisa sesuaikan role dengan field yang sesuai
-            ->first();
-
-        if ($hrd) {
-            // Mengirimkan notifikasi ke HRD
-            $hrd->notify(new RegistrasiPengguna($user, $sender));
-        }
+        // if ($hrd) {
+        //     // Mengirimkan notifikasi ke HRD
+        //     $hrd->notify(new RegistrasiPengguna($user, $sender));
+        // }
 
         event(new Registered($user));
 
-        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silahkan Tunggu Konfirmasi HRD.');
+        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silahkan verifikasi email melalui link pada email anda.');
     }
 }
