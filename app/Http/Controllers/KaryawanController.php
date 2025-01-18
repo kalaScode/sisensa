@@ -343,7 +343,7 @@ public function setStatusKerja(Request $request, $userId)
 
             // Update path avatar di database
             $user->Avatar = $fileName;
-            $user->updated_by = Auth::id();
+            $user->updated_By = Auth::id();
             $user->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
             $user->save();
 
@@ -371,7 +371,7 @@ public function setStatusKerja(Request $request, $userId)
 
         // Update nomor telepon
         $user->no_Telp = $request->telepon;
-        $user->updated_by = Auth::id();
+        $user->updated_By = Auth::id();
         $user->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
         $user->save();
 
@@ -392,7 +392,7 @@ public function setStatusKerja(Request $request, $userId)
         }
 
         $user->Alamat = htmlspecialchars($request->alamat, ENT_QUOTES, 'UTF-8'); // Mencegah serangan XSS
-        $user->updated_by = Auth::id();
+        $user->updated_By = Auth::id();
         $user->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
         $user->save();
 
