@@ -43,7 +43,7 @@ class AuthenticatedSessionController extends Controller
         // Tambahkan validasi untuk status akun
         if ($user && $user->status_Akun != 1) {
             throw ValidationException::withMessages([
-                'email' => 'Akun Anda belum aktif. Silakan hubungi administrator.',
+                'email' => 'Akun Anda belum aktif. Silakan hubungi HRD',
             ]);
         }
 

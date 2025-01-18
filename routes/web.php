@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Middleware\CheckRole;
+
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -28,6 +30,10 @@ Route::get('/', [Beranda::class, 'index'])
 Route::get('/beranda', [Beranda::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('beranda');
+
+Route::get('/welcome', function () {
+    return view('welcome');
+})->middleware('auth', 'verified')->name('welcome');
 
 //Route untuk Presensi
 Route::middleware('auth')->group(function () {
@@ -49,7 +55,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 // Route ke halaman persetujuan
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', CheckRole::class . ':3']], function () {
     Route::get('/persetujuan-cuti', [PersetujuanController::class, 'index'])->name('persetujuan-cuti.index');
     Route::post('/persetujuan-cuti/terima/{id}', [PersetujuanController::class, 'terimaCuti'])->name('cuti.terima');
     Route::post('/persetujuan-cuti/tolak/{id}', [PersetujuanController::class, 'tolakCuti'])->name('cuti.tolak');
@@ -61,25 +67,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/persetujuan-presensi/tolak/{id}', [PresensiController::class, 'tolakPresensi'])->name('presensi.tolak');
 });
 
-// Route ke halaman riwayat presensi pribadi
+// Route ke halaman riwayat presensi dan cuti pribadi
 Route::middleware('auth')->group(function () {
     Route::get('/riwayat-presensi-pribadi', [RiwayatController::class, 'getPresensiPribadi'])->name('riwayat-presensi-pribadi');
-});
-
-// Route ke halaman riwayat cuti pribadi
-Route::middleware('auth')->group(function () {
     Route::get('/riwayat-cuti-pribadi', [RiwayatController::class, 'getCutiPribadi'])->name('riwayat-cuti-pribadi');
 });
 
-// Route ke halaman riwayat presensi karyawan
+
+// Route ke halaman riwayat presensi dan cuti karyawan
 Route::middleware('auth')->group(function () {
     Route::get('/riwayat-presensi-karyawan', [RiwayatController::class, 'getPresensiKaryawan'])->name('riwayat-presensi-karyawan');
-});
-
-// Route ke halaman riwayat cuti karyawan
-Route::middleware('auth')->group(function () {
     Route::get('/riwayat-cuti-karyawan', [RiwayatController::class, 'getCutiKaryawan'])->name('riwayat-cuti-karyawan');
 });
+
 
 // Route ke halaman profil (pemberi persetujuan)
 Route::get('/profil', [KaryawanController::class, 'getProfil'])
@@ -99,7 +99,7 @@ Route::middleware('auth')->group(function () {
 });
 
 //Route untuk Persetujuan Akun
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', CheckRole::class . ':4'])->group(function () {
     Route::get('persetujuan-akun/', [KaryawanController::class, 'getPersetujuanAkun'])->name('persetujuan-akun');
     Route::post('/set-status-kerja/{userId}', [KaryawanController::class, 'setStatusKerja']);
     Route::post('/ubah-status-akun/{user_id}', [KaryawanController::class, 'ubahStatusAkun'])->name('ubah-status-akun');
@@ -123,10 +123,11 @@ Route::middleware('auth')->group(function () {
 });
 
 //Route untuk Buat Pengumuman
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', CheckRole::class . ':4'])->group(function () {
     Route::get('/buat-pengumuman', [NotifikasiController::class, 'create'])->name('pengumuman.create');
     Route::post('/buat-pengumuman', [NotifikasiController::class, 'store'])->name('pengumuman.store');
 });
 
+Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');
 
 require __DIR__ . '/auth.php';

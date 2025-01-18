@@ -41,8 +41,8 @@ class PengumumanGeneral extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('Pengumuman baru: ' . $this->judul)
-            ->line($this->isi_pengumuman)
+            ->line('Pengumuman baru: ' . strip_tags($this->judul))
+            ->line(strip_tags($this->isi_pengumuman))
             ->action('Lihat Pengumuman', url('/notifikasi'))
             ->line('Terima kasih telah menggunakan aplikasi kami!');
     }
