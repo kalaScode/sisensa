@@ -26,7 +26,6 @@
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-36 py-10">
         <div class="w-full mx-auto space-y-6">
             @if (session('success'))
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -39,6 +38,7 @@
                     });
                 </script>
             @endif
+
             <!-- Informasi Saldo Cuti -->
             <div class="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
                 <h2 class="text-lg font-semibold mb-4">Informasi Saldo Cuti</h2>
@@ -64,7 +64,7 @@
             <!-- Form Pengajuan Cuti -->
             <div class="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
                 <h2 class="text-lg font-bold mb-6">Form Pengajuan Cuti</h2>
-                <form method="POST" action="{{ route('cuti.ajukan') }}" enctype="multipart/form-data">
+                <form id="cutiForm" method="POST" action="{{ route('cuti.ajukan') }}" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Tanggal Cuti -->
@@ -150,43 +150,7 @@
     </div>
 </main>
 <x-footer></x-footer>
-
 <script>
-    // Meminta akses OAuth 2.0 menggunakan client ID dan secret Anda
-    function authenticate() {
-        return gapi.auth2.getAuthInstance()
-            .signIn({
-                scope: "https://www.googleapis.com/auth/calendar.readonly"
-            })
-            .then(function() {
-                console.log("Sign-in successful");
-            }, function(error) {
-                console.log("Error signing in", error);
-            });
-    }
-
-    // Menyusun dan mengambil event dari kalender (misalnya hari libur nasional dan weekend)
-    function loadCalendar() {
-        gapi.client.calendar.events.list({
-            calendarId: 'primary', // Bisa diganti dengan ID kalender nasional atau publik
-            timeMin: (new Date()).toISOString(),
-            showDeleted: false,
-            singleEvents: true,
-            orderBy: 'startTime'
-        }).then(function(response) {
-            var events = response.result.items;
-            if (events.length > 0) {
-                console.log("Hari Libur atau Event:");
-                events.forEach(function(event) {
-                    console.log(event.summary + ' (' + event.start.dateTime + ')');
-                    // Simpan event ini untuk menandai tanggal di kalender Flatpickr Anda
-                });
-            } else {
-                console.log('No upcoming events found.');
-            }
-        });
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         // Ambil saldo cuti dari backend
         fetch('/cuti/saldo-sisa')
@@ -236,11 +200,80 @@
                 });
             });
     });
-    //Script untuk unggah dokumen
+
+    // Script untuk unggah dokumen
     document.getElementById('upload-icon').addEventListener('click', function() {
         document.getElementById('file-upload').click();
     });
 
+    // Script untuk menampilkan unggah file hanya ketika jenis cuti adalah "Sakit"
+    document.querySelectorAll('input[name="jenis_Cuti"]').forEach((radio) => {
+        radio.addEventListener('change', function() {
+            document.getElementById('fileUpload').style.display = this.value === 'Sakit' ? 'block' :
+                'none';
+        });
+    });
+
+    // Validasi Form sebelum submit
+    document.getElementById('cutiForm').addEventListener('submit', function(e) {
+        const jenisCuti = document.querySelector('input[name="jenis_Cuti"]:checked');
+        const tanggalCuti = document.getElementById('tanggalCuti').value;
+        const fileInput = document.getElementById('file-upload');
+        const keterangan = document.querySelector('textarea[name="Keterangan"]').value;
+
+        // Validasi: Pastikan jenis cuti, tanggal cuti, dan file surat keterangan diisi jika cuti sakit
+        if (!jenisCuti) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Jenis Cuti Wajib Dipilih',
+                text: 'Silakan pilih jenis cuti yang akan diajukan.',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#d33',
+            });
+            return;
+        }
+
+        if (!tanggalCuti) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Tanggal Cuti Wajib Diisi',
+                text: 'Silakan pilih tanggal cuti yang akan diajukan.',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#d33',
+            });
+            return;
+        }
+
+        // Validasi Keterangan
+        if (!keterangan.trim()) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Keterangan Cuti Wajib Diisi',
+                text: 'Silakan isi keterangan cuti.',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#d33',
+            });
+            return;
+        }
+
+        // Jika jenis cuti adalah Sakit, pastikan file diunggah
+        if (jenisCuti.value === 'Sakit' && !fileInput.files.length) {
+            e.preventDefault(); // Menghentikan pengiriman form
+            Swal.fire({
+                icon: 'error',
+                title: 'File Surat Keterangan Wajib Diunggah',
+                text: 'Silakan unggah surat keterangan sakit sebelum mengajukan cuti.',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#d33',
+            });
+            return;
+        }
+    });
+
+    // Script untuk menampilkan nama file yang diunggah
     function displayFileName(event) {
         const file = event.target.files[0];
         if (file) {
@@ -249,12 +282,4 @@
             document.getElementById('file-name').innerText = '';
         }
     }
-
-    //Script untuk menampilkan unggah file
-    document.querySelectorAll('input[name="jenis_Cuti"]').forEach((radio) => {
-        radio.addEventListener('change', function() {
-            document.getElementById('fileUpload').style.display = this.value === 'Sakit' ? 'block' :
-                'none';
-        });
-    });
 </script>
