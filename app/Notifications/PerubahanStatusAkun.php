@@ -85,7 +85,7 @@ class PerubahanStatusAkun extends Notification
         $line = "Status akun Anda telah diubah.";
 
         if ($this->action === 'aktif') {
-            $line = "Status akun Anda telah diubah menjadi 'aktif'. Harap lengkapi data diri Anda pada menu profil.";
+            $line = "Status akun Anda telah diubah menjadi aktif. Harap lengkapi data diri Anda pada menu profil.";
         } elseif ($this->action === 'dibatalkan') {
             $line = "Pengajuan akun Anda telah dibatalkan. Informasi lebih lanjut dapat menghubungi HRD.";
         }
