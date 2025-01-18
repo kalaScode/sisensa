@@ -24,7 +24,8 @@ class Karyawan extends Model
         'id_Jabatan',
         'status_Akun',
         'saldo_Awal',
-        'Avatar'
+        'Avatar',
+        'updated_by'
     ];
 
     public function perusahaan()

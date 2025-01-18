@@ -132,11 +132,11 @@ public function setStatusKerja(Request $request, $userId)
         // Update status kerja di tabel karyawan
         $karyawan = Karyawan::findOrFail($userId);
         $karyawan->update([
-            'updated_By' => Auth::id(),
-            'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
             'status_Kerja' => $statusKerja,
             'status_Akun' => 1, // Setujui akun
+            'updated_by' => Auth::id(),
         ]);
+        
 
         // Kirim notifikasi ke email pengguna setelah status akun diubah
         $action = in_array($statusKerja, ['Tetap', 'Kontrak']) ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
@@ -148,7 +148,7 @@ public function setStatusKerja(Request $request, $userId)
         // Update saldo di tabel saldo_cuti
         SaldoCuti::updateOrCreate(
             ['user_id' => $userId],
-            ['saldo_Awal' => $saldoAwal, 'saldo_Sisa' => $saldoAwal]
+            ['saldo_Awal' => $saldoAwal, 'saldo_Sisa' => $saldoAwal, 'created_by' => Auth::id(), 'updated_by' => Auth::id()],
         );
 
         // Kirim pesan sukses ke session
