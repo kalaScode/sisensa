@@ -23,7 +23,7 @@ class JabatanSeeder extends Seeder
             DB::table('jabatan')->insertOrIgnore([
                 'id_Perusahaan' => $perusahaan->id_Perusahaan,
                 'nama_Jabatan' => "NONE - {$perusahaan->nama_Perusahaan}",
-                'created_At' => now(),
+                'created_At' => now('GMT+7')->setTimezone('Asia/Jakarta'),
                 'created_By' => 1,
             ]);
         }
@@ -57,7 +57,7 @@ class JabatanSeeder extends Seeder
 
         // Insert semua jabatan tambahan tanpa id_Jabatan untuk mencegah duplikasi
         foreach ($jabatanTambahan as &$jabatan) {
-            $jabatan['created_At'] = $jabatan['created_At'] ?? now();
+            $jabatan['created_At'] = $jabatan['created_At'] ?? now('GMT+7')->setTimezone('Asia/Jakarta');
             $jabatan['created_By'] = 1;
         }
 

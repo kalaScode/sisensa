@@ -157,7 +157,7 @@ class RiwayatController extends Controller
         }
 
         // Filter berdasarkan tahun
-        $year = $request->input('year', now()->year);
+        $year = $request->input('year', now('GMT+7')->setTimezone('Asia/Jakarta')->year);
         $query->whereYear('cuti.tanggal_Mulai', $year);
 
         // Pencarian berdasarkan name, Waktu
@@ -348,7 +348,7 @@ class RiwayatController extends Controller
             $query->where('cuti.jenis_Cuti', $request->jenis);
         }
 
-        $year = $request->input('year', now()->year);
+        $year = $request->input('year', now('GMT+7')->setTimezone('Asia/Jakarta')->year);
         $query->whereYear('cuti.tanggal_Mulai', $year);
 
         if ($request->has('search') && $request->search != '') {
