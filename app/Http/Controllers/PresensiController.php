@@ -48,6 +48,10 @@ class PresensiController extends Controller
         
         // Ubah status menjadi "Dibatalkan"
         $presensi->status_Presensi = "Dibatalkan";
+        $presensi->updated_by = Auth::id();
+        $presensi->updated_at = Carbon::now('GMT+7')
+                                ->setTimezone('Asia/Jakarta')  // Mengonversi dari UTC ke WIB
+                                ->format('Y-m-d H:i:s');
         $presensi->save();
 
         // Redirect dengan pesan sukses
