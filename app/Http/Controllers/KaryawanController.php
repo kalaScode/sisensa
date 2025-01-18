@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Carbon\Carbon;
 
 class KaryawanController extends Controller
 {
@@ -131,12 +132,14 @@ public function setStatusKerja(Request $request, $userId)
         // Update status kerja di tabel karyawan
         $karyawan = Karyawan::findOrFail($userId);
         $karyawan->update([
+            'updated_By' => Auth::id(),
+            'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
             'status_Kerja' => $statusKerja,
             'status_Akun' => 1, // Setujui akun
         ]);
 
         // Kirim notifikasi ke email pengguna setelah status akun diubah
-        $action = in_array($statusKerja, ['Tetap', 'Kontrak']) ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
+        $action = $statusKerja === 'Tetap' ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
         $sender = Auth::user(); // Pengguna yang mengubah status akun (HRD atau admin)
 
         // Mengirimkan notifikasi email dan database
@@ -227,6 +230,7 @@ public function setStatusKerja(Request $request, $userId)
                 'no_Telp' => $request->no_Telp,
                 'Alamat' => $request->alamat,
                 'updated_By' => Auth::user()->user_id,
+                'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
             ]);
             $userId = $request->input('user_id');
             // Update saldo cuti
@@ -273,6 +277,10 @@ public function setStatusKerja(Request $request, $userId)
 
         // Ubah status akun menjadi 1
         $karyawan->status_Akun = 1;
+        $karyawan->update([
+            'updated_By' => Auth::user()->user_id,
+            'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+        ]);
         $karyawan->save();
 
         // Kirim notifikasi ke karyawan
@@ -294,6 +302,10 @@ public function setStatusKerja(Request $request, $userId)
 
         // Ubah status akun menjadi dibatalkan
         $karyawan->status_Akun = 2; // Misalnya 2 berarti akun dibatalkan
+        $karyawan->update([
+            'updated_By' => Auth::user()->user_id,
+            'updated_at' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+        ]);
         $karyawan->save();
         $sender = Auth::user();
         // Kirim notifikasi ke karyawan jika ada relasi dengan User
@@ -331,6 +343,8 @@ public function setStatusKerja(Request $request, $userId)
 
             // Update path avatar di database
             $user->Avatar = $fileName;
+            $user->updated_by = Auth::id();
+            $user->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
             $user->save();
 
             return redirect()->back()->with('success', 'Foto profil berhasil diperbarui.');
@@ -357,6 +371,8 @@ public function setStatusKerja(Request $request, $userId)
 
         // Update nomor telepon
         $user->no_Telp = $request->telepon;
+        $user->updated_by = Auth::id();
+        $user->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
         $user->save();
 
         // Redirect kembali dengan pesan sukses
@@ -376,6 +392,8 @@ public function setStatusKerja(Request $request, $userId)
         }
 
         $user->Alamat = htmlspecialchars($request->alamat, ENT_QUOTES, 'UTF-8'); // Mencegah serangan XSS
+        $user->updated_by = Auth::id();
+        $user->updated_at = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
         $user->save();
 
         return redirect()->back()->with('success', 'Alamat berhasil diperbarui!');
