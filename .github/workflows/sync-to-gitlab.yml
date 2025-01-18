@@ -1,0 +1,31 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - main  # Ganti dengan nama branch Anda jika perlu
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Git
+      - name: Set up Git
+        run: |
+          git config --global user.name "Your Name" # Ganti dengan nama Anda
+          git config --global user.email "you@example.com" # Ganti dengan email Anda
+
+      # Add GitLab as remote
+      - name: Add GitLab remote
+        run: git remote add gitlab https://gitlab.com/username/repository.git
+
+      # Push changes to GitLab
+      - name: Push changes to GitLab
+        run: git push gitlab main  # Ganti 'main' dengan nama branch Anda jika berbeda
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
