@@ -62,9 +62,6 @@ class PresensiController extends Controller
         return redirect()->back()->with("success", "Presensi dibatalkan!");
     }
 
-
-
-
     public function store(Request $request)
     {
 
@@ -107,7 +104,37 @@ class PresensiController extends Controller
                 ->setTimezone('Asia/Jakarta')  // Mengonversi dari UTC ke WIB
                 ->format('Y-m-d H:i:s');
 
+        if ($bagian === 'Keluar' && $request->jenis_Presensi === 'Biasa') {
+            // Ambil nilai minimal jam kerja dari perusahaan
+            $minimalJamKerja = Auth::user()->perusahaan->minimal_Jamkerja;
 
+            // Ambil waktu presensi masuk hari ini
+            $presensiMasuk = Presensi::where('user_id', $user_id)
+                ->where('Tanggal', $today)
+                ->where('Bagian', 'Masuk')
+                ->where('status_Presensi', 'Disetujui')
+                ->first();
+
+            if ($presensiMasuk) {
+                $waktuMasuk = Carbon::parse($presensiMasuk->Waktu);
+                $waktuKeluar = Carbon::parse($waktu);
+
+                // Hitung durasi kerja dalam jam
+                $durasiKerja = $waktuMasuk->diffInHours($waktuKeluar);
+
+                if ($durasiKerja < $minimalJamKerja) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Anda belum memenuhi minimal jam kerja ($minimalJamKerja jam)."
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ditemukan presensi masuk hari ini.'
+                ]);
+            }
+        }
             // Simpan foto ke folder public/images
             $photoPath = null;
             if ($request->has('Foto')) {
@@ -125,7 +152,7 @@ class PresensiController extends Controller
             $presensi = new Presensi();
             $presensi->user_id = $user_id; // Gunakan user_id dari session
             $presensi->jenis_Presensi = $request->jenis_Presensi;
-            $presensi->Tanggal = $request->Tanggal;
+            $presensi->Tanggal = Carbon::parse($waktu)->format('Y-m-d');
             $presensi->Waktu = $waktu;
             $presensi->Latitude = $request->Latitude;
             $presensi->Longitude = $request->Longitude;
@@ -136,9 +163,7 @@ class PresensiController extends Controller
             $presensi->created_by = $user_id;
             $presensi->updated_by = $user_id;
 
-            $now = Carbon::now('GMT+7')
-                ->setTimezone('Asia/Jakarta')  // Mengonversi dari UTC ke WIB
-                ->format('Y-m-d H:i:s');
+            $now = Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
             $presensi->created_at = $now;  // Timestamp saat ini untuk created_at
             $presensi->updated_at = $now;
 

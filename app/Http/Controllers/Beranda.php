@@ -27,11 +27,6 @@ class Beranda extends Controller
         if (!$perusahaan) {
             return redirect()->back()->withErrors(['error' => 'Data perusahaan tidak ditemukan.']);
         }
-    
-        $jamMasukDefault = Carbon::parse($perusahaan->jam_Masuk, 'GMT+7')->setTimezone('Asia/Jakarta');
-    
-        // Default jam masuk
-        $jamMasuk = $jamMasukDefault;
         
         // Cek presensi masuk hari ini
         $presensiMasuk = Presensi::where('user_id', Auth::id())
@@ -66,27 +61,12 @@ class Beranda extends Controller
         // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk
 
         if ($presentMasuk) {
-            // Jika sudah ada presensi keluar, hitung lama kerja dari presensi masuk hingga presensi keluar
-            if ($presensiKeluar) {
-                $lamaKerja = $presentMasuk->diffInMinutes($jamKeluar);
-                // Mengubah lama kerja dalam menit menjadi format jam dan menit
-                $hours = floor($lamaKerja / 60);
-                $minutes = $lamaKerja % 60;
-                $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
-                
-            } else {
-                // Jika presensi masuk dilakukan sebelum jam masuk perusahaan, hitung dari jam masuk default
-                if ($jamMasuk->gt($presensiMasuk ? Carbon::parse($presensiMasuk->Waktu) : Carbon::now('GMT+7')->setTimezone('Asia/Jakarta'))) {
-                    $lamaKerja = $waktuSekarang->diffInMinutes($jamMasuk); // Hitung selisih antara waktu sekarang dan jam masuk
-                } else {
-                    $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk); // Hitung selisih antara waktu sekarang dan waktu presensi masuk
-                }
+                $lamaKerja = $waktuSekarang->diffInMinutes($presentMasuk);
                 // Mengubah lama kerja dalam menit menjadi format jam dan menit
                 $hours = floor($lamaKerja / 60+1);
                 $minutes = $lamaKerja % 60;
                 $lamaKerjaFormatted = sprintf('%02d:%02d', abs($hours), abs($minutes));
             }
-        }
         $lamaKerjaColor = 'text-yellow-500'; // Default warna
 
         if ($presensiKeluar) {
