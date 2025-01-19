@@ -13,13 +13,14 @@
 
 <body class="min-h-screen font-['Jakarta Sans']">
     <x-navbarnone></x-navbarnone>
-    <div class="parallax-bg min-h-screen flex items-center justify-center bg-gray-100" id="starfield">
-        <div class="login-container w-full max-w-sm px-6 py-4 sm:px-8 sm:py-6 shadow-md sm:rounded-lg relative">
+    <div class="parallax-bg min-h-screen flex items-center justify-center bg-gray-100 px-5 sm:px-8 lg:px-8"
+        id="starfield">
+        <div
+            class="login-container w-full max-w-xs sm:max-w-sm md:max-w-md px-6 py-4 sm:px-8 sm:py-6 shadow-md sm:rounded-lg relative overflow-auto">
             <h1 class="text-3xl font-semibold text-white mb-2 text-center">SISENSA</h1>
             {{ $slot }}
         </div>
     </div>
-
     <x-footer></x-footer>
 </body>
 
