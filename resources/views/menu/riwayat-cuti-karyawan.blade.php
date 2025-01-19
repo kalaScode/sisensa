@@ -77,18 +77,25 @@
                             </div>
                             <!-- Search Input -->
                             <div class="flex flex-col items-start">
-                                <label for="search" class="block text-sm font-medium text-gray-900 dark:text-white px-2">Cari</label>
-                                <div class="flex items-center ">
-                                    <input type="text" name="search" class="flex-grow px-4 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 rounded-l-lg" placeholder="Cari berdasarkan..." value="{{ request('search') }}" />
+                                <label for="search"
+                                    class="block text-sm font-medium text-gray-900 dark:text-white px-2">Cari</label>
+                                <div class="flex items-center gap-2 mt-2 w-full">
+                                    <!-- Input -->
+                                    <input type="text" name="search"
+                                        class="flex-grow sm:flex-grow-0 w-full sm:w-auto px-4 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                        placeholder="Cari Nama..." value="{{ request('search') }}" />
+
                                     <!-- Search Button -->
-                                    <button type="submit" class="mx-4 bg-blue-500 text-white px-4 py-2 text-sm rounded-lg hover:bg-blue-800 transition">
-                                        Cari  
+                                    <button type="submit"
+                                        class="bg-blue-500 text-white px-4 py-2 text-sm rounded-lg hover:bg-blue-800 transition">
+                                        Cari
                                     </button>
 
-                                    <!-- Reset button -->
-                                    <button type="submit" class="bg-gray-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-gray-800 transition">
-                                        <a href="{{ route('riwayat-cuti-karyawan') }}">Reset</a>     
-                                    </button>
+                                    <!-- Reset Button -->
+                                    <a href="{{ route('riwayat-cuti-karyawan') }}"
+                                        class="bg-gray-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-gray-800 transition text-center">
+                                        Reset
+                                    </a>
                                 </div>
                             </div>
                         </form>
