@@ -18,8 +18,8 @@ class PerusahaanSeeder extends Seeder
             [
                 'id_Perusahaan' => 1,
                 'nama_Perusahaan' => 'PT Bersama Kreasi Teknik',
-                'Longitude' => 106.83398747,
-                'Latitude' => -6.21876501,
+                'Longitude' => 106.83240804,
+                'Latitude' => -6.20916401,
                 'Alamat' => 'Garden Avenue Rasuna Lt. 2, Jalan Epicentrum Tengah No. 3 Jakarta',
                 'no_Telp' => '0218355085',
                 'minimal_Jamkerja' => 8,
