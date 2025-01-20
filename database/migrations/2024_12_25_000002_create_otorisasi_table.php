@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('riwayat_presensiKaryawan', ['Ya', 'Tidak']);
             $table->enum('riwayat_cutiPribadi', ['Ya', 'Tidak']);
             $table->enum('riwayat_cutiKaryawan', ['Ya', 'Tidak']);
+            $table->enum('buat_Pengumuman', ['Ya', 'Tidak']);
             $table->dateTime('created_At')->useCurrent();
             $table->integer('created_By')->nullable();
             $table->dateTime('updated_At')->nullable()->useCurrentOnUpdate();

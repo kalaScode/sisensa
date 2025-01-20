@@ -32,7 +32,7 @@
                     Daftar
                 </button>
             </div>
-            @if (in_array($role, ['3', '4']))
+            @if ($dataOtorisasi && $dataOtorisasi->buat_Pengumuman === 'Ya')
                 <div class="flex items-center">
                     <a href="/buat-pengumuman">
                         <button

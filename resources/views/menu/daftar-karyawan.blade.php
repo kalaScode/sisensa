@@ -30,7 +30,7 @@
                 <nav class="flex -mb-px">
                     <button class="px-6 py-4 text-sm font-medium text-custom border-b-2 border-[#122036]">Daftar
                         Karyawan</button>
-                    @if ($role == 4)
+                    @if ($dataOtorisasi && $dataOtorisasi->persetujuan_Akun === 'Ya')
                         <a href="{{ route('persetujuan-akun') }}">
                             <button
                                 class="px-6 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">Persetujuan
@@ -77,7 +77,7 @@
                                         Kontak</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">
                                         Status</th>
-                                    @if ($role == 4)
+                                    @if ($dataOtorisasi && $dataOtorisasi->edit_daftarKaryawan === 'Ya')
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-white tracking-wider">
                                             Aksi</th>
                                     @endif
@@ -114,7 +114,7 @@
                                                 {{ $item->status_Kerja }}
                                             </span>
                                         </td>
-                                        @if ($role == 4)
+                                        @if ($dataOtorisasi && $dataOtorisasi->edit_daftarKaryawan === 'Ya')
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <button type="button" data-modal-target="editdata_modal"
                                                     data-modal-toggle="editdata_modal"
