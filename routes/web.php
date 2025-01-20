@@ -133,9 +133,9 @@ Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman'])->group(functi
 });
 
 
-Route::get('/admin', function () {
-    return view('admin');
-})->name('admin');
+// Route::get('/admin', function () {
+//     return view('admin');
+// })->name('admin');
 
 
 Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');
