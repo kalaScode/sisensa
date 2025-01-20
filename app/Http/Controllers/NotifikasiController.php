@@ -8,6 +8,7 @@ use App\Notifications\PengumumanGeneral;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Models\User;
+use App\Models\Otoritas;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +21,7 @@ class NotifikasiController extends Controller
     {
         $user = Auth::user();
         $role = Auth::User()->id_Otoritas;
+        $dataOtorisasi = Otoritas::where('id_Otoritas', Auth::user()->id_Otoritas)->first();
 
         // Filter berdasarkan status
         $filter = $request->query('filter', 'all');
@@ -37,7 +39,7 @@ class NotifikasiController extends Controller
                 break;
         }
 
-        return view('page.pnotifikasi', compact('notifications', 'role'));
+        return view('page.pnotifikasi', compact('notifications', 'role', 'dataOtorisasi'));
     }
 
 

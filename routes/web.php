@@ -11,7 +11,9 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\AdminController;
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\CheckMenu;
 
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -55,7 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 // Route ke halaman persetujuan
-Route::group(['middleware' => ['auth', CheckRole::class . ':3']], function () {
+Route::group(['middleware' => ['auth', CheckMenu::class . ':Persetujuan']], function () {
     Route::get('/persetujuan-cuti', [PersetujuanController::class, 'index'])->name('persetujuan-cuti.index');
     Route::post('/persetujuan-cuti/terima/{id}', [PersetujuanController::class, 'terimaCuti'])->name('cuti.terima');
     Route::post('/persetujuan-cuti/tolak/{id}', [PersetujuanController::class, 'tolakCuti'])->name('cuti.tolak');
@@ -75,7 +77,7 @@ Route::middleware('auth')->group(function () {
 
 
 // Route ke halaman riwayat presensi dan cuti karyawan
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', CheckMenu::class . ':riwayat_presensiKaryawan, riwayat_cutiKaryawan'])->group(function () {
     Route::get('/riwayat-presensi-karyawan', [RiwayatController::class, 'getPresensiKaryawan'])->name('riwayat-presensi-karyawan');
     Route::get('/riwayat-cuti-karyawan', [RiwayatController::class, 'getCutiKaryawan'])->name('riwayat-cuti-karyawan');
 });
@@ -94,12 +96,14 @@ Route::get('/edit-profil', [KaryawanController::class, 'getEditProfil'])
 //Route untuk Daftar Karyawan
 Route::middleware('auth')->group(function () {
     Route::get('/daftar-karyawan', [KaryawanController::class, 'getDaftarKaryawan'])->name('daftar-karyawan');
-    Route::delete('/daftar-karyawan/{user_id}', [KaryawanController::class, 'destroy'])->name('delete-karyawan');
-    Route::put('/karyawan/edit/{id}', [KaryawanController::class, 'updateDataKaryawan'])->name('update-karyawan');
+    Route::middleware(CheckMenu::class . ':edit_daftarKaryawan')->group(function () {
+        Route::delete('/daftar-karyawan/{user_id}', [KaryawanController::class, 'destroy'])->name('delete-karyawan');
+        Route::put('/karyawan/edit/{id}', [KaryawanController::class, 'updateDataKaryawan'])->name('update-karyawan');
+    });
 });
 
 //Route untuk Persetujuan Akun
-Route::middleware(['auth', CheckRole::class . ':4'])->group(function () {
+Route::middleware(['auth', CheckMenu::class . ':persetujuan_Akun'])->group(function () {
     Route::get('persetujuan-akun/', [KaryawanController::class, 'getPersetujuanAkun'])->name('persetujuan-akun');
     Route::post('/set-status-kerja/{userId}', [KaryawanController::class, 'setStatusKerja']);
     Route::post('/ubah-status-akun/{user_id}', [KaryawanController::class, 'ubahStatusAkun'])->name('ubah-status-akun');
@@ -123,10 +127,16 @@ Route::middleware('auth')->group(function () {
 });
 
 //Route untuk Buat Pengumuman
-Route::middleware(['auth', CheckRole::class . ':3,4'])->group(function () {
+Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman'])->group(function () {
     Route::get('/buat-pengumuman', [NotifikasiController::class, 'create'])->name('pengumuman.create');
     Route::post('/buat-pengumuman', [NotifikasiController::class, 'store'])->name('pengumuman.store');
 });
+
+
+Route::get('/admin', function () {
+    return view('admin');
+})->name('admin');
+
 
 Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');
 

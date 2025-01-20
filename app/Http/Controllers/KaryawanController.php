@@ -8,6 +8,7 @@ use App\Models\Karyawan;
 use App\Models\Perusahaan;
 use App\Models\Jabatan;
 use App\Models\User;
+use App\Models\Otoritas;
 use App\Models\SaldoCuti;
 use App\Notifications\PerubahanStatusAkun;
 use Illuminate\Support\Facades\Storage;
@@ -64,6 +65,7 @@ class KaryawanController extends Controller
         // Ambil data perusahaan
         $perusahaan = Perusahaan::all();
         $role = Auth::User()->id_Otoritas;
+        $dataOtorisasi = Otoritas::where('id_Otoritas', Auth::user()->id_Otoritas)->first();
 
         // Kirimkan nilai pencarian, data perusahaan, dan jabatan ke view
         return view('page.pdaftar_karyawan', [
@@ -72,6 +74,7 @@ class KaryawanController extends Controller
             'jabatan' => $jabatan, // Kirim data jabatan ke view
             'perusahaan' => $perusahaan,
             'role' => $role,
+            'dataOtorisasi' => $dataOtorisasi,
         ]);
     }
 
@@ -117,47 +120,47 @@ class KaryawanController extends Controller
         ]);
     }
 
-public function setStatusKerja(Request $request, $userId)
-{
-    // Validasi input
-    $request->validate([
-        'status_Kerja' => 'required|in:Tetap,Kontrak',
-    ]);
-
-    try {
-        // Ambil status kerja dari request
-        $statusKerja = $request->input('status_Kerja');
-        $saldoAwal = $statusKerja === 'Tetap' ? 12 : 0;
-
-        // Update status kerja di tabel karyawan
-        $karyawan = Karyawan::findOrFail($userId);
-        $karyawan->update([
-            'status_Kerja' => $statusKerja,
-            'status_Akun' => 1, // Setujui akun
-            'updated_by' => Auth::id(),
+    public function setStatusKerja(Request $request, $userId)
+    {
+        // Validasi input
+        $request->validate([
+            'status_Kerja' => 'required|in:Tetap,Kontrak',
         ]);
-        
 
-        // Kirim notifikasi ke email pengguna setelah status akun diubah
-        $action = in_array($statusKerja, ['Tetap', 'Kontrak']) ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
-        $sender = Auth::user(); // Pengguna yang mengubah status akun (HRD atau admin)
+        try {
+            // Ambil status kerja dari request
+            $statusKerja = $request->input('status_Kerja');
+            $saldoAwal = $statusKerja === 'Tetap' ? 12 : 0;
 
-        // Mengirimkan notifikasi email dan database
-        $karyawan->notify(new PerubahanStatusAkun($action, $sender));
+            // Update status kerja di tabel karyawan
+            $karyawan = Karyawan::findOrFail($userId);
+            $karyawan->update([
+                'status_Kerja' => $statusKerja,
+                'status_Akun' => 1, // Setujui akun
+                'updated_by' => Auth::id(),
+            ]);
 
-        // Update saldo di tabel saldo_cuti
-        SaldoCuti::updateOrCreate(
-            ['user_id' => $userId],
-            ['saldo_Awal' => $saldoAwal, 'saldo_Sisa' => $saldoAwal, 'created_by' => Auth::id(), 'updated_by' => Auth::id()],
-        );
 
-        // Kirim pesan sukses ke session
-        return redirect()->back()->with('success', 'Karyawan berhasil disetujui dan saldo cuti diperbarui.');
-    } catch (\Exception $e) {
-        // Kirim pesan error ke session
-        return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            // Kirim notifikasi ke email pengguna setelah status akun diubah
+            $action = in_array($statusKerja, ['Tetap', 'Kontrak']) ? 'aktif' : 'dibatalkan';  // Tentukan action berdasarkan kondisi
+            $sender = Auth::user(); // Pengguna yang mengubah status akun (HRD atau admin)
+
+            // Mengirimkan notifikasi email dan database
+            $karyawan->notify(new PerubahanStatusAkun($action, $sender));
+
+            // Update saldo di tabel saldo_cuti
+            SaldoCuti::updateOrCreate(
+                ['user_id' => $userId],
+                ['saldo_Awal' => $saldoAwal, 'saldo_Sisa' => $saldoAwal, 'created_by' => Auth::id(), 'updated_by' => Auth::id()],
+            );
+
+            // Kirim pesan sukses ke session
+            return redirect()->back()->with('success', 'Karyawan berhasil disetujui dan saldo cuti diperbarui.');
+        } catch (\Exception $e) {
+            // Kirim pesan error ke session
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
-}
 
     // Tolak akun karyawan
     public function tolakKaryawan($userId)

@@ -63,13 +63,11 @@
                                         {{ $latestNotification->data['message'] }}
                                     </h5>
                                     <p class="text-gray-600 text-xs ml-1">
-                                        {!! 
-                                            preg_replace(
-                                                '/<img[^>]*>/i', 
-                                                '<span class="inline-block w-5 h-5 text-gray-500"><i class="fas fa-image"></i></span>Gambar', 
-                                                Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...')
-                                            ) 
-                                        !!}
+                                        {!! preg_replace(
+                                            '/<img[^>]*>/i',
+                                            '<span class="inline-block w-5 h-5 text-gray-500"><i class="fas fa-image"></i></span>Gambar',
+                                            Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...'),
+                                        ) !!}
                                     </p>
                                 </a>
 
@@ -124,43 +122,51 @@
         <!-- Grid wrapper -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-center">
             <!-- Card 1 -->
-            <a href="/presensi"
-                class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
-                <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
-                    <i class="fas fa-sign-in-alt text-white text-xl"></i>
-                </div>
-                <h3 class="font-medium mb-1">Presensi</h3>
-                <p class="text-sm text-gray-500">Catat kehadiran Anda</p>
-            </a>
+            @if ($dataOtorisasi && $dataOtorisasi->Presensi === 'Ya')
+                <a href="/presensi"
+                    class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sign-in-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Presensi</h3>
+                    <p class="text-sm text-gray-500">Catat kehadiran Anda</p>
+                </a>
+            @endif
             <!-- Card 2 -->
-            <a href="/cuti"
-                class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
-                <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
-                    <i class="fas fa-calendar-alt text-white text-xl"></i>
-                </div>
-                <h3 class="font-medium mb-1">Cuti</h3>
-                <p class="text-sm text-gray-500">Ajukan cuti</p>
-            </a>
+            @if ($dataOtorisasi && $dataOtorisasi->Cuti === 'Ya')
+                <a href="/cuti"
+                    class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-calendar-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Cuti</h3>
+                    <p class="text-sm text-gray-500">Ajukan cuti</p>
+                </a>
+            @endif
             <!-- Card 3 -->
-            <a href="/riwayat-presensi-pribadi"
-                class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
-                <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
-                    <i class="fas fa-history text-white text-xl"></i>
-                </div>
-                <h3 class="font-medium mb-1">Riwayat Pribadi</h3>
-                <p class="text-sm text-gray-500">Lihat riwayat kehadiranmu</p>
-            </a>
+            @if ($dataOtorisasi && $dataOtorisasi->riwayat_presensiPribadi === 'Ya')
+                <a href="/riwayat-presensi-pribadi"
+                    class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-history text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Riwayat Pribadi</h3>
+                    <p class="text-sm text-gray-500">Lihat riwayat kehadiranmu</p>
+                </a>
+            @endif
             <!-- Card 4 -->
-            <a href="/daftar-karyawan"
-                class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
-                <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
-                    <i class="fas fa-users text-white text-xl"></i>
-                </div>
-                <h3 class="font-medium mb-1">Daftar Karyawan</h3>
-                <p class="text-sm text-gray-500">Lihat daftar karyawan</p>
-            </a>
+            @if ($dataOtorisasi && $dataOtorisasi->daftar_Karyawan === 'Ya')
+                <a href="/daftar-karyawan"
+                    class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
+                    <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-medium mb-1">Daftar Karyawan</h3>
+                    <p class="text-sm text-gray-500">Lihat daftar karyawan</p>
+                </a>
+            @endif
             <!-- Card 5 -->
-            @if ($role == '3')
+            @if ($dataOtorisasi && $dataOtorisasi->Persetujuan === 'Ya')
                 <a href="/persetujuan-cuti"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
@@ -177,7 +183,7 @@
                 </a>
             @endif
             <!-- Card 6 -->
-            @if (in_array($role, ['3', '4']))
+            @if ($dataOtorisasi && $dataOtorisasi->riwayat_presensiKaryawan === 'Ya')
                 <a href="/riwayat-presensi-karyawan"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
