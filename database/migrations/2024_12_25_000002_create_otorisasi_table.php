@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('Cuti', ['Ya', 'Tidak']);
             $table->enum('daftar_Karyawan', ['Ya', 'Tidak']);
             $table->enum('edit_daftarKaryawan', ['Ya', 'Tidak']);
+            $table->enum('persetujuan_Presensi', ['Ya', 'Tidak']);
             $table->enum('Persetujuan', ['Ya', 'Tidak']);
             $table->enum('persetujuan_Akun', ['Ya', 'Tidak']);
             $table->enum('riwayat_presensiPribadi', ['Ya', 'Tidak']);

@@ -166,8 +166,8 @@
                 </a>
             @endif
             <!-- Card 5 -->
-            @if ($dataOtorisasi && $dataOtorisasi->Persetujuan === 'Ya')
-                <a href="/persetujuan-cuti"
+            @if ($dataOtorisasi && $dataOtorisasi->Persetujuan === 'Ya' && $dataOtorisasi->persetujuan_Presensi === 'Ya')
+                <a href="/persetujuan-presensi"
                     class="bg-white p-6 rounded-lg shadow-lg hover:shadow-md transition-shadow flex flex-col items-center">
                     <div class="w-12 h-12 bg-[#122036] rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-7 h-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -182,6 +182,7 @@
                     <p class="text-sm text-gray-500">Memberikan persetujuan</p>
                 </a>
             @endif
+
             <!-- Card 6 -->
             @if ($dataOtorisasi && $dataOtorisasi->riwayat_presensiKaryawan === 'Ya')
                 <a href="/riwayat-presensi-karyawan"
