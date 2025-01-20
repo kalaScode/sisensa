@@ -109,7 +109,7 @@ class OtorisasiSeeder extends Seeder
                 'riwayat_presensiKaryawan' => 'Tidak',
                 'riwayat_cutiPribadi' => 'Ya',
                 'riwayat_cutiKaryawan' => 'Tidak',
-                'buat_Pengumuman' => 'Ya',
+                'buat_Pengumuman' => 'Tidak',
                 'created_At' => '2024-12-25 22:10:17',
                 'created_By' => 1,
                 'updated_At' => null,
