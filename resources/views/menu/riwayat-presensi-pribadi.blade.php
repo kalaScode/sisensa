@@ -240,6 +240,7 @@
         </div>
     </div>
 </main>
+<x-footer></x-footer>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

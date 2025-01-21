@@ -82,6 +82,10 @@ Route::middleware(['auth', CheckMenu::class . ':riwayat_presensiKaryawan, riwaya
     Route::get('/riwayat-cuti-karyawan', [RiwayatController::class, 'getCutiKaryawan'])->name('riwayat-cuti-karyawan');
 });
 
+// Route ke halaman dashboard
+Route::get('/dashboard', [AdminController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 // Route ke halaman profil (pemberi persetujuan)
 Route::get('/profil', [KaryawanController::class, 'getProfil'])
@@ -133,9 +137,9 @@ Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman'])->group(functi
 });
 
 
-// Route::get('/admin', function () {
-//     return view('admin');
-// })->name('admin');
+Route::get('/admin', function () {
+    return view('admin');
+})->name('admin');
 
 
 Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');
