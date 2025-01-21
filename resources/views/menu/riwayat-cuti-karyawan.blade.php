@@ -133,12 +133,12 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($cuti as $item)
+                                    @foreach ($cuti as $item)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex items-center">
                                                     <div class="h-10 w-10 flex-shrink-0">
-                                                        <img src="{{ Auth::user()->Avatar ? asset('storage/' . Auth::user()->Avatar) : '/img/profil.jpg' }}"
+                                                        <img src="{{ $item->user->Avatar ? asset('storage/' . $item->user->Avatar) : '/img/profil.jpg' }}"
                                                             alt="Foto Profil"
                                                             class="w-full h-full rounded-full object-cover border-2 border-[#F6CD61]">
                                                     </div>
@@ -212,6 +212,7 @@
         </div>
     </div>
 </main>
+<x-footer></x-footer>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
