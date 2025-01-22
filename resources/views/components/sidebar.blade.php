@@ -55,21 +55,25 @@
     const logoutLink = document.getElementById('logout-link'); // Ambil elemen logout
 
     menuToggle.addEventListener('click', () => {
-        sidebar.classList.remove('-translate-x-full'); // Tampilkan sidebar
-        menuToggle.style.display = 'none'; // Sembunyikan tombol burger
+        if (window.innerWidth < 768) { // Hanya berlaku untuk ukuran layar lebih kecil dari breakpoint 'md'
+            sidebar.classList.remove('-translate-x-full'); // Tampilkan sidebar
+            menuToggle.style.display = 'none'; // Sembunyikan tombol burger
+        }
     });
 
     closeMenu.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full'); // Sembunyikan sidebar
-        menuToggle.style.display = 'block'; // Tampilkan tombol burger
+        if (window.innerWidth < 768) { // Hanya berlaku untuk ukuran layar lebih kecil dari breakpoint 'md'
+            sidebar.classList.add('-translate-x-full'); // Sembunyikan sidebar
+            menuToggle.style.display = 'block'; // Tampilkan tombol burger
+        }
     });
 
     // Opsional: Klik di luar sidebar untuk menutup
     document.addEventListener('click', (event) => {
-        if (!sidebar.contains(event.target) && !menuToggle.contains(event.target) && !closeMenu.contains(event
-                .target)) {
-            sidebar.classList.add('-translate-x-full');
-            menuToggle.style.display = 'block';
+        if (window.innerWidth < 768 && !sidebar.contains(event.target) && !menuToggle.contains(event.target) &&
+            !closeMenu.contains(event.target)) {
+            sidebar.classList.add('-translate-x-full'); // Sembunyikan sidebar
+            menuToggle.style.display = 'block'; // Tampilkan tombol burger
         }
     });
 

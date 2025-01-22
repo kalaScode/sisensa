@@ -102,19 +102,19 @@ class NotifikasiController extends Controller
         // Validasi input
         $request->validate([
             'judul' => 'required|string|max:255',
-            'isi_pengumuman' => '|string',
+            'isi_pengumuman' => 'required|string', // Tidak perlu memfilter HTML
         ]);
 
         // Mengambil data pengirim
         $sender = Auth::user();
         // Mendapatkan semua pengguna dalam perusahaan yang sama
         $users = User::where('id_Perusahaan', $sender->id_Perusahaan)->get();
-        DB::table('notifications')->insert([
-            'created_By' => Auth::id(),
-            'updated_By' => Auth::id(),
-            'created_At' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
-            'updated_At' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
-        ]);
+        // DB::table('notifications')->insert([
+        //     'created_By' => Auth::id(),
+        //     'updated_By' => Auth::id(),
+        //     'created_At' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+        //     'updated_At' => Carbon::now('GMT+7')->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+        // ]);
 
         // Mengirim notifikasi pengumuman kepada pengguna lain dalam perusahaan
         Notification::send($users, new PengumumanGeneral($request->judul, $request->isi_pengumuman, $sender));
@@ -152,7 +152,7 @@ class NotifikasiController extends Controller
 
         $image = $request->file('upload');
         $imageName = Str::random(10) . '.' . $image->getClientOriginalExtension();
-        $imagePath = $image->storeAs('storage/images', $imageName);
+        $imagePath = $image->storeAs('public/images', $imageName);
 
         return response()->json([
             'url' => Storage::url($imagePath) // Mengembalikan URL gambar

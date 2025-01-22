@@ -21,11 +21,10 @@
 
     {{-- FlatPicker --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
     <!-- Menambahkan CKEditor dari CDN -->
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
-
+    {{-- <script src="<?('vendor/ckeditor/ckeditor.js')?>"></script> --}}
 </head>
 
 <body class="pt-12" style="font-family: 'Poppins', sans-serif;">
