@@ -1,8 +1,18 @@
-<div class="flex">
+<div class="flex flex-col md:flex-row">
     <x-sidebar></x-sidebar>
-    <!-- Container Utama -->
-    <div class="flex-1 ml-64 p-5">
-        <h1 class="text-3xl font-bold mb-5 text-gray-800">Halaman Otorisasi</h1>
+    <div class="flex-1 md:ml-64 p-5">
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                <li class="inline-flex items-center text-sm font-medium text-gray-700">
+                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M19.707 9.293l-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414z" />
+                    </svg>
+                    Otorisasi
+                </li>
+            </ol>
+        </nav>
 
         @if (session('success'))
             <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
@@ -17,10 +27,9 @@
 
         <!-- Section: Tambah Role -->
         @if (Auth::user()->id_Otoritas == 1)
-            <!-- Hanya tampil jika otoritas adalah Master Admin -->
             <!-- Section: Tambah Role -->
-            <div class="bg-white shadow rounded-lg p-10 mb-8">
-                <h2 class="text-xl font-semibold mb-3 text-gray-700">Tambah Role</h2>
+            <div class="bg-white shadow rounded-lg p-5 sm:p-8 md:p-10 mb-8">
+                <h2 class="text-lg md:text-xl font-semibold mb-3 text-gray-700">Tambah Role</h2>
 
                 <form action="{{ route('roles.store') }}" method="POST">
                     @csrf
@@ -74,10 +83,10 @@
 
 
         <!-- Section: Daftar Role dan Izin -->
-        <div class="bg-white shadow rounded-lg p-10 mb-4">
-            <h2 class="text-xl font-semibold mb-3 text-gray-700">Atur Akses Role</h2>
+        <div class="bg-white shadow rounded-lg p-5 sm:p-8 md:p-10 overflow-x-auto">
+            <h2 class="text-lg md:text-xl font-semibold mb-3 text-gray-700">Atur Akses Role</h2>
             <div class="bg-white shadow rounded-lg overflow-x-auto">
-                <table class="min-w-full bg-white border border-black">
+                <table class="min-w-full bg-white border border-black text-sm sm:text-base">
                     <thead class="bg-[#122036] text-white">
                         <tr>
                             <th class="px-6 py-3 text-left text-l font-semibold text-white tracking-wider">Role</th>
@@ -150,15 +159,17 @@
                                                 class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
                                                 Edit
                                             </button>
-                                            <form action="{{ route('roles.destroy', $role->id_Otoritas) }}"
+                                            <form id="delete-role-form"
+                                                action="{{ route('roles.destroy', $role->id_Otoritas) }}"
                                                 method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit"
+                                                <button type="button" id="delete-button"
                                                     class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                                                     Hapus
                                                 </button>
                                             </form>
+
                                         </div>
                                     </td>
                                 @endif
@@ -284,24 +295,30 @@
         });
     });
 
-    // SweetAlert on Delete (when the user clicks the delete button)
-    const deleteForms = document.querySelectorAll('form[action*="roles.destroy"]');
-    deleteForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the form from submitting immediately
+    document.addEventListener('DOMContentLoaded', function() {
+        // Use event delegation to target the dynamically rendered buttons
+        document.querySelector('tbody').addEventListener('click', function(event) {
+            // Check if the clicked element is the delete button
+            if (event.target && event.target.id === 'delete-button') {
+                event.preventDefault(); // Prevent default form submission
 
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data role akan dihapus.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit(); // Submit the form if user confirms
-                }
-            });
+                const deleteForm = event.target.closest('form'); // Get the parent form of the button
+
+                // Show SweetAlert confirmation
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Data yang dihapus tidak bisa dipulihkan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteForm.submit(); // Submit the form if confirmed
+                    }
+                });
+            }
         });
     });
 </script>
