@@ -18,18 +18,22 @@ class RiwayatController extends Controller
     // Tampilkan presensi karyawan
     public function getPresensiKaryawan(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $query = Presensi::query();
         $id_Perusahaan = Auth::user()->id_Perusahaan;
         $direktur = User::where('id_Perusahaan', $id_Perusahaan)
-                        ->where('id_Otoritas', 3)
-                        ->pluck('name')
-                        ->first();
+            ->where('id_Otoritas', 3)
+            ->pluck('name')
+            ->first();
 
         // Filter berdasarkan user_id yang sesuai dengan id_Perusahaan dan bukan user_id pengguna sendiri
         $query->whereHas('user', function ($query) use ($id_Perusahaan) {
             $query->where('id_Perusahaan', $id_Perusahaan);
         })
-        ->where('presensi.user_id', '!=', Auth::user()->user_id); // Kecualikan presensi dari user yang sedang login
+            ->where('presensi.user_id', '!=', Auth::user()->user_id); // Kecualikan presensi dari user yang sedang login
 
         // Join dengan tabel users untuk filter berdasarkan name, Waktu, status_Presensi, Bagian
         $query->join('users', 'presensi.user_id', '=', 'users.user_id')
@@ -54,9 +58,9 @@ class RiwayatController extends Controller
         // Pencarian berdasarkan name, Waktu
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('users.name', 'like', '%' . $search . '%')
-                ->orWhere('presensi.Waktu', 'like', '%' . $search . '%');
+                    ->orWhere('presensi.Waktu', 'like', '%' . $search . '%');
             });
         }
 
@@ -83,8 +87,18 @@ class RiwayatController extends Controller
         } else {
             // Daftar semua nama bulan
             $allMonths = [
-                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                'Januari',
+                'Februari',
+                'Maret',
+                'April',
+                'Mei',
+                'Juni',
+                'Juli',
+                'Agustus',
+                'September',
+                'Oktober',
+                'November',
+                'Desember'
             ];
 
             // Filter dan Group by Bulan
@@ -98,7 +112,7 @@ class RiwayatController extends Controller
                 ->groupBy(DB::raw("MONTH(presensi.Tanggal)"))
                 ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
                 ->get();
-            
+
             // Buat array bulan dan data dengan nilai default 0
             $monthlyData = collect($allMonths)->map(function ($month, $index) use ($presensiData) {
                 $monthNumber = $index + 1; // Index dimulai dari 0, sehingga perlu +1 untuk bulan
@@ -129,18 +143,22 @@ class RiwayatController extends Controller
     // Tampilkan cuti karyawan
     public function getCutiKaryawan(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $query = Cuti::query();
         $id_Perusahaan = Auth::user()->id_Perusahaan;
         $direktur = User::where('id_Perusahaan', $id_Perusahaan)
-                        ->where('id_Otoritas', 3)
-                        ->pluck('name')
-                        ->first();
+            ->where('id_Otoritas', 3)
+            ->pluck('name')
+            ->first();
 
         // Filter berdasarkan user_id yang sesuai dengan id_Perusahaan dan bukan user_id pengguna sendiri
         $query->whereHas('user', function ($query) use ($id_Perusahaan) {
             $query->where('id_Perusahaan', $id_Perusahaan);
         })
-        ->where('cuti.user_id', '!=', Auth::user()->user_id); // Kecualikan cuti dari user yang sedang login
+            ->where('cuti.user_id', '!=', Auth::user()->user_id); // Kecualikan cuti dari user yang sedang login
 
         // Join dengan tabel users untuk filter berdasarkan name, Waktu, status_Cuti, jenis_Cuti
         $query->join('users', 'cuti.user_id', '=', 'users.user_id')
@@ -163,22 +181,22 @@ class RiwayatController extends Controller
         // Pencarian berdasarkan name, Waktu
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('users.name', 'like', '%' . $search . '%')
-                ->orWhere('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
-                ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
+                    ->orWhere('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
+                    ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
             });
         }
 
         // Pagination
         $cuti = $query->orderBy('cuti.created_At', 'desc')->paginate(10);
-                
+
         // Menghitung jumlah cuti dan sakit di tiap bulan
         $cutiData = Cuti::select(
-                DB::raw('MONTH(tanggal_Mulai) as bulan'),
-                DB::raw('SUM(CASE WHEN jenis_Cuti = "Cuti" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_cuti'),
-                DB::raw('SUM(CASE WHEN jenis_Cuti = "Sakit" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_sakit')
-            )
+            DB::raw('MONTH(tanggal_Mulai) as bulan'),
+            DB::raw('SUM(CASE WHEN jenis_Cuti = "Cuti" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_cuti'),
+            DB::raw('SUM(CASE WHEN jenis_Cuti = "Sakit" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_sakit')
+        )
             ->join('users', 'cuti.user_id', '=', 'users.user_id')
             ->whereYear('tanggal_Mulai', $year)
             ->where('status_Cuti', 'Disetujui')
@@ -193,7 +211,7 @@ class RiwayatController extends Controller
 
         // Grouping data berdasarkan bulan
         $cutiData = $cutiData->groupBy(DB::raw('MONTH(tanggal_Mulai)'))->get();
-        
+
         // Inisialisasi array untuk data bulan Januari - Desember
         $months = collect(range(1, 12))->mapWithKeys(function ($month) {
             return [$month => ['total_cuti' => 0, 'total_sakit' => 0]];
@@ -221,12 +239,16 @@ class RiwayatController extends Controller
     // Tampilkan Presensi Pribadi
     public function getPresensiPribadi(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $query = Presensi::query();
         $id_Perusahaan = Auth::user()->id_Perusahaan;
         $direktur = User::where('id_Perusahaan', $id_Perusahaan)
-                        ->where('id_Otoritas', 3)
-                        ->pluck('name')
-                        ->first();
+            ->where('id_Otoritas', 3)
+            ->pluck('name')
+            ->first();
 
         // Filter berdasarkan user_id
         $query->where('presensi.user_id', Auth::User()->user_id);
@@ -254,14 +276,14 @@ class RiwayatController extends Controller
         // Pencarian berdasarkan Waktu
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('presensi.Waktu', 'like', '%' . $search . '%');
             });
         }
 
         // Pagination
         $presensi = $query->orderBy('presensi.created_At', 'desc')->paginate(10);
-        
+
         // Range untuk chart
         $presensiData = [];
 
@@ -282,8 +304,18 @@ class RiwayatController extends Controller
         } else {
             // Daftar semua nama bulan
             $allMonths = [
-                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                'Januari',
+                'Februari',
+                'Maret',
+                'April',
+                'Mei',
+                'Juni',
+                'Juli',
+                'Agustus',
+                'September',
+                'Oktober',
+                'November',
+                'Desember'
             ];
 
             // Filter dan Group by Bulan
@@ -297,7 +329,7 @@ class RiwayatController extends Controller
                 ->groupBy(DB::raw("MONTH(presensi.Tanggal)"))
                 ->orderBy(DB::raw("MONTH(presensi.Tanggal)"), 'asc')
                 ->get();
-            
+
             // Buat array bulan dan data dengan nilai default 0
             $monthlyData = collect($allMonths)->map(function ($month, $index) use ($presensiData) {
                 $monthNumber = $index + 1; // Index dimulai dari 0, sehingga perlu +1 untuk bulan
@@ -328,12 +360,16 @@ class RiwayatController extends Controller
 
     public function getCutiPribadi(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $query = Cuti::query();
         $id_Perusahaan = Auth::user()->id_Perusahaan;
         $direktur = User::where('id_Perusahaan', $id_Perusahaan)
-                        ->where('id_Otoritas', 3)
-                        ->pluck('name')
-                        ->first();
+            ->where('id_Otoritas', 3)
+            ->pluck('name')
+            ->first();
 
         $query->where('cuti.user_id', Auth::User()->user_id);
 
@@ -353,9 +389,9 @@ class RiwayatController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->Where('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
-                ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
+                    ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
             });
         }
 
@@ -366,13 +402,13 @@ class RiwayatController extends Controller
             DB::raw('SUM(CASE WHEN jenis_Cuti = "Cuti" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_cuti'),
             DB::raw('SUM(CASE WHEN jenis_Cuti = "Sakit" THEN DATEDIFF(tanggal_Selesai, tanggal_Mulai) + 1 ELSE 0 END) as total_sakit')
         )
-        ->join('users', 'cuti.user_id', '=', 'users.user_id')
-        ->whereYear('tanggal_Mulai', $year)
-        ->where('status_Cuti', 'Disetujui')
-        ->where('cuti.user_id', '=', Auth::user()->user_id)
-        ->where('id_Perusahaan', $id_Perusahaan)
-        ->first();  // Use first() to get the single result
-        
+            ->join('users', 'cuti.user_id', '=', 'users.user_id')
+            ->whereYear('tanggal_Mulai', $year)
+            ->where('status_Cuti', 'Disetujui')
+            ->where('cuti.user_id', '=', Auth::user()->user_id)
+            ->where('id_Perusahaan', $id_Perusahaan)
+            ->first();  // Use first() to get the single result
+
         // Pass the data to the view
         return view('page.priwayat-cuti-pribadi', [
             'cuti' => $cuti,

@@ -19,6 +19,10 @@ class NotifikasiController extends Controller
 {
     public function index(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $user = Auth::user();
         $role = Auth::User()->id_Otoritas;
         $dataOtorisasi = Otoritas::where('id_Otoritas', Auth::user()->id_Otoritas)->first();
@@ -45,6 +49,10 @@ class NotifikasiController extends Controller
 
     public function showNotifications(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $notifications = Auth::user()->notifications; // Mengambil semua notifikasi yang terkait dengan user
         $role = Auth::User()->id_Otoritas;
         return view('page.pnotifikasi', compact('notifications', 'role')); // Kirim ke view notifikasi.blade.php
@@ -69,6 +77,7 @@ class NotifikasiController extends Controller
 
     public function markAsRead($id)
     {
+
         $notification = Auth::user()->notifications->find($id);
         if ($notification) {
             $notification->markAsRead();
@@ -81,6 +90,10 @@ class NotifikasiController extends Controller
 
     public function create()
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         return view('page.pbuat-pengumuman');
     }
 

@@ -14,6 +14,10 @@ class PresensiController extends Controller
 {
     public function indexPresensi(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $search = $request->input('search', ''); // Ambil nilai pencarian, default kosong
         $status = $request->input('status', '');
 
@@ -104,37 +108,37 @@ class PresensiController extends Controller
                 ->setTimezone('Asia/Jakarta')  // Mengonversi dari UTC ke WIB
                 ->format('Y-m-d H:i:s');
 
-        if ($bagian === 'Keluar' && $request->jenis_Presensi === 'Biasa') {
-            // Ambil nilai minimal jam kerja dari perusahaan
-            $minimalJamKerja = Auth::user()->perusahaan->minimal_Jamkerja;
+            if ($bagian === 'Keluar' && $request->jenis_Presensi === 'Biasa') {
+                // Ambil nilai minimal jam kerja dari perusahaan
+                $minimalJamKerja = Auth::user()->perusahaan->minimal_Jamkerja;
 
-            // Ambil waktu presensi masuk hari ini
-            $presensiMasuk = Presensi::where('user_id', $user_id)
-                ->where('Tanggal', $today)
-                ->where('Bagian', 'Masuk')
-                ->where('status_Presensi', 'Disetujui')
-                ->first();
+                // Ambil waktu presensi masuk hari ini
+                $presensiMasuk = Presensi::where('user_id', $user_id)
+                    ->where('Tanggal', $today)
+                    ->where('Bagian', 'Masuk')
+                    ->where('status_Presensi', 'Disetujui')
+                    ->first();
 
-            if ($presensiMasuk) {
-                $waktuMasuk = Carbon::parse($presensiMasuk->Waktu);
-                $waktuKeluar = Carbon::parse($waktu);
+                if ($presensiMasuk) {
+                    $waktuMasuk = Carbon::parse($presensiMasuk->Waktu);
+                    $waktuKeluar = Carbon::parse($waktu);
 
-                // Hitung durasi kerja dalam jam
-                $durasiKerja = $waktuMasuk->diffInHours($waktuKeluar);
+                    // Hitung durasi kerja dalam jam
+                    $durasiKerja = $waktuMasuk->diffInHours($waktuKeluar);
 
-                if ($durasiKerja < $minimalJamKerja) {
+                    if ($durasiKerja < $minimalJamKerja) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => "Anda belum memenuhi minimal jam kerja ($minimalJamKerja jam)."
+                        ]);
+                    }
+                } else {
                     return response()->json([
                         'success' => false,
-                        'message' => "Anda belum memenuhi minimal jam kerja ($minimalJamKerja jam)."
+                        'message' => 'Tidak ditemukan presensi masuk hari ini.'
                     ]);
                 }
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tidak ditemukan presensi masuk hari ini.'
-                ]);
             }
-        }
             // Simpan foto ke folder public/images
             $photoPath = null;
             if ($request->has('Foto')) {

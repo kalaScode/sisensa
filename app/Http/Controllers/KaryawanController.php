@@ -22,6 +22,10 @@ class KaryawanController extends Controller
     // Tampilkan daftar karyawan
     public function getDaftarKaryawan(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $query = Karyawan::query();
 
         // Filter berdasarkan status akun = 1
@@ -80,6 +84,10 @@ class KaryawanController extends Controller
 
     public function getPersetujuanAkun(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $query = Karyawan::query();
 
         // Filter berdasarkan status akun = 0
