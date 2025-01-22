@@ -354,8 +354,7 @@ class RiwayatController extends Controller
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('users.name', 'like', '%' . $search . '%')
-                ->orWhere('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
+                $q->Where('cuti.tanggal_Mulai', 'like', '%' . $search . '%')
                 ->orWhere('cuti.tanggal_Selesai', 'like', '%' . $search . '%');
             });
         }
