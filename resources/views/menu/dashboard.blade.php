@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-4 shadow-lg backdrop-blur-sm">
+                <div class="bg-white rounded-xl p-4 pb-2 shadow-lg mr-6 backdrop-blur-sm">
                     <div class="flex items-center space-x-3">
                         <img class="h-14 w-14 rounded-full object-cover"
                             src="{{ Auth::user()->perusahaan->Logo

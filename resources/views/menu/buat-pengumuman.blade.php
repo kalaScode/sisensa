@@ -1,10 +1,10 @@
 <x-navbar></x-navbar>
-<header class="max-w-7xl sm:px-6 lg:px-36 py-3">
+<header class="max-w-7xl px-4 sm:px-6 lg:px-36 py-3">
     <nav class="flex mt-6 mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
                 <a href="/beranda"
-                    class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
+                    class="inline-flex items-center text-xs sm:text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
                     <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 20 20">
                         <path
@@ -15,7 +15,7 @@
             </li>
             <li class="inline-flex items-center">
                 <a href="/notifikasi"
-                    class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
+                    class="inline-flex items-center text-xs sm:text-sm font-medium text-gray-700 hover:text-blue-800 dark:text-gray-500 dark:hover:text-gray">
                     <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -24,7 +24,7 @@
                     Notifikasi
                 </a>
             </li>
-            <li class="inline-flex items-center text-sm font-medium text-gray-700">
+            <li class="inline-flex items-center text-xs sm:text-sm font-medium text-gray-700">
                 <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -35,11 +35,11 @@
         </ol>
     </nav>
 </header>
-<header class="max-w-7xl sm:px-6 lg:px-36 py-2">
+<header class="max-w-7xl px-4 sm:px-6 lg:px-36 py-2">
     <h1 class="text-2xl font-semibold text-gray-800">Buat Pengumuman</h1>
 </header>
 
-<main class="max-w-7xl sm:px-6 lg:px-36 py-2">
+<main class="max-w-7xl px-4 sm:px-6 lg:px-36 py-2">
     <!-- Menampilkan pesan sukses jika ada -->
     @if (session('success'))
         <div class="mb-4 text-green-500">
@@ -68,11 +68,11 @@
             @enderror
         </div>
 
-
         <div class="mb-4 flex justify-end">
             <button type="submit"
-                class="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Kirim
-                Pengumuman</button>
+                class="py-2 px-4 sm:py-1.5 sm:px-3 text-sm sm:text-xs bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Kirim Pengumuman
+            </button>
         </div>
 
     </form>
@@ -80,11 +80,11 @@
 
 <x-footer></x-footer>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/37.0.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.umd.js"></script>
 <script>
     ClassicEditor
         .create(document.querySelector('#isi_pengumuman'), {
-            toolbar: ['bold', 'italic', 'link', 'imageUpload', 'mediaEmbed'],
+            toolbar: ['bold', 'italic'],
             simpleUpload: {
                 uploadUrl: '/upload-image',
                 headers: {

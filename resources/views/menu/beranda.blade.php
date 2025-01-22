@@ -1,9 +1,9 @@
 <x-navbar></x-navbar>
-<main class="max-w-7xl mx-auto sm:px-6 lg:px-36 py-6">
-    <nav class="flex" aria-label="Breadcrumb">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-36 py-6">
+    <nav class="flex mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center text-sm font-medium text-gray-700">
-                <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                <svg class="w-4 h-4 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                     viewBox="0 0 20 20">
                     <path
                         d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
@@ -13,17 +13,17 @@
         </ol>
     </nav>
     <!-- Welcome Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 my-4">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mb-8">
         <div class="lg:col-span-2">
-            <div class="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-6 text-white shadow-lg">
-                <h1 class="text-2xl font-semibold mb-2">Selamat Datang, {{ Auth::user()->name }}!</h1>
-                <p class="text-white/80">Semoga hari Anda menyenangkan</p>
+            <div class="bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 text-white shadow-lg">
+                <h1 class="text-2xl sm:text-3xl font-semibold mb-2">Selamat Datang, {{ Auth::user()->name }}!</h1>
+                <p class="text-white/80 text-sm sm:text-base">Semoga hari Anda menyenangkan</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 shadow-lg backdrop-blur-sm">
+        <div class="bg-w rounded-xl p-6 pb-2 shadow-lg backdrop-blur-sm">
             <div class="flex items-center space-x-3">
-                <img class="h-14 w-14 rounded-full object-cover"
+                <img class="h-16 w-16 rounded-full object-cover"
                     src="{{ Auth::user()->perusahaan->Logo
                         ? asset('storage/' . Auth::user()->perusahaan->Logo)
                         : (Auth::user()->id_Perusahaan == 1
@@ -56,7 +56,7 @@
                         @if ($latestNotification)
                             <li class="glide__slide">
                                 <a href="\notifikasi"
-                                    class="block bg-white rounded-2xl shadow-lg p-4 transition-transform duration-300 hover:shadow-md transition-shadow">
+                                    class="block bg-white rounded-2xl shadow-lg p-4 transition-transform duration-300 hover:shadow-md">
                                     <span
                                         class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs mb-1">Pengumuman</span>
                                     <h5 class="text-md font-semibold ml-1">
@@ -64,13 +64,18 @@
                                     </h5>
                                     <p class="text-gray-600 text-xs ml-1">
                                         {!! preg_replace(
-                                            '/<img[^>]*>/i',
-                                            '<span class="inline-block w-5 h-5 text-gray-500"><i class="fas fa-image"></i></span>Gambar',
+                                            [
+                                                '/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', // Format gambar dari CKEditor
+                                                '/<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/i', // Format link dari CKEditor
+                                            ],
+                                            [
+                                                '<img src="$1" alt="Gambar Pengumuman" class="rounded-lg max-w-full h-auto inline-block">', // Memastikan gambar responsive
+                                                '<a href="$1" class="text-blue-500 underline truncate inline-block" target="_blank">$2</a>', // Format link rapi
+                                            ],
                                             Str::words($latestNotification->data['description'] ?? 'No description available', 10, '...'),
                                         ) !!}
                                     </p>
                                 </a>
-
                             </li>
                         @else
                             <li class="glide__slide">
@@ -81,10 +86,11 @@
                         @endif
                     </ul>
                 </div>
-                <div class="glide__bullets mt-4" data-glide-el="controls[nav]">
+
+                {{-- <div class="glide__bullets mt-4" data-glide-el="controls[nav]">
                     <button class="glide__bullet" data-glide-dir="=0"></button>
                     <button class="glide__bullet" data-glide-dir="=1"></button>
-                </div>
+                </div> --}}
             </div>
         </div>
 

@@ -107,7 +107,7 @@
                         @foreach ($cuti as $c)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="flex items-center justify-center">
+                                    <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <img class="h-10 w-10 rounded-full object-cover"
                                                 src="{{ $c->user->Avatar ? asset('storage/' . $c->user->Avatar) : 'storage/profil.jpg' }}"

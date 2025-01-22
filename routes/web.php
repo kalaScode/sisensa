@@ -131,7 +131,7 @@ Route::middleware('auth')->group(function () {
 });
 
 //Route untuk Buat Pengumuman
-Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman',  CheckRole::class . '!:1,2'])->group(function () {
+Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman',  CheckRole::class . ':3,4'])->group(function () {
     Route::get('/buat-pengumuman', [NotifikasiController::class, 'create'])->name('pengumuman.create');
     Route::post('/buat-pengumuman', [NotifikasiController::class, 'store'])->name('pengumuman.store');
 });
