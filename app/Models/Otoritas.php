@@ -24,6 +24,7 @@ class Otoritas extends Model
         'riwayat_presensiKaryawan',
         'riwayat_cutiPribadi',
         'riwayat_cutiKaryawan',
+        'buat_Pengumuman',
         'created_At',
         'created_By',
         'updated_At',

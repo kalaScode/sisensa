@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\OtorisasiController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\CheckMenu;
@@ -133,9 +134,20 @@ Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman'])->group(functi
 });
 
 
-// Route::get('/admin', function () {
-//     return view('admin');
-// })->name('admin');
+Route::get('/otorisasi', [OtorisasiController::class, 'index'])->name('otorisasi.index');
+Route::get('/otorisasi-karyawan', [OtorisasiController::class, 'OtorisasiKaryawan'])->name('otorisasi-karyawan.index');
+
+
+
+Route::get('/user-roles/create', [OtorisasiController::class, 'createUserRole'])->name('user-roles.create');
+Route::put('/user-roles/{id}', [OtorisasiController::class, 'storeUserRole'])->name('user-roles.store');
+
+
+Route::get('/roles/create', [OtorisasiController::class, 'create'])->name('roles.create');
+Route::post('/roles', [OtorisasiController::class, 'store'])->name('roles.store'); // Mengupdate role yang ada
+Route::put('roles/update/{id}', [OtorisasiController::class, 'update'])->name('roles.update');
+Route::delete('roles/hapus/{id}', [OtorisasiController::class, 'destroy'])->name('roles.destroy');
+
 
 
 Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');
