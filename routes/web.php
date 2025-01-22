@@ -83,7 +83,6 @@ Route::middleware(['auth', CheckMenu::class . ':riwayat_presensiKaryawan, riwaya
     Route::get('/riwayat-cuti-karyawan', [RiwayatController::class, 'getCutiKaryawan'])->name('riwayat-cuti-karyawan');
 });
 
-
 // Route ke halaman profil (pemberi persetujuan)
 Route::get('/profil', [KaryawanController::class, 'getProfil'])
     ->middleware('auth')
@@ -149,6 +148,10 @@ Route::put('roles/update/{id}', [OtorisasiController::class, 'update'])->name('r
 Route::delete('roles/hapus/{id}', [OtorisasiController::class, 'destroy'])->name('roles.destroy');
 
 
+// Route ke halaman dashboard
+Route::get('/dashboard', [AdminController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');
 
