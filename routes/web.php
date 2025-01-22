@@ -11,9 +11,11 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\OtorisasiController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\CheckMenu;
+use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -33,13 +35,16 @@ Route::get('/beranda', [Beranda::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('beranda');
 
-Route::get('/welcome', function () {
-    return view('welcome');
-})->middleware('auth', 'verified')->name('welcome');
+// Route::get('/welcome', function () {
+//     return view('welcome');
+// })->middleware('auth', 'verified')->name('welcome');
 
 //Route untuk Presensi
 Route::middleware('auth')->group(function () {
     Route::get('/presensi', function () {
+        if (in_array(Auth::user()->id_Otoritas, [1, 2])) {
+            return redirect()->route('dashboard'); // Arahkan ke halaman dashboard
+        }
         return view('page.ppresensi');
     });
 
@@ -126,19 +131,30 @@ Route::middleware('auth')->group(function () {
 });
 
 //Route untuk Buat Pengumuman
-Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman'])->group(function () {
+Route::middleware(['auth', CheckMenu::class . ':buat_Pengumuman',  CheckRole::class . '!:1,2'])->group(function () {
     Route::get('/buat-pengumuman', [NotifikasiController::class, 'create'])->name('pengumuman.create');
     Route::post('/buat-pengumuman', [NotifikasiController::class, 'store'])->name('pengumuman.store');
 });
 
+//Route untuk Otorisasi
+Route::middleware(['auth', CheckRole::class . ':1,2'])->group(function () {
+    Route::get('/otorisasi', [OtorisasiController::class, 'index'])->name('otorisasi.index');
+    Route::get('/otorisasi-karyawan', [OtorisasiController::class, 'OtorisasiKaryawan'])->name('otorisasi-karyawan.index');
+    Route::get('/user-roles/create', [OtorisasiController::class, 'createUserRole'])->name('user-roles.create');
+    Route::put('/user-roles/{id}', [OtorisasiController::class, 'storeUserRole'])->name('user-roles.store');
+});
 
-// Route::get('/admin', function () {
-//     return view('admin');
-// })->name('admin');
+//Route untuk Otorisasi Karyawan
+Route::middleware(['auth', CheckRole::class . ':1,2'])->group(function () {
+    Route::get('/roles/create', [OtorisasiController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [OtorisasiController::class, 'store'])->name('roles.store'); // Mengupdate role yang ada
+    Route::put('roles/update/{id}', [OtorisasiController::class, 'update'])->name('roles.update');
+    Route::delete('roles/hapus/{id}', [OtorisasiController::class, 'destroy'])->name('roles.destroy');
+});
 
 // Route ke halaman dashboard
 Route::get('/dashboard', [AdminController::class, 'index'])
-    ->middleware('auth')
+    ->middleware(['auth', CheckRole::class . ':1,2'])
     ->name('dashboard');
 
 Route::post('/upload-image', [NotifikasiController::class, 'uploadImage'])->name('upload.image');

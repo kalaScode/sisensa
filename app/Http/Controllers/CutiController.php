@@ -15,6 +15,10 @@ class CutiController extends Controller
 {
     public function index()
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         return view('page.pcuti');
     }
 
@@ -29,6 +33,10 @@ class CutiController extends Controller
 
     public function ajukanCuti(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         // Validasi input
         $validated = $request->validate([
             'tanggalCuti' => 'required|string', // Pastikan format sesuai, misal "2025-01-15" atau "2025-01-15 to 2025-01-20"

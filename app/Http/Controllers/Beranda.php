@@ -19,6 +19,10 @@ class Beranda extends Controller
         $latestNotification = Auth::user()->notifications()->latest()->first();
         $dataOtorisasi = Otoritas::where('id_Otoritas', Auth::user()->id_Otoritas)->first();
 
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
+
         // Ambil data perusahaan user
         $id_Perusahaan = Auth::user()->id_Perusahaan;
         $perusahaan = DB::table('perusahaan')

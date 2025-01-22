@@ -15,6 +15,10 @@ class PersetujuanController extends Controller
 {
     public function index(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $search = $request->input('search', ''); // Ambil nilai pencarian, default kosong
         $status = $request->input('status', '');
 
@@ -108,6 +112,10 @@ class PersetujuanController extends Controller
 
     public function indexPresensi(Request $request)
     {
+        $role = Auth::user()->id_Otoritas;
+        if (in_array($role, [1, 2])) {
+            return redirect('/dashboard');
+        }
         $search = $request->input('search', ''); // Ambil nilai pencarian, default kosong
         $status = $request->input('status', '');
 
