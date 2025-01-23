@@ -113,7 +113,7 @@
                                                 src="{{ $c->user->Avatar ? asset('storage/' . $c->user->Avatar) : 'storage/profil.jpg' }}"
                                                 alt="Foto Profil" />
                                         </div>
-                                        <div class="ml-6 items-center">
+                                        <div class="ml-10 items-center">
                                             <div class="text-sm font-medium text-gray-900">
                                                 {{ $c->user->name ?? 'Nama Tidak Ditemukan' }}
                                             </div>
