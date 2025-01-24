@@ -180,7 +180,7 @@ class PresensiController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menyimpan presensi: ' . $e->getMessage()
+                'message' => 'Gagal menyimpan presensi: lokasi atau wajah anda gagal terdeteksi'
             ], 500);
         }
     }
