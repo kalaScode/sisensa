@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cuti', [CutiController::class, 'index'])->name('cuti.index');
     Route::post('/cuti/ajukan', [CutiController::class, 'ajukanCuti'])->name('cuti.ajukan');
     Route::get('/cuti/saldo-sisa', [CutiController::class, 'getSaldoSisa']);
+    Route::get('/cuti/booked-dates', [CutiController::class, 'getBookedDates']);
 });
 
 

@@ -22,6 +22,28 @@ class CutiController extends Controller
         return view('page.pcuti');
     }
 
+    public function getBookedDates()
+    {
+        // Ambil tanggal cuti yang sudah disetujui
+        $approvedLeaves = Cuti::where('status_Cuti', 'Disetujui') // Ganti 'status' sesuai dengan kolom di database Anda
+            ->where('user_id', Auth::id()) // Hanya tanggal cuti pengguna saat ini
+            ->get(['tanggal_Mulai', 'tanggal_Selesai']); // Ambil tanggal mulai dan selesai
+
+        $bookedDates = [];
+
+        foreach ($approvedLeaves as $leave) {
+            $start = Carbon::parse($leave->tanggal_Mulai);
+            $end = Carbon::parse($leave->tanggal_Selesai);
+
+            while ($start->lte($end)) {
+                $bookedDates[] = $start->format('Y-m-d');
+                $start->addDay();
+            }
+        }
+
+        return response()->json($bookedDates); // Kembalikan array tanggal dalam JSON
+    }
+
     public function getSaldoSisa()
     {
         $user = Auth::user();
