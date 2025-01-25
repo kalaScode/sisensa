@@ -14,4 +14,8 @@ class Perusahaan extends Model
     {
         return $this->hasOne(User::class, 'user_id');
     }
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class, 'id_Jabatan', 'id_Jabatan');
+    }
 }

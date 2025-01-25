@@ -9,7 +9,7 @@ class Jabatan extends Model
     protected $table = 'jabatan';
     protected $guarded = [];
 
-    protected $primaryKey ='id_Jabatan';
+    protected $primaryKey = 'id_Jabatan';
 
     protected $fillable = [
         'id_Perusahaan',
@@ -22,6 +22,6 @@ class Jabatan extends Model
 
     public function perusahaan()
     {
-        return $this->belongsTo(Perusahaan::class, 'id_Perusahaan', 'id');
+        return $this->belongsTo(Perusahaan::class, 'id_Perusahaan', 'id_Perusahaan');
     }
 }
