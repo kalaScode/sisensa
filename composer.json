@@ -9,6 +9,7 @@
         "php": "^8.2",
         "ckeditor/ckeditor": "^4.25",
         "laravel/framework": "^11.31",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "mckenziearts/laravel-notify": "^2.5"
     },

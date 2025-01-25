@@ -25,11 +25,10 @@
         ->value('jenis_Presensi'); // Ambil jenis_Presensi ('office' atau 'outside')
 @endphp
 
-
-<!-- presensi.blade.php -->
 <x-navbar></x-navbar>
-<div id="successAlert" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+{{-- <!-- presensi.blade.php -->
+{{-- <div id="successAlert" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    < class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
         <div class="flex items-center mb-4">
             <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -37,26 +36,27 @@
             <h2 class="text-xl font-bold text-gray-800">Presensi Berhasil</h2>
         </div>
         <p class="text-gray-600 text-sm mb-4">Presensi Anda telah berhasil disimpan.</p>
-        <div class="flex justify-end">
+        {{-- <div class="flex justify-end">
             <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
                 onclick="window.location.href = '{{ route('beranda') }}';">
                 Kembali ke Beranda
             </button>
-        </div>
-    </div>
-</div>
+        </div> --}}
 
-<div id="errorAlert" class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-2" style="margin-top: 65px;">
+{{-- <div id="errorAlert"
+    class="hidden fixed top-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-2"
+    style="margin-top: 65px;">
     <div class="flex items-center">
         <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         <div>
             <h3 class="font-medium text-gray-900">Gagal Menyimpan Presensi</h3>
             <p id="errorMessage" class="text-sm text-gray-600 mt-1"></p>
         </div>
     </div>
-</div>
+</div> --}}
 <main class="w-full mx-auto mb-6 px-4 sm:px-6 lg:px-36 py-10" style="margin-top: -10px;">
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -82,11 +82,13 @@
         </ol>
     </nav>
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-36" style="margin-top: -32px;">
-        
-        <div id="alertContainer" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+
+        <div id="alertContainer"
+            class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
             <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4" id="alertTitle">Presensi Tidak Diperlukan</h2>
-                <p class="text-gray-600 text-sm mb-4" id="alertMessage">Anda sudah melakukan presensi akhir hari ini.</p>
+                <p class="text-gray-600 text-sm mb-4" id="alertMessage">Anda sudah melakukan presensi akhir hari ini.
+                </p>
                 <div class="flex justify-end">
                     <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
                         onclick="window.location.href = '{{ route('beranda') }}';">Kembali ke Beranda</button>
@@ -100,9 +102,10 @@
                     <div class="mb-3 flex justify-between">
                         <!-- Jenis Presensi (left) -->
                         <div class="flex items-center">
-                            <label for="presenceType" class="block text-sm font-medium text-gray-700">Jenis Presensi</label>
+                            <label for="presenceType" class="block text-sm font-medium text-gray-700">Jenis
+                                Presensi</label>
                         </div>
-                    
+
                         <!-- Status Presensi (right) -->
                         <div class="flex items-center bg-green-100 px-2 py-2 rounded-lg">
                             <div class="block text-sm font-medium text-gray-700">Presensi {{ $statusPresensi }}</div>
@@ -112,8 +115,12 @@
                         <select id="presenceType"
                             class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-gray-100"
                             {{ $tipePresensiSebelumnya ? 'disabled' : '' }}>
-                            <option value="Biasa" {{ ($tipePresensiSebelumnya && $tipePresensiSebelumnya === 'Biasa') || (!$tipePresensiSebelumnya && old('presenceType') === 'Biasa') ? 'selected' : '' }}>Dalam Kantor</option>
-                            <option value="Dinas" {{ ($tipePresensiSebelumnya && $tipePresensiSebelumnya === 'Dinas') || (!$tipePresensiSebelumnya && old('presenceType') === 'Dinas') ? 'selected' : '' }}>Dinas</option>
+                            <option value="Biasa"
+                                {{ ($tipePresensiSebelumnya && $tipePresensiSebelumnya === 'Biasa') || (!$tipePresensiSebelumnya && old('presenceType') === 'Biasa') ? 'selected' : '' }}>
+                                Dalam Kantor</option>
+                            <option value="Dinas"
+                                {{ ($tipePresensiSebelumnya && $tipePresensiSebelumnya === 'Dinas') || (!$tipePresensiSebelumnya && old('presenceType') === 'Dinas') ? 'selected' : '' }}>
+                                Dinas</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -161,8 +168,11 @@
 
                 <!-- Keterangan -->
                 <div class="mb-6">
-                    <label for="keterangan" class="block text-sm font-medium text-gray-700 mb-2">Keterangan (Opsional)</label>
-                    <textarea id="keterangan" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Masukkan keterangan jika ada..."></textarea>
+                    <label for="keterangan" class="block text-sm font-medium text-gray-700 mb-2">Keterangan
+                        (Opsional)</label>
+                    <textarea id="keterangan" rows="3"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        placeholder="Masukkan keterangan jika ada..."></textarea>
                 </div>
 
                 <!-- Tombol -->
@@ -199,22 +209,23 @@
 
         alertContainer.classList.remove("hidden");
     }
-    function showSuccessAlert() {
-    const successAlert = document.getElementById("successAlert");
-    successAlert.classList.remove("hidden");
-}
 
-function showErrorAlert(message) {
-    const errorAlert = document.getElementById("errorAlert");
-    const errorMessage = document.getElementById("errorMessage");
-    errorMessage.textContent = message;
-    errorAlert.classList.remove("hidden");
-    
-    // Auto-hide error alert after 5 seconds
-    setTimeout(() => {
-        errorAlert.classList.add("hidden");
-    }, 5000);
-}
+    function showSuccessAlert() {
+        const successAlert = document.getElementById("successAlert");
+        successAlert.classList.remove("hidden");
+    }
+
+    // function showErrorAlert(message) {
+    //     const errorAlert = document.getElementById("errorAlert");
+    //     const errorMessage = document.getElementById("errorMessage");
+    //     errorMessage.textContent = message;
+    //     errorAlert.classList.remove("hidden");
+
+    //     // Auto-hide error alert after 5 seconds
+    //     setTimeout(() => {
+    //         errorAlert.classList.add("hidden");
+    //     }, 5000);
+    // }
 
     window.onload = async function() {
         const response = await fetch('/presensi/check');
@@ -249,7 +260,7 @@ function showErrorAlert(message) {
         let currentLat = null;
         let currentLon = null;
         let currentAddress = null;
-        let photoDataUrl = null;  // Menyimpan data URL foto
+        let photoDataUrl = null; // Menyimpan data URL foto
 
         const targetLat = {{ $targetLat ?? 'null' }};
         const targetLon = {{ $targetLon ?? 'null' }};
@@ -264,7 +275,7 @@ function showErrorAlert(message) {
                 navigator.geolocation.getCurrentPosition(async (position) => {
                     const userLat = position.coords.latitude;
                     const userLon = position.coords.longitude;
-                    
+
                     currentLat = userLat;
                     currentLon = userLon;
 
@@ -331,53 +342,54 @@ function showErrorAlert(message) {
         }
 
         async function savePresensi() {
-    try {
-        const response = await fetch('/presensi/store', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-                jenis_Presensi: document.getElementById("presenceType").value === 'Biasa' ? 'Biasa' : 'Dinas',
-                Tanggal: new Date().toISOString().split('T')[0],
-                Waktu: new Date().toISOString(),
-                Latitude: currentLat,
-                Longitude: currentLon,
-                Alamat: currentAddress,
-                Foto: photoDataUrl,
-                Keterangan: document.getElementById("keterangan").value
-            })
-        });
+            try {
+                const response = await fetch('/presensi/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        jenis_Presensi: document.getElementById("presenceType").value ===
+                            'Biasa' ? 'Biasa' : 'Dinas',
+                        Tanggal: new Date().toISOString().split('T')[0],
+                        Waktu: new Date().toISOString(),
+                        Latitude: currentLat,
+                        Longitude: currentLon,
+                        Alamat: currentAddress,
+                        Foto: photoDataUrl,
+                        Keterangan: document.getElementById("keterangan").value
+                    })
+                });
 
-        const result = await response.json();
+                const result = await response.json();
 
-        if (result.success) {
-            showSuccessAlert();
-        } else {
-            showErrorAlert(result.message || 'Gagal menyimpan presensi');
+                if (result.success) {
+                    showSuccessAlert();
+                } else {
+                    showErrorAlert(result.message || 'Gagal menyimpan presensi');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorAlert('Terjadi kesalahan saat menyimpan presensi');
+            }
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showErrorAlert('Terjadi kesalahan saat menyimpan presensi');
-    }
-}
 
-function updateUI() {
-    const finishButton = document.getElementById("finishButton");
-    const messages = [];
+        function updateUI() {
+            const finishButton = document.getElementById("finishButton");
+            const messages = [];
 
-    if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
-    if (presenceType === "Biasa" && !isWithinRange) {
-        messages.push("Jarak harus dalam radius 100 meter");
-    }
+            if (!isFaceDetected) messages.push("Wajah harus terdeteksi");
+            if (presenceType === "Biasa" && !isWithinRange) {
+                messages.push("Jarak harus dalam radius 100 meter");
+            }
 
-    // Tombol tidak lagi di-disable tetapi memunculkan pesan
-    finishButton.disabled = false;
+            // Tombol tidak lagi di-disable tetapi memunculkan pesan
+            finishButton.disabled = false;
 
-    const warningList = document.getElementById("warningList");
-    warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
-}
+            const warningList = document.getElementById("warningList");
+            warningList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+        }
 
 
         async function startCamera() {
@@ -441,15 +453,89 @@ function updateUI() {
 
         document.getElementById("finishButton").addEventListener("click", async () => {
             const finishButton = document.getElementById("finishButton");
+
+            // Validasi awal
             if (!(isFaceDetected && (presenceType === "Dinas" || isWithinRange))) {
-                showErrorAlert("Presensi gagal karena syarat belum terpenuhi. Perhatikan syarat presensi sebelum menekan tombol Presensi.");
-                setTimeout(3000); // Tunggu 3 detik sebelum mengalihkan
+                Swal.fire({
+                    title: 'Presensi Gagal',
+                    text: 'Presensi gagal karena syarat belum terpenuhi. Perhatikan syarat presensi sebelum menekan tombol Presensi.',
+                    icon: 'warning',
+                    confirmButtonText: 'Mengerti',
+                    confirmButtonColor: '#d33',
+                });
                 return;
             }
 
-            // Jika semua syarat terpenuhi, lanjutkan menyimpan presensi
-            capturePhoto();
-            savePresensi();
+            // Tampilkan SweetAlert Loading
+            Swal.fire({
+                title: 'Memproses Presensi',
+                text: 'Harap tunggu...',
+                icon: 'info',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+                // Ambil foto pengguna
+                await capturePhoto();
+
+                // Simpan presensi ke server
+                const response = await fetch('/presensi/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .content
+                    },
+                    body: JSON.stringify({
+                        jenis_Presensi: document.getElementById("presenceType")
+                            .value === 'Biasa' ? 'Biasa' : 'Dinas',
+                        Tanggal: new Date().toISOString().split('T')[0],
+                        Waktu: new Date().toISOString(),
+                        Latitude: currentLat,
+                        Longitude: currentLon,
+                        Alamat: currentAddress,
+                        Foto: photoDataUrl,
+                        Keterangan: document.getElementById("keterangan").value
+                    })
+                });
+
+                const result = await response.json();
+
+                // Periksa apakah presensi berhasil
+                if (response.ok && result.success) {
+                    // Tutup loading dan tampilkan notifikasi sukses
+                    Swal.fire({
+                        title: 'Presensi Berhasil',
+                        text: 'Presensi Anda telah berhasil disimpan.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Alihkan ke halaman beranda
+                        window.location.href = '{{ route('beranda') }}';
+                    });
+                } else {
+                    // Lempar error jika respons tidak berhasil
+                    throw new Error(result.message || 'Gagal menyimpan presensi.');
+                }
+            } catch (error) {
+                console.error('Error saat menyimpan presensi:', error);
+
+                // Tutup loading jika ada error
+                Swal.close();
+
+                // Tampilkan notifikasi error
+                Swal.fire({
+                    title: 'Presensi Gagal',
+                    text: 'Terjadi kesalahan saat memproses presensi. Silakan coba lagi.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#d33'
+                });
+            }
         });
 
         document.getElementById("cancelButton").addEventListener("click", () => {

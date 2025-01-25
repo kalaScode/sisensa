@@ -152,26 +152,27 @@
 <x-footer></x-footer>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil saldo cuti dari backend
-        fetch('/cuti/saldo-sisa')
-            .then(response => response.json())
-            .then(data => {
-                const saldoSisa = data.saldo_sisa; // Ambil saldo cuti yang tersisa
+        Promise.all([
+                fetch('/cuti/saldo-sisa').then((response) => response.json()),
+                fetch('/cuti/booked-dates').then((response) => response.json()),
+            ])
+            .then(([saldoData, bookedDates]) => {
+                const saldoSisa = saldoData.saldo_sisa; // Ambil saldo cuti
+                const disabledDates = bookedDates; // Ambil tanggal yang sudah disetujui
 
                 // Inisialisasi Flatpickr
                 flatpickr('#tanggalCuti', {
-                    mode: 'range', // Mode range untuk rentang tanggal
-                    dateFormat: 'Y-m-d', // Format tanggal yang dipilih
+                    mode: 'range', // Pilihan tanggal dalam rentang
+                    dateFormat: 'Y-m-d', // Format tanggal
                     minDate: 'today', // Mulai dari hari ini
-                    // Menghapus maxDate agar tidak ada batasan
+                    disable: disabledDates, // Tanggal yang tidak bisa dipilih
                     onClose: function(selectedDates, dateStr, instance) {
                         if (selectedDates.length === 2) {
-                            // Hitung jumlah hari yang dipilih
-                            const dayCount = (selectedDates[1] - selectedDates[0]) / (1000 *
-                                60 * 60 * 24) + 1;
+                            const dayCount =
+                                (selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24) +
+                                1;
 
                             if (dayCount > saldoSisa) {
-                                // Tampilkan SweetAlert jika saldo cuti tidak cukup
                                 Swal.fire({
                                     icon: 'warning',
                                     title: 'Saldo Cuti Tidak Cukup',
@@ -179,22 +180,20 @@
                                     confirmButtonText: 'Mengerti',
                                     confirmButtonColor: '#3085d6',
                                 }).then(() => {
-                                    instance
-                                        .clear(); // Hapus pilihan setelah dialog ditutup
+                                    instance.clear(); // Hapus pilihan
                                 });
                             }
                         }
-                    }
+                    },
                 });
             })
-            .catch(error => {
-                console.error('Error fetching saldo sisa:', error);
+            .catch((error) => {
+                console.error('Error fetching data:', error);
 
-                // Tampilkan notifikasi error menggunakan SweetAlert
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Gagal mengambil data saldo cuti. Silakan coba lagi.',
+                    text: 'Gagal mengambil data cuti. Silakan coba lagi.',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#d33',
                 });

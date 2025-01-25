@@ -10,7 +10,7 @@
                         <path
                             d="M19.707 9.293l-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414z" />
                     </svg>
-                    Otorisasi Karyawan
+                    Kelola User
                 </li>
             </ol>
         </nav>
@@ -31,19 +31,12 @@
                     <form action="{{ route('otorisasi-karyawan.index') }}" method="GET"
                         class="flex flex-wrap items-center gap-4 mb-6">
                         <!-- Input Pencarian -->
-                        <div class="flex items-center rounded-lg shadow-sm max-w-md w-full">
-                            <input type="text" name="search"
-                                class="flex-grow px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 rounded-l-lg"
-                                placeholder="Cari karyawan..." value="{{ request('search') }}" />
-                            <button type="submit"
-                                class="bg-blue-400 text-white px-4 py-2 text-sm rounded-r-lg hover:bg-blue-800 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="2.0" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                </svg>
-                            </button>
-                        </div>
+                        <input type="text" name="search" placeholder="Cari Karyawan..."
+                            class="border-gray-300 rounded-lg p-2" value="{{ request('search') }}" />
+                        <button type="submit"
+                            class="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+                            Cari
+                        </button>
                     </form>
                 </div>
 
