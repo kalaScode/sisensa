@@ -13,6 +13,7 @@ use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\OtorisasiController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\JabatanController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\CheckMenu;
 use Illuminate\Support\Facades\Auth;
@@ -153,6 +154,14 @@ Route::middleware(['auth', CheckRole::class . ':1,2'])->group(function () {
     Route::delete('roles/hapus/{id}', [OtorisasiController::class, 'destroy'])->name('roles.destroy');
 });
 
+//Route untuk Jabatan
+Route::middleware(['auth', CheckRole::class . ':1,2'])->group(function () {
+    Route::get('/jabatan', [JabatanController::class, 'index'])->name('jabatan.index');
+    Route::get('/jabatan/create', [JabatanController::class, 'create'])->name('jabatan.create');
+    Route::post('/jabatan', [JabatanController::class, 'store'])->name('jabatan.store'); // Mengupdate role yang ada
+    Route::put('jabatan/update/{id}', [JabatanController::class, 'update'])->name('jabatan.update');
+    Route::delete('jabatan/hapus/{id}', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
+});
 // Route ke halaman dashboard
 Route::get('/dashboard', [AdminController::class, 'index'])
     ->middleware(['auth', CheckRole::class . ':1,2'])

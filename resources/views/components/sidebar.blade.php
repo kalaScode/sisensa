@@ -23,6 +23,12 @@
             </a>
         </li>
         <li>
+            <a href="/jabatan" class="flex ml-5 mr-5  items-center gap-4 py-2 px-4 hover:bg-red-700 rounded">
+                <i class="fa-solid fa-briefcase"></i>
+                Kelola Jabatan
+            </a>
+        </li>
+        <li>
             <a href="/otorisasi-karyawan" class="flex ml-5 mr-5  items-center gap-3 py-2 px-4 hover:bg-red-700 rounded">
                 <i class="fa-solid fa-users-cog"></i>
                 Kelola User
